@@ -28,7 +28,10 @@ export class CommentsService {
 
   async findAllCmtsFromOneTask(taskId: number): Promise<Comment[]> {
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
-    const comments = await this.commentsRepository.find({where: {task: task}});
+    const comments = await this.commentsRepository.find({
+      where: {task: task}, 
+      relations: {user: true,},
+    });
     return comments;
   }
 

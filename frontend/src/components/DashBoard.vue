@@ -1,5 +1,5 @@
 <template>
-    <div class="" v-if="tasks.length === 0 || comments.length === 0 || likes.length === 0 || countLikes.length === 0">
+    <div class="" v-if="isReady">
         <div role="status" class=" absolute left-0 right-0 top-0 bottom-0 flex flex-col justify-center items-center">
             <p class=" block text-4xl mb-2">Loading...</p>
             <svg class="inline mr-2 w-20 h-20 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -8,15 +8,18 @@
             </svg>
         </div>
     </div>
-    <section v-else class=" bg-gray-50 h-screen pt-10">
+    <section v-else class=" bg-gray-50 pt-10">
         <button @click="loge()">click me</button>
         <div class="w-screen flex justify-center mb-3">
-            <div class="border-double border-4 border-gray-200 p-3 w-1/2">
-                <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?"></textarea>
-                <button @click="createTask()" ref="createTaskBtnRef" 
-                        class=" text-sm p-1 float-right rounded-sm text-blue-500 hover:bg-blue-500 hover:text-white">
-                        Create Task
-                </button>
+            <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
+                <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
+                <div>
+                    <button @click="createTask()" ref="createTaskBtnRef" 
+                            class=" text-sm p-1 float-right rounded-sm text-blue-500 hover:bg-blue-500 hover:text-white">
+                            Create Task
+                    </button>
+                    <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
+                </div>
             </div>
         </div>
 
@@ -26,17 +29,18 @@
                     <div class="">
                         <div class="px-2 flex justify-between items-center">
 
-                            <p class=" font-semibold">{{ userOfTasks[task.id].username }}</p>
+                            <p class=" font-semibold">{{ task.user.username }}</p>
                             <!-- <div @sendToDashboard="(fetchUserData) => {
                                 currentUser = fetchUserData.user;  
                                 users = fetchUserData.otherUsers;
                             }"> -->
 
-                                <div v-if="currentUser.username === userOfTasks[task.id].username">
+                                <!-- <div v-if="currentUser.username === userOfTasks[task.id].username"> -->
+                                <div v-if="currentUser.username === task.user.username">
                                     <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
                                         <div class=" absolute -right-6 top-4 w-20 border border-gray-200 bg-white hidden group-hover:inline-block">
-                                            <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 py-1" @click="isEdit[task.id] = true">Edit</div>
-                                            <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 py-1" @click="deleteTask(task.id)">Delete</div>
+                                            <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus(task.id, 'edit')">Edit</div>
+                                            <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTask(task.id)">Delete</div>
                                         </div>
                                     </i>
                                 </div>
@@ -44,38 +48,39 @@
                         </div>
                         <hr>
                         
-                        <div class="flex" v-if="isEdit[task.id] === true">
-                            <input type="text" :id="'editInput' + task.id" placeholder="edit task content" class=" flex-1 pl-1">
-                            <div class="" v-if="isEditting === false">
-                                <button @click="editTask(task.id)" class=" bg-green-500 text-white hover:bg-green-400 px-2">Save</button>
-                                <button @click="isEdit[task.id] = false" class=" bg-slate-200 text-gray-500 hover:bg-slate-300 px-2">Cancel</button>
-                            </div>
-                            <div class="" v-else>Loading...</div>
+                        <div class="flex h-20 relative" v-if="isEdit.find(ele => ele.taskId === task.id).status === true">
+                            <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
+                                    class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
+                            <!-- <div class="" v-if="isEditting === false"> -->
+                                <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
+                                <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
+                            <!-- </div> -->
+                            <!-- <div class="" v-else>Loading...</div> -->
                         </div>
-                        <p v-else class=" pl-2">{{ task.content }}</p>
+                        <p v-else class=" h-20 pl-2">{{ task.content }}</p>
 
                     </div>
                     <hr>
-                    <ul class=" overflow-auto ">
-                        <li v-for="comment in comments[task.id]" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
-                            <p class="text-sm">{{comment.content}}</p>
-                            <i @click="deleteComment(comment.id, task.id)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
+                    <ul class=" overflow-auto mt-2 h-28">
+                        <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
+                            <p class="text-sm"><span class=" font-semibold">{{ comment.user.username }}: </span>  {{comment.content}}</p>
+                            <i v-if="currentUser.id === comment.user.id" @click="deleteComment(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
                                 hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
                         </li>
                     </ul>
                     <div class="relative">
-                        <button :class="[likes[task.id] === '' ?  'text-gray-400' : 'text-blue-400 bg-sky-100'  ]" 
-                                @click="likeClick(task.id)" 
+                        <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-blue-400 bg-sky-100'  ]" 
+                                @click="likeClick(task)" 
                                 class=" px-2 text-sm block border border-gray-200 hover:bg-slate-200 hover:cursor-pointer">
                                 <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
                         </button>
                         <span class=" flex justify-center items-center text-white bg-blue-500
-                                     h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ countLikes[task.id] }}</span>
+                                     h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ task.likes.length }}</span>
                     </div>
                     <div class=" flex">
-                        <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="add comment">
-                        <button @click="addComment(task.id)" :id="'buttonComment' + task.id" 
-                                class=" px-2 border border-gray-200 bg-indigo-500 hover:bg-indigo-400 text-gray-100">Comment</button>
+                        <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="leave a comment" maxlength="50">
+                        <button @click="addComment(task)" :id="'buttonComment' + task.id" 
+                                class=" px-2 border border-gray-200 bg-indigo-500 hover:bg-indigo-400 text-gray-100">Send</button>
                     </div>
                 </li>
             </ul>
@@ -99,12 +104,10 @@ import {useRouter} from "vue-router"
 const store = useStore();
 const router = useRouter();
 
+const isReady = ref(false);
+
 const state = reactive({tasks: [], comments: [], likes: []});
 const tasks = ref([]);
-const comments = ref([]);
-const likes = ref([]);
-const countLikes = ref([]);
-const userOfTasks = ref([]);
 const currentUser = ref({});
 const users = ref([]);
 
@@ -112,8 +115,7 @@ const inputTask = ref('');
 const isEdit = ref([]);
 const isEditting = ref(false);
 
-const commentsOfOneTask = ref(null);
-const likeStatus = ref('text-gray-400')
+// const commentsOfOneTask = ref(null);
 
 const createTaskBtnRef = ref(null);
 
@@ -128,31 +130,44 @@ const loge = () => {
 
 // Tasks
 const createTask = async() => {
+    try {
+        const data = {content: inputTask.value};
+        const response = await axios
+        .post('http://localhost:3000/tasks', data, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+            withCredentials: true,
+        })
+        createTaskBtnRef.value.disabled = true;
+        createTaskBtnRef.value.innerText = 'Loading...'
+        
+        inputTask.value = '';
+        tasks.value.push(response.data);
+        isEdit.value.push({taskId: response.data.id, status: false});
 
-    createTaskBtnRef.value.disabled = true;
-    createTaskBtnRef.value.innerText = 'Loading...'
-    const data = {content: inputTask.value};
+        // isEdit.value[responseDataId] = false;
+
+        // getTasks();
+        createTaskBtnRef.value.disabled = false;
+        createTaskBtnRef.value.innerText = 'Create Task';
+    } catch (error) {
+        Toastify({
+            text: "Task must has its content !",
+            duration: 3000,
+            destination: "#",
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "#EC6A71",
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
     
-    const response = await axios
-    .post('http://localhost:3000/tasks', data, {
-        headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        },
-        withCredentials: true,
-    })
-    inputTask.value = '';
-    tasks.value.push(response.data);
-    const responseDataId = response.data.id; 
-    comments.value[responseDataId] = [];
-    likes.value[responseDataId] = '';
-    isEdit.value[responseDataId] = false;
-
-    console.log(comments.value);
-    console.log(likes.value);
-    // getTasks();
-    createTaskBtnRef.value.disabled = false;
-    createTaskBtnRef.value.innerText = 'Create Task';
 }
 
 const getTasks = async() => {
@@ -168,103 +183,145 @@ const deleteTask = async (taskId) => {
 }
 
 const editTask = async(taskId) => {
-    isEditting.value = true;
-    const editInputElement = document.getElementById(`editInput${taskId}`);
-    const data = {content: editInputElement.value}
-    await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
-    const task = tasks.value.find(element => element.id === taskId);
-    task.content = editInputElement.value;
-    isEditting.value = false;
-    isEdit.value[taskId] = false;
-    editInputElement.value = '';
+    try {
+        isEditting.value = true;
+        const editInputElement = document.getElementById(`editInput${taskId}`);
+    
+        const data = {content: editInputElement.value}
+        await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
+        const task = tasks.value.find(element => element.id === taskId);
+        task.content = editInputElement.value;
+        isEditting.value = false;
+        isEdit.value.find(ele => ele.taskId === task.id).status = false;
+        console.log(isEdit.value.find(ele => ele.taskId === task.id).status);
+        editInputElement.value = '';
+    } catch (error) {
+        Toastify({
+            text: "Task must has its content !",
+            duration: 3000,
+            destination: "#",
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "#EC6A71",
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
+}
+
+const changeIsEditStatus = (taskId, action) => {
+    const isEditNeedModify = isEdit.value.find(ele => ele.taskId === taskId);
+    isEditNeedModify.status = !isEditNeedModify.status;   
 }
 
 
 // Comments
-const addComment = async(taskId) => {
+const addComment = async(task) => {
 
-    const inputCommentElement  = document.getElementById(`inputComment${taskId}`);
-    const buttonCommentElement = document.getElementById(`buttonComment${taskId}`);
-    console.log(inputCommentElement.value);
-    buttonCommentElement.disabled = true;
-    buttonCommentElement.classList.toggle('hover:bg-slate-100');
-    buttonCommentElement.innerText = 'Loading...';
-
-    const data = {content: inputCommentElement.value};
+    try {
+        const inputCommentElement  = document.getElementById(`inputComment${task.id}`);
+        const buttonCommentElement = document.getElementById(`buttonComment${task.id}`);
+        console.log(inputCommentElement.value);
+        const data = {content: inputCommentElement.value};
+        
+        const response = await axios
+        .post(`http://localhost:3000/tasks/${task.id}/comments`, data, {
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+            },
+            withCredentials: true,
+        })
+        
+        buttonCommentElement.disabled = true;
+        buttonCommentElement.classList.toggle('hover:bg-slate-100');
+        buttonCommentElement.innerText = 'Loading...';
     
-    const response = await axios
-    .post(`http://localhost:3000/tasks/${taskId}/comments`, data, {
-        headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        },
-        withCredentials: true,
-    })
-
-    inputCommentElement.value = '';
-    buttonCommentElement.disabled = false;
-    buttonCommentElement.innerText = 'Add comment';
-    buttonCommentElement.classList.toggle('hover:bg-slate-100');
-    comments.value[taskId].push(response.data)
+        inputCommentElement.value = '';
+        buttonCommentElement.disabled = false;
+        buttonCommentElement.innerText = 'Send';
+        buttonCommentElement.classList.toggle('hover:bg-slate-100');
+        task.comments.unshift(response.data)
+    } catch (error) {
+         Toastify({
+            text: "Comment must has its content !",
+            duration: 3000,
+            destination: "#",
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "#EC6A71",
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
 }
 
-const deleteComment = async(commentId, taskId) => {
-    comments.value[taskId] = comments.value[taskId].filter(item => item.id !== commentId);
+const deleteComment = async(commentId, task) => {
+    task.comments = task.comments.filter(item => item.id !== commentId);
     await axios.delete(`http://localhost:3000/tasks/comments/${commentId}`, {withCredentials: true});
     // arr = arr.filter(item => item !== value)
-    console.log(comments.value[taskId]);
-
 }
 
-const getCmtsFromOneTask = async(taskId) => {
-    const response = await axios.get(
-        `http://localhost:3000/tasks/${taskId}/comments`, 
-        {withCredentials: true}
-    );
-    commentsOfOneTask.value = response.data;
-}
+// const getCmtsFromOneTask = async(taskId) => {
+//     const response = await axios.get(
+//         `http://localhost:3000/tasks/${taskId}/comments`, 
+//         {withCredentials: true}
+//     );
+//     commentsOfOneTask.value = response.data;
+// }
 
 
 // Likes
-const likeClick = async(taskId) => {
+const likeClick = async(task) => {
 
-    if(likes.value[taskId].status === false || likes.value[taskId]  === '') {
-        if(likes.value[taskId]  === '') {
-           likes.value[taskId] = {};
-        }
+    const isLiked = task.likes.find(ele=>ele.user.id===currentUser.value.id) !== undefined;
+    // const isLiked = task.user.likes.length !== 0; 
+    if(isLiked === false) {
 
-        likes.value[taskId].status  = true;
-        countLikes.value[taskId] += 1;
         const data = {status: true};
-        await axios.post(`http://localhost:3000/tasks/${taskId}/likes`, data, {
+        const response = await axios.post(`http://localhost:3000/tasks/${task.id}/likes`, data, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+            withCredentials: true,
+        });
+
+        const newLike = response.data;
+        task.likes.unshift(newLike);
+        task.user.likes.push({id: newLike.id, status: newLike.status});  //for changing color of like button
+    }
+    else {
+
+        await axios.delete(`http://localhost:3000/tasks/${task.id}/likes`, {
             headers: {
                 Accept: "application/json",
             "Content-Type": "application/json;charset=UTF-8",
             },
             withCredentials: true,
         });
-    }
-    else if (likes.value[taskId].status  === true) {
-        // const data = {status: false};
-        // const index = likes.value.indexOf(taskId);
-        // likes.value[taskId].status = false;
-        // likes.value.splice(index, 1);
-        likes.value[taskId] = '';
-        countLikes.value[taskId] -= 1;
-        await axios.delete(`http://localhost:3000/tasks/${taskId}/likes`, {
-            headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json;charset=UTF-8",
-            },
-            withCredentials: true,
-        });
+
+        const likeNeedRemove = task.likes.find(ele => ele.user.id === currentUser.value.id);
+        const indexOfLikeNeedRemove = task.likes.indexOf(likeNeedRemove);
+        task.likes.splice(indexOfLikeNeedRemove, 1);
+        task.user.likes.pop(); //for changing color of like button
+
     }
 }
 
 onMounted( async() => {
     try {
-        const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});
+        // const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});
+        // const fetchUser = await axios.get('http://localhost:3000/users', {withCredentials: true});
+        const fetchUser = await axios.get('http://localhost:3000/users/currentuser-and-otherusers', {withCredentials: true});
         const {user, otherUsers} = fetchUser.data;
+        console.log(fetchUser.data);
         currentUser.value = user;  
         users.value = otherUsers;
 
@@ -272,38 +329,48 @@ onMounted( async() => {
         console.log(response.data);
         tasks.value = response.data;
 
-        tasks.value.forEach(async(ele) => {
-            userOfTasks.value[ele.id] = ele.user;
+        if(tasks.value.length !== 0) {
+            tasks.value.forEach(async(ele) => {
+                isEdit.value.push({taskId: ele.id, status: false});
 
-            let response;
-            response = await axios.get(
-                `http://localhost:3000/tasks/${ele.id}/comments`, 
-                {withCredentials: true}
-            );
-            comments.value[ele.id] = response.data;
+                // userOfTasks.value[ele.id] = ele.user;
 
-            response = await axios.get(
-                `http://localhost:3000/tasks/${ele.id}/likes`, 
-                {withCredentials: true}
-            );
-            likes.value[ele.id] = response.data;
-            isEdit.value[ele.id] = false;
+                // comments.value[ele.id] = ele.comments;
+    
+                // let response;
+                // response = await axios.get(
+                //     `http://localhost:3000/tasks/${ele.id}/comments`, 
+                //     {withCredentials: true}
+                // );
+                // comments.value[ele.id] = response.data;
+    
+                // response = await axios.get(
+                //     `http://localhost:3000/tasks/${ele.id}/likes`, 
+                //     {withCredentials: true}
+                // );
+                // likes.value[ele.id] = response.data;
+                // isEdit.value[ele.id] = false;
+    
+                // response = await axios.get(
+                //     `http://localhost:3000/tasks/${ele.id}/countLikesOfTask`, 
+                //     {withCredentials: true}
+                // );
+                // countLikes.value[ele.id] = response.data;
 
-            response = await axios.get(
-                `http://localhost:3000/tasks/${ele.id}/countLikesOfTask`, 
-                {withCredentials: true}
-            );
-            countLikes.value[ele.id] = response.data;
-        })
+            })
+        }
     } catch (error) {
         console.log(error);
         router.push('/auth/signin');
+        localStorage.removeItem('username');
         alert('Please sign in first ^^');
         
     }
 
     
-
+    isReady.value = false;
+    // if(tasks.length === 0 || comments.length === 0 || likes.length === 0 || countLikes.length === 0) {
+    // }
     // console.log(tasks.value);
     // console.log(comments.value);
     // console.log(likes.value);

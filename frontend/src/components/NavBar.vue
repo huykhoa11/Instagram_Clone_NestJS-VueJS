@@ -1,16 +1,16 @@
 <template>
     <nav>
-      <div class="drop-shadow-sm bg-zinc-600 flex justify-between font-bold" v-if="username === 'andrey' ">
+      <div v-if="currentUser" class="drop-shadow-sm bg-zinc-700 flex justify-between font-semibold">
         <div class="">
-          <p class=" text-pink-500">Hello {{ username }}</p>
+          <p class=" text-pink-300">Hello {{ currentUser.username }}</p>
         </div>
         <div class="">
-          <button id="signOutBtn" @click="signOut()" class=" text-pink-500 hover:text-gray-50 hover:bg-pink-500 cursor-pointer">Sign Out</button>
+          <button id="signOutBtn" @click="signOut()" class=" text-pink-300 hover:text-gray-50 hover:bg-pink-300 cursor-pointer">Sign Out</button>
         </div>
         
       </div>
 
-      <div class="drop-shadow-sm bg-zinc-600 flex justify-between font-bold" v-else>
+      <div v-else class="drop-shadow-sm bg-zinc-600 flex justify-between font-semibold">
         <div class="">
           <p class=" text-pink-500">Let sign in ^^</p>
         </div>
@@ -35,23 +35,36 @@ import axios from 'axios';
 const router = useRouter();
 const store = useStore();
 
-const username = ref('');
+const username = ref(null);
+const currentUser = ref(null);
 
 
 const signOut = async () => {
   const signOutBtnElement = document.getElementById('signOutBtn');
   signOutBtnElement.disabled = true;
   signOutBtnElement.className = 'text-pink-500';
-  signOutBtnElement.innerText =  'Loading..'
+  signOutBtnElement.innerText =  'Signing out...'
   await axios.delete('http://localhost:3000/auth/signout', {withCredentials: true});
   localStorage.removeItem('username');
   // router.push('/auth/signin')
+  username.value = '';
   window.location.replace("http://localhost:8080/auth/signin");
 
 }
 
-onMounted( () => {
-  username.value = localStorage.getItem('username');
+onMounted( async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/users/currentuser', {withCredentials: true});
+    currentUser.value = response.data;
+    username.value = localStorage.getItem('username');
+    console.log(username.value);
+  } catch (error) {
+    if(localStorage.getItem('username')) {
+      localStorage.removeItem('username');
+    }
+  }
+
+  
 })
 
 

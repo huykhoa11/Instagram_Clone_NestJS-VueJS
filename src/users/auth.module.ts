@@ -8,6 +8,9 @@ import { JwtStrategy } from './dto/jwt.strategy';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
+import { UsersController } from './users.controller';
+import { UsersModule } from './users.module';
+import { UsersService } from './users.service';
 
 @Module({
   imports: [
@@ -19,9 +22,10 @@ import { PassportModule } from '@nestjs/passport';
       //     expiresIn: 3600,
       // }
     }),
-    TypeOrmModule.forFeature([User])],
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, UsersService],
   exports: [TypeOrmModule, JwtStrategy]
 })
 export class AuthModule {}

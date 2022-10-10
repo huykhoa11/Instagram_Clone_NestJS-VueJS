@@ -27,7 +27,10 @@ export class LikesService {
 
   async getLikeStatusOfTask(user: User, taskId: number): Promise<Like> {
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
-    const like = await this.likesRepository.findOne({where: {user: user, task: task}});
+    const like = await this.likesRepository.findOne({
+      where: {user: user, task: task},
+      relations: {user: true}
+    });
     return like;
   }
 

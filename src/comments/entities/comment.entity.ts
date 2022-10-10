@@ -1,5 +1,5 @@
 import { Exclude } from "class-transformer";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "../../tasks/entities/task.entity";
@@ -10,6 +10,8 @@ export class Comment {
     id: number;
 
     @IsString()
+    @IsNotEmpty()
+    @MaxLength(50)
     @Column()
     content: string;
 

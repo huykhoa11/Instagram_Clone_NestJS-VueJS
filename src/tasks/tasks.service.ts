@@ -22,18 +22,31 @@ export class TasksService {
     newTask.user = user;
     await this.tasksRepository.save(newTask);
 
-    return newTask;
+    // return newTask;
+    return this.tasksRepository.findOne({
+      where: {id: newTask.id},
+      relations: {user: {likes: true}, 
+                  comments: {user: true}, 
+                  likes: {user: true}
+                },
+    })
   }
 
   findAll(user: User): Promise<Task[]> {
     return this.tasksRepository.find({
-      relations: {user: true},
+      relations: {user: {likes: true}, 
+                  comments: {user: true}, 
+                  likes: {user: true}},
     })
   }
 
   async findOne(id: number): Promise<Task> {
     const task: Task = await this.tasksRepository.findOne({
       where: {id: id},
+      relations: {user: {likes: true}, 
+                  comments: {user: true}, 
+                  likes: {user: true}
+              },
     });
 
     if(!task) {
@@ -60,8 +73,7 @@ export class TasksService {
     this.tasksRepository.delete({id: taskId});
   }
 
-  async findOtherUsers(userId: number): Promise<User[]> {
-    return this.usersRepository.find({where: {id: Not(userId)}});
-
-  }
+  // async findOtherUsers(userId: number): Promise<User[]> {
+  //   return this.usersRepository.find({where: {id: Not(userId)}});
+  // }
 }

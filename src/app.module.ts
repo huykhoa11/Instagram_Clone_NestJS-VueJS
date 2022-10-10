@@ -12,6 +12,7 @@ import { JwtStrategy } from './users/dto/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { LikesModule } from './likes/likes.module';
 import { Like } from './likes/entities/like.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [AuthModule, TasksModule, CommentsModule,
@@ -25,8 +26,8 @@ import { Like } from './likes/entities/like.entity';
       entities: [User, Task, Comment, Like],
       synchronize: true,
   }),
-    CommentsModule,
-    LikesModule],
+    CommentsModule, LikesModule, UsersModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 

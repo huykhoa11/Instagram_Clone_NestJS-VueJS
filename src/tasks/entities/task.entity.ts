@@ -1,5 +1,5 @@
 import { Exclude } from "class-transformer";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Like } from "src/likes/entities/like.entity";
 import { User } from "src/users/entities/user.entity";
@@ -11,6 +11,10 @@ export class Task {
     id: number;
 
     @Column()
+    @IsString()
+    @MinLength(1)
+    @MaxLength(140)
+    @IsNotEmpty()
     content: string;
 
     @OneToMany(() => Comment, (comment) => comment.task)

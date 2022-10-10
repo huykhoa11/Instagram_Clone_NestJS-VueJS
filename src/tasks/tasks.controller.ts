@@ -30,19 +30,21 @@ export class TasksController {
   findAll(@GetUser() user: User) {
     return this.tasksService.findAll(user);
   }
-
-  @Get('/users')
-  async getUsers (@GetUser() user: User) {
-    const otherUsers = await this.tasksService.findOtherUsers(user.id);
-    console.log(otherUsers);
-    return {user, otherUsers};
-  }
-
+  
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number) {
     return this.tasksService.findOne(id);
   }
+
+  
+  // @Get('/users')
+  // async getUsers (@GetUser() user: User) {
+  //   const otherUsers = await this.tasksService.findOtherUsers(user.id);
+  //   console.log(otherUsers);
+  //   return {user, otherUsers};
+  // }
+
 
 
 
