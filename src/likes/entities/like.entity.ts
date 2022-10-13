@@ -11,6 +11,12 @@ export class Like {
     @Column()
     status: boolean;
 
+    @Column()
+    createdAt: string;
+
+    @Column()
+    updatedAt: string;
+
     @ManyToOne(() => Task, (task) => task.likes)
     task: Task
 

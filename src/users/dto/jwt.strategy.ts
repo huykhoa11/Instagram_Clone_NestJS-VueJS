@@ -17,8 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     ) {
         super({
             // secretOrKey: configService.get('my-secret-key-password!'),
-            secretOrKey: 'my-secret-key-password!',
+            // secretOrKey: 'my-secret-key-password!',
             // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+
+            ignoreExpiration: true,
+            passReqToCallback:true,
+            secretOrKey:configService.get('JWT_SECRET'),
             jwtFromRequest:ExtractJwt.fromExtractors([(request:Request) => {
                 let data = request?.cookies["auth-cookie-dmm"];
                 if(!data){
@@ -28,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
                 console.log('constructor is accessed');
                 return data.accessToken;
             }]),
-            ignoreExpiration: false,
+            // ignoreExpiration: false,
         });
     }
 

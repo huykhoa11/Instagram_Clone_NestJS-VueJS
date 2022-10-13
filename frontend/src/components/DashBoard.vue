@@ -28,8 +28,14 @@
                 <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
                     <div class="">
                         <div class="px-2 flex justify-between items-center">
-
-                            <p class=" font-semibold">{{ task.user.username }}</p>
+                            <div>
+                                <p class=" font-semibold text-pink-500">
+                                    <router-link :to="'/user/' + task.user.id" class=" hover:underline hover:decoration-solid">
+                                        {{ task.user.username }}
+                                    </router-link>
+                                </p>
+                                <p class=" text-xs">{{ task.updatedAt.split('T')[0] }}</p>
+                            </div>
                             <!-- <div @sendToDashboard="(fetchUserData) => {
                                 currentUser = fetchUserData.user;  
                                 users = fetchUserData.otherUsers;
@@ -63,7 +69,11 @@
                     <hr>
                     <ul class=" overflow-auto mt-2 h-28">
                         <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
-                            <p class="text-sm"><span class=" font-semibold">{{ comment.user.username }}: </span>  {{comment.content}}</p>
+                            <p class="text-sm">
+                                <span class=" font-semibold">{{ comment.user.username }}: </span>  
+                                {{comment.content}}  
+                                <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
+                            </p>
                             <i v-if="currentUser.id === comment.user.id" @click="deleteComment(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
                                 hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
                         </li>
@@ -87,6 +97,9 @@
 
             <SuggestFriends :fetchUserData="{currentUser: currentUser, users: users}" />
         </div>
+
+
+
     </section>
 </template>
 
@@ -127,6 +140,16 @@ const loge = () => {
     console.log((typeof users.value));
 }
 
+// Times ago in comment
+const timeAgoComment = (comment) => {
+    const createdAt = parseInt(comment.createdAt) / (1000 * 3600 * 24);
+    const now = Date.now() / (1000 * 3600 * 24);
+    const diff = Math.floor(now - createdAt);
+    if( diff === 0) {return 'Today'}
+    else if( diff === 1) {return '1 day ago'}
+    else if(diff > 30) { return 'over 30 days ago' }
+    else {return `${diff} days ago` }
+}
 
 // Tasks
 const createTask = async() => {
@@ -362,9 +385,7 @@ onMounted( async() => {
     } catch (error) {
         console.log(error);
         router.push('/auth/signin');
-        localStorage.removeItem('username');
-        alert('Please sign in first ^^');
-        
+        localStorage.removeItem('username');        
     }
 
     

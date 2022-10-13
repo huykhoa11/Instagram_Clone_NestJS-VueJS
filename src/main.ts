@@ -16,3 +16,16 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
+
+
+/**
+ *  valdiate Sign Up ------ (Done)
+    createdAt updatedAt ------ (Done)
+    update created time in main page  ------ (Done)
+    time ago in comment ------ (Done)
+ *  unique username validate ------ (Done)
+    User page
+    Search User
+    View 1 task
+    Regex username, username cant have space
+ */

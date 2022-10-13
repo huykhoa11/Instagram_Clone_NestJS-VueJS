@@ -22,6 +22,11 @@ const routes = [
     name: 'DashBoard',
     component: () => import('../components/DashBoard.vue')
   },
+  {
+    path: '/user/:id',
+    name: 'UserPage',
+    component: () => import('../components/UserPage.vue')
+  },
 ]
 
 const router = createRouter({

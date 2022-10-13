@@ -58,7 +58,6 @@ const inputChange = () => {
   if(password.value.length >= 6 && password.value.length <= 12) {
     passwordError.value = '';
   }
-  
 }
 
 const inputFocus = (id) => {
@@ -73,8 +72,10 @@ const inputFocus = (id) => {
 }
 
 const validateOnBlur = () => {
-   console.log('inside signIn');
-  if (username.value === '' && password.value === '') {
+  const usernameCondition = username.value === '';
+  const passwordCondition = password.value.length < 6 || password.value.length > 12;
+
+  if (usernameCondition && passwordCondition) {
     const usernameInputElement = document.getElementById('usernameInput');
     usernameInputElement.style.border = "solid 1px red";
     usernameError.value = "Username can't be blank";
@@ -83,12 +84,12 @@ const validateOnBlur = () => {
     passwordInputElement.style.border = "solid 1px red";
     passwordError.value = "Password must contains 6-12 characters";
   }
-  else if(username.value === '') {
+  else if(usernameCondition) {
     const usernameInputElement = document.getElementById('usernameInput');
     usernameInputElement.style.border = "solid 1px red";
     usernameError.value = "Username can't be blank";
   } 
-  else if(password.value === '') {
+  else if(passwordCondition) {
     const passwordInputElement = document.getElementById('passwordInput');
     passwordInputElement.style.border = "solid 1px red";
     passwordError.value = "Password must contains 6-12 characters";
@@ -111,7 +112,7 @@ const signIn = async () => {
       console.log('remember me ', isRememberMeCheck.value);
       signInRef.value.disabled = true;
       signInRef.value.classList.toggle('hover:text-zinc-600');
-      signInRef.value.innerText = 'loading...';
+      signInRef.value.innerText = 'Signing in...';
       const response = await axios.post(`http://localhost:3000/auth/signin?rememberMe=${isRememberMeCheck.value}`, data, {
         headers: {
           Accept: "application/json",
@@ -119,7 +120,7 @@ const signIn = async () => {
         },
         withCredentials: true,
       });
-      returnValue.value = response.data;
+      // returnValue.value = response.data;
       // store.dispatch('getCurrentUser', {username: username.value})
       localStorage.setItem('username' ,username.value);
       // router.push('/dashboard')

@@ -19,6 +19,8 @@ export class CommentsService {
 
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
     const newCmt = await this.commentsRepository.create(createCommentDto);
+    newCmt.createdAt = `${Date.now()}`;
+    newCmt.updatedAt = `${Date.now()}`;
     newCmt.user = user;
     newCmt.task = task;
     await this.commentsRepository.save(newCmt);

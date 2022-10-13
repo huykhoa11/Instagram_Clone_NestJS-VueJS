@@ -4,13 +4,15 @@ import { Task } from "src/tasks/entities/task.entity";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Like } from "src/likes/entities/like.entity";
 import { IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import moment from "moment";
+import { Image } from "src/images/entities/image.entity";
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({unique: true,})
     @IsNotEmpty()
     username: string;
 
@@ -27,6 +29,12 @@ export class User {
     @Column()
     refreshTokenExp: number;
 
+    @Column()
+    createdAt: string;
+// {type: "varchar", default: () => moment().format('L') }
+    @Column()
+    updatedAt: string;
+
     @OneToMany(() => Comment, (comment) => comment.user)
     comments: Comment[]
 
@@ -35,6 +43,9 @@ export class User {
 
     @OneToMany(() => Task, (task) => task.user)
     tasks: Task[]
+
+    @OneToMany(() => Image, (image) => image.user)
+    images: Image[]
 
     constructor(partial: Partial<User>) {
         Object.assign(this, partial);

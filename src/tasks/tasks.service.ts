@@ -17,8 +17,27 @@ export class TasksService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
+  // async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+  //   const newTask = this.tasksRepository.create(createTaskDto);
+  //   newTask.createdAt = new Date().toISOString();
+  //   newTask.updatedAt = new Date().toISOString();
+  //   newTask.user = user;
+  //   await this.tasksRepository.save(newTask);
+
+  //   // return newTask;
+  //   return this.tasksRepository.findOne({
+  //     where: {id: newTask.id},
+  //     relations: {user: {likes: true}, 
+  //                 comments: {user: true}, 
+  //                 likes: {user: true}
+  //               },
+  //   })
+  // }
+
   async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const newTask = this.tasksRepository.create(createTaskDto);
+    newTask.createdAt = new Date().toISOString();
+    newTask.updatedAt = new Date().toISOString();
     newTask.user = user;
     await this.tasksRepository.save(newTask);
 

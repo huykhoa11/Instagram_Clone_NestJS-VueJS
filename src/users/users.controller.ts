@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './dto/getUserDecorator';
 import { User } from './entities/user.entity';
@@ -24,6 +24,13 @@ export class UsersController {
         const otherUsers = await this.usersService.findOtherUsers(user.id);
         console.log(otherUsers);
         return {user, otherUsers};
+    }
+
+    @Get(':id')
+    async getSpecificUser (
+        @Param('id', ParseIntPipe) id: number) 
+    {
+        return this.usersService.findSpecificUser(id);
     }
 
 

@@ -13,21 +13,39 @@ import { PassportModule } from '@nestjs/passport';
 import { LikesModule } from './likes/likes.module';
 import { Like } from './likes/entities/like.entity';
 import { UsersModule } from './users/users.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [AuthModule, TasksModule, CommentsModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'khoa1998',
-      database: 'socialmedia',
-      entities: [User, Task, Comment, Like],
-      synchronize: true,
-  }),
-    CommentsModule, LikesModule, UsersModule
+            CommentsModule, LikesModule, UsersModule,
+    ConfigModule.forRoot({
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService:ConfigService)=>({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        entities: [User, Task, Comment, Like],
+        synchronize: true,
+      })
+    }),
   ],
+  //   TypeOrmModule.forRoot({
+  //     type: 'mysql',
+  //     host: 'localhost',
+  //     port: 3306,
+  //     username: 'root',
+  //     password: 'khoa1998',
+  //     database: 'socialmedia',
+  //     entities: [User, Task, Comment, Like],
+  //     synchronize: true,
+  // }),
   controllers: [AppController],
   providers: [AppService],
 

@@ -25,6 +25,8 @@ export class AuthService {
     const user = this.usersRepository.create({
       username,
       password: hashedPassword,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       refreshToken: '',
       refreshTokenExp: parseInt(time),
     });

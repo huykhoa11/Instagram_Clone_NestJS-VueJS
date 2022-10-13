@@ -1,7 +1,8 @@
 <template>
     <nav>
       <div v-if="currentUser" class="drop-shadow-sm bg-zinc-700 flex justify-between font-semibold">
-        <div class="">
+        <div class="flex space-x-3">
+          <router-link to="/dashboard" class=" text-pink-300 hover:text-gray-50 hover:bg-pink-500">HOME</router-link>
           <p class=" text-pink-300">Hello {{ currentUser.username }}</p>
         </div>
         <div class="">

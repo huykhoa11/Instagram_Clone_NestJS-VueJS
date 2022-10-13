@@ -18,6 +18,8 @@ export class LikesService {
   async create(createLikeDto: CreateLikeDto, user: User, taskId: number): Promise<Like> {
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
     const newlike = await this.likesRepository.create(createLikeDto);
+    newlike.createdAt = new Date().toISOString();
+    newlike.updatedAt = new Date().toISOString();
     newlike.user = user;
     newlike.task = task;
     await this.likesRepository.save(newlike);

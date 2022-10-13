@@ -15,6 +15,12 @@ export class Comment {
     @Column()
     content: string;
 
+    @Column()
+    createdAt: string;
+
+    @Column()
+    updatedAt: string;
+
     @ManyToOne(() => Task, (task) => task.comments)
     task: Task
 

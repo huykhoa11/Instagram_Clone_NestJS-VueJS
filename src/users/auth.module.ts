@@ -16,12 +16,22 @@ import { UsersService } from './users.service';
   imports: [
     ConfigModule,
     PassportModule.register({defaultStrategy: 'jwt', secondStrategy: 'refreshTokenStrategy'}),
-    JwtModule.register({
-      secret: 'my-secret-key-password!',
-      // signOptions: {
-      //     expiresIn: 3600,
-      // }
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async(configService: ConfigService)=> ({
+          secret: configService.get('JWT_SECRET'),
+          // signOptions: {
+          //     expiresIn: 30,
+          // },
+      }),
     }),
+    // JwtModule.register({
+    //   secret: 'my-secret-key-password!',
+    //   // signOptions: {
+    //   //     expiresIn: 3600,
+    //   // }
+    // }),
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],

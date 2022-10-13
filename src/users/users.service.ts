@@ -5,7 +5,7 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-    constructor(
+    constructor(    
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) {}
 
@@ -20,6 +20,14 @@ export class UsersService {
             where: {id: Not(userId)},
             relations: {tasks: true, comments: true, likes: true},
         });
+    }
+
+
+    async findSpecificUser(userId: number): Promise<User> {
+        return this.usersRepository.findOne({
+            where: {id: userId},
+            relations: {tasks: true, comments: true, likes: true}
+        })
     }
 
 }
