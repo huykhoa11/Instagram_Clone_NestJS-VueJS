@@ -2,8 +2,9 @@ import { Exclude } from "class-transformer";
 import { IsString } from "class-validator";
 import { Task } from "src/tasks/entities/task.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class Image {
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,6 +12,12 @@ export class Image {
     @Column()
     @IsString()
     directory: string;
+
+    @Column()
+    createdAt: string;
+
+    @Column()
+    updatedAt: string;
 
     @ManyToOne(() => Task, (task) => task.images)
     task: Task

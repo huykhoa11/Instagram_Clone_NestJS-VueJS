@@ -14,6 +14,9 @@ import { LikesModule } from './likes/likes.module';
 import { Like } from './likes/entities/like.entity';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Image } from './images/entities/image.entity';
+import { ImagesModule } from './images/images.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [AuthModule, TasksModule, CommentsModule,
@@ -31,10 +34,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, Task, Comment, Like],
+        entities: [User, Task, Comment, Like, Image],
         synchronize: true,
       })
     }),
+    ImagesModule, MulterModule.register({dest: './uploads'})
   ],
   //   TypeOrmModule.forRoot({
   //     type: 'mysql',

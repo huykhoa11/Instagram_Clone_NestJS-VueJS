@@ -7,9 +7,10 @@ import { AuthModule } from 'src/users/auth.module';
 import { Like } from 'src/likes/entities/like.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Image } from 'src/images/entities/image.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task, Comment, Like, User]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Task, Comment, Like, User, Image]), AuthModule],
   controllers: [TasksController],
   providers: [TasksService],
   exports: [TypeOrmModule]
