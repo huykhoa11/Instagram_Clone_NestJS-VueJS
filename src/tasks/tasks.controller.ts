@@ -33,12 +33,19 @@ export class TasksController {
             .join('');
           callback(null, `${name}-${randomName}${fileExtName}`);
         }
-      })
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/)) {
+          // throw new Error('please uplaod image only hihihihi');
+          return callback(new Error('Only image files are allowed! hihihihihi'), false);
+        }
+        callback(null, true);
+      }
     }))
   create(
     // @Body() createTaskDto: CreateTaskDto,
     //  @GetUser() user: User,
-     @UploadedFiles() files
+     @UploadedFiles() files: Array<Express.Multer.File>
     ) {
       console.log()
       console.log()

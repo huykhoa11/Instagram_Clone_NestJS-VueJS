@@ -9,7 +9,11 @@
         </div>
     </div>
     <section v-else class=" bg-gray-50 pt-10">
-        <button @click="loge()">click me</button>
+        <form @submit.prevent="loge" class="upload">
+            <input type="file" required multiple>
+            <button type="submit">Submit</button>
+            <!-- <button type="submit" @click="loge()">click me</button> -->
+        </form>
         <div class="w-screen flex justify-center mb-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
@@ -133,11 +137,10 @@ const isEditting = ref(false);
 const createTaskBtnRef = ref(null);
 
 // test current user
-const loge = () => {
-    console.log(currentUser.value);
-    console.log((typeof currentUser.value));
-    console.log(users.value);
-    console.log((typeof users.value));
+const loge = (e) => {
+    console.log(e);
+    // const file = e.target.uploadFile.files;
+    // console.log(file);
 }
 
 // Times ago in comment
