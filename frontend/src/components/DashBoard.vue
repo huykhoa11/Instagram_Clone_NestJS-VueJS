@@ -26,28 +26,33 @@
             <img src="./../assets/MVCmodel-c81010.jpg" class=" h-36 w-48" alt="">
         </div> -->
 
-        <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-96 h-60 border-2">
-            <span class="drop-zone__prompt">Drop file here or click to upload</span>
-            <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
-            <div class=" flex-wrap">
-                <div v-for="file in testDropName" :key="file">
-                    <img :src="file" class=" h-36 w-48" alt="">
-                </div>
-            </div>
-        </div>
-        <button @click="onSubmit" class=" bg-red-500">Submit</button>
+        
 
 
         <div class="w-screen flex justify-center mb-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
                 <div>
-                    <button @click="createTask()" ref="createTaskBtnRef" 
-                            class=" text-sm p-1 float-right rounded-sm text-blue-500 hover:bg-blue-500 hover:text-white">
-                            Create Task
-                    </button>
+                    
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
                 </div>
+
+
+                <!-- drag & drop images -->
+                <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-full h-20 mt-10 pt-2 border-t-2">
+                    <p class="drop-zone__prompt text-gray-400">Drop file here or click to upload</p>
+                    <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
+                    <div class=" flex space-x-3">
+                        <div v-for="file in testDropName" :key="file">
+                            <img :src="file" class=" h-14 w-24" alt="">
+                        </div>
+                    </div>
+                </div>
+                <!-- <button @click="onSubmit" class=" bg-red-500">Submit</button> -->
+                <button @click="createTask()" ref="createTaskBtnRef" 
+                        class=" text-sm p-1 float-right rounded-md text-blue-500 hover:bg-blue-500 hover:text-white duration-100">
+                        Create Task
+                </button>
             </div>
         </div>
 
@@ -173,37 +178,34 @@ const dropZoneElement = ref(null);
 const dropZoneElementDrop = (e) => {
     e.preventDefault();
     console.log(e.dataTransfer.files);
-    // const filesArr =  Array.from(files)
+
+    // First time - remove the prompt
+	if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
+		dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
+	}
 
     let formData = new FormData();
     uploadFile.value = new FormData();
     // pathImg.value = e.target.files[0]; 
     for(let i=0; i<e.dataTransfer.files.length; i++ ) {
         console.log(e.dataTransfer.files[i]);
-
         let file = e.dataTransfer.files[i];
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            testDropName.value.push(reader.result);
-            // thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
-        };
-
-        // testDropName.value.push(file);
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                testDropName.value.push(reader.result);
+            };
+        }
         formData.append('image', file);
         uploadFile.value.append('image', file);
     }
 
     console.log(dropZoneElement.value);
     console.log(testDropName.value);
+    dropZoneElement.value.classList.remove("bg-gray-100");
     dropZoneElement.value.classList.remove("border-emerald-500");
-}
-
-const updateThumbnail = (dropZoneElement, file) => {
-    if (dropZoneElement.querySelector(".drop-zone__prompt")) {
-        dropZoneElement.querySelector(".drop-zone__prompt").remove();
-    }
 }
 
 
@@ -214,7 +216,6 @@ const loge = async (e) => {
 
     let formData = new FormData();
     uploadFile.value = new FormData();
-    // pathImg.value = e.target.files[0]; 
     for(let i=0; i<2; i++ ) {
         let file = e.target.files[i];
         formData.append('image', file);
@@ -223,17 +224,32 @@ const loge = async (e) => {
 }
 
 const onSubmit = async() => {
-    console.log('onSubmit button click, processing....');
-    const response = await axios.post('http://localhost:3000/tasks/upload', uploadFile.value, {
-        headers: {
-            // Accept: "application/json",
-            "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-    });
-    // testDropName.value = response.data;
-    // console.log(testDropName.value[0].filename);
-    // console.log(testDropName.value[1].filename);
+    try {
+        console.log('onSubmit button click, processing....');
+        const response = await axios.post('http://localhost:3000/tasks/upload', uploadFile.value, {
+            headers: {
+                // Accept: "application/json",
+                "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+        });
+    } catch (error) {
+        Toastify({
+            text: "Task must has its content !",
+            duration: 3000,
+            destination: "#",
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "#EC6A71",
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
+
+
 
     // imgName.value = null;
     imgName.value = response.data[0].filename;
@@ -525,14 +541,17 @@ onMounted( async() => {
 
     dropZoneElement.addEventListener('dragover', (e) => {
         e.preventDefault();
+        dropZoneElement.classList.add("bg-gray-100");
         dropZoneElement.classList.add('border-emerald-500');    
     })
 
     dropZoneElement.addEventListener('dragleave', (e)=>{
+        dropZoneElement.classList.remove("bg-gray-100");
         dropZoneElement.classList.remove('border-emerald-500');
     });
 
     dropZoneElement.addEventListener('dragend', (e)=>{
+        dropZoneElement.classList.remove("bg-gray-100");
         dropZoneElement.classList.remove('border-emerald-500');
     });
 
