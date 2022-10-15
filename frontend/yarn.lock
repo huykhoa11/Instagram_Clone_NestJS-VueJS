@@ -1641,6 +1641,11 @@
   "resolved" "https://registry.npmjs.org/@soda/get-current-script/-/get-current-script-1.0.2.tgz"
   "version" "1.0.2"
 
+"@swc/helpers@^0.2.13":
+  "integrity" "sha512-wpCQMhf5p5GhNg2MmGKXzUNwxe7zRiCsmqYsamez2beP7mKPCSiu+BjZcdN95yYSzO857kr0VfQewmGpS77nqA=="
+  "resolved" "https://registry.npmjs.org/@swc/helpers/-/helpers-0.2.14.tgz"
+  "version" "0.2.14"
+
 "@trysound/sax@0.2.0":
   "integrity" "sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA=="
   "resolved" "https://registry.npmjs.org/@trysound/sax/-/sax-0.2.0.tgz"
@@ -4880,6 +4885,14 @@
   "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-10.0.0.tgz"
   "version" "10.0.0"
 
+"dropzone@^6.0.0-beta.2":
+  "integrity" "sha512-k44yLuFFhRk53M8zP71FaaNzJYIzr99SKmpbO/oZKNslDjNXQsBTdfLs+iONd0U0L94zzlFzRnFdqbLcs7h9fQ=="
+  "resolved" "https://registry.npmjs.org/dropzone/-/dropzone-6.0.0-beta.2.tgz"
+  "version" "6.0.0-beta.2"
+  dependencies:
+    "@swc/helpers" "^0.2.13"
+    "just-extend" "^5.0.0"
+
 "duplexer@^0.1.1", "duplexer@^0.1.2":
   "integrity" "sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg=="
   "resolved" "https://registry.npmjs.org/duplexer/-/duplexer-0.1.2.tgz"
@@ -7231,6 +7244,11 @@
     "universalify" "^2.0.0"
   optionalDependencies:
     "graceful-fs" "^4.1.6"
+
+"just-extend@^5.0.0":
+  "integrity" "sha512-b+z6yF1d4EOyDgylzQo5IminlUmzSeqR1hs/bzjBNjuGras4FXq/6TrzjxfN0j+TmI0ltJzTNlqXUMCniciwKQ=="
+  "resolved" "https://registry.npmjs.org/just-extend/-/just-extend-5.1.1.tgz"
+  "version" "5.1.1"
 
 "killable@^1.0.1":
   "integrity" "sha512-LzqtLKlUwirEUyl/nicirVmNiPvYs7l5n8wOPP7fyJVpUPkvCnW/vuiXGpylGUlnPDnB7311rARzAt3Mhswpjg=="

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, UseInterceptors, UploadedFile, UploadedFiles, Request, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -23,7 +23,7 @@ export class TasksController {
   @UseInterceptors(
     FilesInterceptor('image', 5, {
       storage: diskStorage({
-        destination: './uploads',
+        destination: './frontend/src/assets',
         filename: (req, file, callback) => {
           const name = file.originalname.split('.')[0];
           const fileExtName = extname(file.originalname);
@@ -45,7 +45,7 @@ export class TasksController {
   create(
     // @Body() createTaskDto: CreateTaskDto,
     //  @GetUser() user: User,
-     @UploadedFiles() files: Array<Express.Multer.File>
+      @UploadedFiles() files: Array<Express.Multer.File>
     ) {
       console.log()
       console.log()
@@ -54,10 +54,15 @@ export class TasksController {
       console.log()
       console.log(files)
       const response = [];
+      const typeOf = value => Object.prototype.toString.call(value);
       files.forEach(file => {
         const fileReponse = {
           originalname: file.originalname,
+          mimetype: file.mimetype,
+          destination: file.destination,
           filename: file.filename,
+          path: file.path,
+          type: typeOf(file),
         };
         response.push(fileReponse);
       });

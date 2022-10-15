@@ -9,11 +9,35 @@
         </div>
     </div>
     <section v-else class=" bg-gray-50 pt-10">
-        <form @submit.prevent="loge" class="upload">
-            <input type="file" required multiple>
-            <button type="submit">Submit</button>
-            <!-- <button type="submit" @click="loge()">click me</button> -->
-        </form>
+        <!-- <div>
+            <div>
+                <form enctype="multipart/form-data" @submit.prevent="onSubmit" class="upload">
+                    <input type="file" id="input-file" name="uploadFile" required multiple @change="loge">
+                    <button>Submit</button>
+                </form>
+            </div>
+            
+            <div>
+                <div v-for="file in testDropName" :key="file">
+                    <img :src="require('./../assets/' + file.filename)" class=" h-36 w-48" alt="">
+                </div>
+            </div>
+            <img :src="require('./../assets/' + imgName)" class=" h-36 w-48" alt="">
+            <img src="./../assets/MVCmodel-c81010.jpg" class=" h-36 w-48" alt="">
+        </div> -->
+
+        <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-96 h-60 border-2">
+            <span class="drop-zone__prompt">Drop file here or click to upload</span>
+            <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
+            <div class=" flex-wrap">
+                <div v-for="file in testDropName" :key="file">
+                    <img :src="file" class=" h-36 w-48" alt="">
+                </div>
+            </div>
+        </div>
+        <button @click="onSubmit" class=" bg-red-500">Submit</button>
+
+
         <div class="w-screen flex justify-center mb-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
@@ -117,6 +141,9 @@ import { reactive, ref, onMounted, computed  } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
+// import Dropzone from "dropzone";
+
+
 
 const store = useStore();
 const router = useRouter();
@@ -136,12 +163,87 @@ const isEditting = ref(false);
 
 const createTaskBtnRef = ref(null);
 
-// test current user
-const loge = (e) => {
-    console.log(e);
-    // const file = e.target.uploadFile.files;
-    // console.log(file);
+// test method
+const uploadFile = ref(null);
+const imgName = ref('wave2-94b2.jpg');
+const testDropName = ref([]);
+// const imgName = ref(require('./../assets/wave2-94b2.jpg'))
+
+const dropZoneElement = ref(null);
+const dropZoneElementDrop = (e) => {
+    e.preventDefault();
+    console.log(e.dataTransfer.files);
+    // const filesArr =  Array.from(files)
+
+    let formData = new FormData();
+    uploadFile.value = new FormData();
+    // pathImg.value = e.target.files[0]; 
+    for(let i=0; i<e.dataTransfer.files.length; i++ ) {
+        console.log(e.dataTransfer.files[i]);
+
+        let file = e.dataTransfer.files[i];
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            testDropName.value.push(reader.result);
+            // thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+        };
+
+        // testDropName.value.push(file);
+        formData.append('image', file);
+        uploadFile.value.append('image', file);
+    }
+
+    console.log(dropZoneElement.value);
+    console.log(testDropName.value);
+    dropZoneElement.value.classList.remove("border-emerald-500");
 }
+
+const updateThumbnail = (dropZoneElement, file) => {
+    if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+        dropZoneElement.querySelector(".drop-zone__prompt").remove();
+    }
+}
+
+
+const loge = async (e) => {
+    console.log(e.target.files[0]);
+    console.log(e.target.files[1]);
+    // const filesArr =  Array.from(files)
+
+    let formData = new FormData();
+    uploadFile.value = new FormData();
+    // pathImg.value = e.target.files[0]; 
+    for(let i=0; i<2; i++ ) {
+        let file = e.target.files[i];
+        formData.append('image', file);
+        uploadFile.value.append('image', file);
+    }
+}
+
+const onSubmit = async() => {
+    console.log('onSubmit button click, processing....');
+    const response = await axios.post('http://localhost:3000/tasks/upload', uploadFile.value, {
+        headers: {
+            // Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+    });
+    // testDropName.value = response.data;
+    // console.log(testDropName.value[0].filename);
+    // console.log(testDropName.value[1].filename);
+
+    // imgName.value = null;
+    imgName.value = response.data[0].filename;
+
+    // document.getElementById('input-file').value = '';
+    uploadFile.value = null;
+    console.log(uploadFile.value);
+    console.log('dmm');
+}
+
 
 // Times ago in comment
 const timeAgoComment = (comment) => {
@@ -342,6 +444,21 @@ const likeClick = async(task) => {
 }
 
 onMounted( async() => {
+    // Dropzone.options.myDropzone = {
+    //     // Configuration options go here
+    //     paramName: "file", // The name that will be used to transfer the file
+    //     maxFilesize: 2, // MB
+    //     accept: function(file, done) {
+    //     if (file.name == "justinbieber.jpg") {
+    //         done("Naha, you don't.");
+    //     }
+    //     else { done(); }
+    //     }
+    // };
+
+
+
+
     try {
         // const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});
         // const fetchUser = await axios.get('http://localhost:3000/users', {withCredentials: true});
@@ -401,6 +518,29 @@ onMounted( async() => {
     // console.log(isEdit.value);
     // console.log(countLikes.value);
     
+
+
+    const dropZoneElement = document.getElementById('dropzone');
+    const inputElement = document.getElementById('dropzone-input');
+
+    dropZoneElement.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZoneElement.classList.add('border-emerald-500');    
+    })
+
+    dropZoneElement.addEventListener('dragleave', (e)=>{
+        dropZoneElement.classList.remove('border-emerald-500');
+    });
+
+    dropZoneElement.addEventListener('dragend', (e)=>{
+        dropZoneElement.classList.remove('border-emerald-500');
+    });
+
 })
 
 </script>
+
+
+<style scoped>
+@import 'https://unpkg.com/dropzone@5/dist/min/dropzone.min.css';
+</style>

@@ -29,3 +29,28 @@ bootstrap();
     View 1 task
     Regex username, username cant have space
  */
+
+    /**
+     * [
+  {
+    fieldname: 'image',
+    originalname: 'wave1.jpg',
+    encoding: '7bit',
+    mimetype: 'image/jpeg',
+    destination: './uploads',
+    filename: 'wave1-46210.jpg',
+    path: 'uploads\\wave1-46210.jpg',
+    size: 379236
+  },
+  {
+    fieldname: 'image',
+    originalname: 'wave2.jpg',
+    encoding: '7bit',
+    mimetype: 'image/jpeg',
+    destination: './uploads',
+    filename: 'wave2-edb3.jpg',
+    path: 'uploads\\wave2-edb3.jpg',
+    size: 180731
+  }
+]
+     */
