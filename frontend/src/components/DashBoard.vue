@@ -39,12 +39,18 @@
 
 
                 <!-- drag & drop images -->
-                <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-full h-20 mt-10 pt-2 border-t-2">
+                <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-full h-28 mt-10 pt-2 border-t-2">
                     <p class="drop-zone__prompt text-gray-400">Drop file here or click to upload</p>
                     <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
-                    <div class=" flex space-x-3">
-                        <div v-for="file in testDropName" :key="file">
-                            <img :src="file" class=" h-14 w-24" alt="">
+                    <div class=" flex space-x-2">
+                        <div v-for="file in prewviewDropFile" :key="file" class=" h-24 w-1/5 group relative">
+                            <img :src="file.source" alt="Red dot" class=" h-full w-full group-hover:blur-sm peer relative" >
+                            <div class="hidden peer-hover:flex peer-hover:flex-col hover:flex hover:flex-col justify-center items-center h-full w-full space-y-3 absolute text-[12px] top-0">
+                                <i class="fa-solid fa-circle-xmark absolute top-0 right-0 text-lg
+                                         text-zinc-50 text-opacity-50 hover:text-opacity-100 hover:cursor-pointer" @click="removeImage(file)"></i>
+                                <p class=" bg-zinc-50 bg-opacity-50 flex justify-center items-center truncate w-1/2 cursor-default rounded-full">{{ file.name }}</p>
+                                <p class=" bg-zinc-50 bg-opacity-50 flex justify-center items-center truncate w-1/2 cursor-default rounded-full">{{ Math.round(file.size/1024) }} KB</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,8 +176,7 @@ const createTaskBtnRef = ref(null);
 
 // test method
 const uploadFile = ref(null);
-const imgName = ref('wave2-94b2.jpg');
-const testDropName = ref([]);
+const prewviewDropFile = ref([]);
 // const imgName = ref(require('./../assets/wave2-94b2.jpg'))
 
 const dropZoneElement = ref(null);
@@ -195,7 +200,8 @@ const dropZoneElementDrop = (e) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                testDropName.value.push(reader.result);
+                const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
+                prewviewDropFile.value.push(obj);
             };
         }
         formData.append('image', file);
@@ -203,7 +209,7 @@ const dropZoneElementDrop = (e) => {
     }
 
     console.log(dropZoneElement.value);
-    console.log(testDropName.value);
+    console.log(prewviewDropFile.value);
     dropZoneElement.value.classList.remove("bg-gray-100");
     dropZoneElement.value.classList.remove("border-emerald-500");
 }
@@ -250,14 +256,15 @@ const onSubmit = async() => {
     }
 
 
-
-    // imgName.value = null;
-    imgName.value = response.data[0].filename;
-
     // document.getElementById('input-file').value = '';
     uploadFile.value = null;
     console.log(uploadFile.value);
     console.log('dmm');
+}
+
+const removeImage = (file) => {
+    const index = prewviewDropFile.value.indexOf(file);
+    prewviewDropFile.value.splice(index, 1);
 }
 
 
