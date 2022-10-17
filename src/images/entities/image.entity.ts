@@ -11,7 +11,7 @@ export class Image {
 
     @Column()
     @IsString()
-    directory: string;
+    name: string;
 
     @Column()
     createdAt: string;

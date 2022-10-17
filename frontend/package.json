@@ -9,6 +9,7 @@
     "tailwindcss-watch": "tailwindcss -i ./public/style.css -o ./dist/style.css --watch"
   },
   "dependencies": {
+    "@splidejs/vue-splide": "^0.6.12",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "dropzone": "^6.0.0-beta.2",

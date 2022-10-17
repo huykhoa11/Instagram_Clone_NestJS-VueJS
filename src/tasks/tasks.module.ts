@@ -8,11 +8,12 @@ import { Like } from 'src/likes/entities/like.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Image } from 'src/images/entities/image.entity';
+import { ImagesService } from 'src/images/images.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Task, Comment, Like, User, Image]), AuthModule],
   controllers: [TasksController],
-  providers: [TasksService],
+  providers: [TasksService, ImagesService],
   exports: [TypeOrmModule]
 })
 export class TasksModule {}

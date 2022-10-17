@@ -8,11 +8,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { ImagesService } from 'src/images/images.service';
 
 @Controller('tasks')
 @UseGuards(AuthGuard('jwt'))
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly imagesService: ImagesService,
+  ) {}
 
   // @Post()
   // create(@Body() createTaskDto: CreateTaskDto, @GetUser() user: User) {
@@ -42,9 +46,10 @@ export class TasksController {
         callback(null, true);
       }
     }))
-  create(
-    // @Body() createTaskDto: CreateTaskDto,
-    //  @GetUser() user: User,
+  async create(
+      // @Body() createTaskDto: CreateTaskDto,
+      @Body() createTaskDto: any,
+      @GetUser() user: User,
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
       console.log()
@@ -53,20 +58,29 @@ export class TasksController {
       console.log()
       console.log()
       console.log(files)
+
+      const {image, content} = createTaskDto;
+      const contentCreateTaskDto = {content: content};
+      const newTask = await this.tasksService.create(contentCreateTaskDto, user);
+      const createImages = await this.imagesService.create(files, user, newTask.id);
+
+      // this.imagesService.create(files, user)
+
       const response = [];
       const typeOf = value => Object.prototype.toString.call(value);
-      files.forEach(file => {
-        const fileReponse = {
-          originalname: file.originalname,
-          mimetype: file.mimetype,
-          destination: file.destination,
-          filename: file.filename,
-          path: file.path,
-          type: typeOf(file),
-        };
-        response.push(fileReponse);
-      });
-      return response;
+      // files.forEach(file => {
+      //   const fileReponse = {
+      //     originalname: file.originalname,
+      //     mimetype: file.mimetype,
+      //     destination: file.destination,
+      //     filename: file.filename,
+      //     path: file.path,
+      //     type: typeOf(file),
+      //   };
+      //   response.push(fileReponse);
+      // });
+      // return response;
+      return newTask;
   }
 
   @Patch(':id')

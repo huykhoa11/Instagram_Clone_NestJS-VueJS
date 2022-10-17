@@ -1,4 +1,6 @@
 <template>
+
+
     <div class="" v-if="isReady">
         <div role="status" class=" absolute left-0 right-0 top-0 bottom-0 flex flex-col justify-center items-center">
             <p class=" block text-4xl mb-2">Loading...</p>
@@ -27,8 +29,6 @@
         </div> -->
 
         
-
-
         <div class="w-screen flex justify-center mb-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
@@ -43,7 +43,7 @@
                     <p class="drop-zone__prompt text-gray-400">Drop file here or click to upload</p>
                     <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
                     <div class=" flex space-x-2">
-                        <div v-for="file in prewviewDropFile" :key="file" class=" h-24 w-1/5 group relative">
+                        <div v-for="file in previewDropFile" :key="file" class=" h-24 w-1/5 group relative">
                             <img :src="file.source" alt="Red dot" class=" h-full w-full group-hover:blur-sm peer relative" >
                             <div class="hidden peer-hover:flex peer-hover:flex-col hover:flex hover:flex-col justify-center items-center h-full w-full space-y-3 absolute text-[12px] top-0">
                                 <i class="fa-solid fa-circle-xmark absolute top-0 right-0 text-lg
@@ -83,7 +83,7 @@
                                 <!-- <div v-if="currentUser.username === userOfTasks[task.id].username"> -->
                                 <div v-if="currentUser.username === task.user.username">
                                     <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
-                                        <div class=" absolute -right-6 top-4 w-20 border border-gray-200 bg-white hidden group-hover:inline-block">
+                                        <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
                                             <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus(task.id, 'edit')">Edit</div>
                                             <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTask(task.id)">Delete</div>
                                         </div>
@@ -93,6 +93,14 @@
                         </div>
                         <hr>
                         
+                        <!-- splide images -->
+                        <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
+                            <SplideSlide v-for="image in task.images" :key="image" class=" w-full h-full">
+                                <img :src="require('./../assets/' + image.name)" alt="Sample 1" class=" w-full h-full">
+                            </SplideSlide>
+                        </Splide>
+
+                        <!-- task content -->
                         <div class="flex h-20 relative" v-if="isEdit.find(ele => ele.taskId === task.id).status === true">
                             <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
                                     class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
@@ -129,7 +137,7 @@
                     <div class=" flex">
                         <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="leave a comment" maxlength="50">
                         <button @click="addComment(task)" :id="'buttonComment' + task.id" 
-                                class=" px-2 border border-gray-200 bg-indigo-500 hover:bg-indigo-400 text-gray-100">Send</button>
+                                class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
                     </div>
                 </li>
             </ul>
@@ -154,6 +162,9 @@ import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
 // import Dropzone from "dropzone";
 
+// import splide
+import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import '@splidejs/vue-splide/css';
 
 
 const store = useStore();
@@ -170,14 +181,29 @@ const inputTask = ref('');
 const isEdit = ref([]);
 const isEditting = ref(false);
 
+const displayToast = (text, bgColor) => {
+    Toastify({
+        text: text,
+        duration: 3000,
+        destination: "#",
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: bgColor,
+        },
+        onClick: function(){} // Callback after click
+    }).showToast();
+}
+
 // const commentsOfOneTask = ref(null);
 
 const createTaskBtnRef = ref(null);
 
 // test method
-const uploadFile = ref(null);
-const prewviewDropFile = ref([]);
-// const imgName = ref(require('./../assets/wave2-94b2.jpg'))
+const uploadFile = ref(null);       //For send data to backend
+const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
 
 const dropZoneElement = ref(null);
 const dropZoneElementDrop = (e) => {
@@ -189,27 +215,36 @@ const dropZoneElementDrop = (e) => {
 		dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
 	}
 
-    let formData = new FormData();
-    uploadFile.value = new FormData();
-    // pathImg.value = e.target.files[0]; 
-    for(let i=0; i<e.dataTransfer.files.length; i++ ) {
-        console.log(e.dataTransfer.files[i]);
-        let file = e.dataTransfer.files[i];
+    if ((previewDropFile.value.length+e.dataTransfer.files.length) <= 5) {
+        let formData = new FormData();
+        uploadFile.value = new FormData();
+        for(let i=0; i<e.dataTransfer.files.length; i++ ) {
+            console.log(e.dataTransfer.files[i]);
+            let file = e.dataTransfer.files[i];
+            uploadFile.value.append('image', file);
 
-        if (file.type.startsWith("image/")) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
-                prewviewDropFile.value.push(obj);
-            };
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
+                    previewDropFile.value.push(obj);
+                };
+            }
+            else {  //only image can drop in
+                displayToast('Only images can be accepted !', '#EC6A71')
+            }
+            formData.append('image', file);
+            // uploadFile.value.append('image', file);
         }
-        formData.append('image', file);
-        uploadFile.value.append('image', file);
+    } else {
+        displayToast('Cant upload over 5 images', '#EC6A71');
     }
 
+    
+
     console.log(dropZoneElement.value);
-    console.log(prewviewDropFile.value);
+    console.log(previewDropFile.value);
     dropZoneElement.value.classList.remove("bg-gray-100");
     dropZoneElement.value.classList.remove("border-emerald-500");
 }
@@ -241,7 +276,7 @@ const onSubmit = async() => {
         });
     } catch (error) {
         Toastify({
-            text: "Task must has its content !",
+            text: "Some thing has occured in onSubmit function",
             duration: 3000,
             destination: "#",
             close: true,
@@ -263,8 +298,8 @@ const onSubmit = async() => {
 }
 
 const removeImage = (file) => {
-    const index = prewviewDropFile.value.indexOf(file);
-    prewviewDropFile.value.splice(index, 1);
+    const index = previewDropFile.value.indexOf(file);
+    previewDropFile.value.splice(index, 1);
 }
 
 
@@ -281,43 +316,51 @@ const timeAgoComment = (comment) => {
 
 // Tasks
 const createTask = async() => {
-    try {
-        const data = {content: inputTask.value};
-        const response = await axios
-        .post('http://localhost:3000/tasks', data, {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-            withCredentials: true,
-        })
-        createTaskBtnRef.value.disabled = true;
-        createTaskBtnRef.value.innerText = 'Loading...'
-        
-        inputTask.value = '';
-        tasks.value.push(response.data);
-        isEdit.value.push({taskId: response.data.id, status: false});
-
-        // isEdit.value[responseDataId] = false;
-
-        // getTasks();
-        createTaskBtnRef.value.disabled = false;
-        createTaskBtnRef.value.innerText = 'Create Task';
-    } catch (error) {
-        Toastify({
-            text: "Task must has its content !",
-            duration: 3000,
-            destination: "#",
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "#EC6A71",
-            },
-            onClick: function(){} // Callback after click
-        }).showToast();
+    // uploadFile.value.append('content', inputTask.value)
+    // for (const value of uploadFile.value) {
+    //     console.log(value);
+    // }
+    if(previewDropFile.value.length === 0) {
+        displayToast('Task must has image', '#EC6A71')
     }
+    else {
+        try {
+            const data = {content: inputTask.value};
+            uploadFile.value.append('content', inputTask.value)
+            const response = await axios
+            .post('http://localhost:3000/tasks/upload', uploadFile.value, {
+                headers: {
+                    Accept: "application/json",
+                    // "Content-Type": "application/json;charset=UTF-8",
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+            })
+            createTaskBtnRef.value.disabled = true;
+            createTaskBtnRef.value.innerText = 'Loading...'
+            
+            inputTask.value = '';
+            tasks.value.push(response.data);
+            isEdit.value.push({taskId: response.data.id, status: false});
+            createTaskBtnRef.value.disabled = false;
+            createTaskBtnRef.value.innerText = 'Create Task';
+        } catch (error) {
+            Toastify({
+                text: "Task must has its content !",
+                duration: 3000,
+                destination: "#",
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "#EC6A71",
+                },
+                onClick: function(){} // Callback after click
+            }).showToast();
+        }
+    }
+
     
 }
 
@@ -328,6 +371,7 @@ const getTasks = async() => {
 }
 
 const deleteTask = async (taskId) => {
+    console.log(taskId);
     await axios.delete(`http://localhost:3000/tasks/${taskId}`, {withCredentials: true});
     tasks.value = tasks.value.filter(item => item.id !== taskId);
     console.log(tasks.value);
@@ -397,19 +441,7 @@ const addComment = async(task) => {
         buttonCommentElement.classList.toggle('hover:bg-slate-100');
         task.comments.unshift(response.data)
     } catch (error) {
-         Toastify({
-            text: "Comment must has its content !",
-            duration: 3000,
-            destination: "#",
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "#EC6A71",
-            },
-            onClick: function(){} // Callback after click
-        }).showToast();
+        displayToast('Comment must has its content!', '#EC6A71');
     }
 }
 

@@ -24,6 +24,11 @@ bootstrap();
     update created time in main page  ------ (Done)
     time ago in comment ------ (Done)
  *  unique username validate ------ (Done)
+    Max 5 images ------ (Done)
+    create task with images ------ (Done)
+    task with carousel of images ------ (Done)
+    edit task with images drag drop
+    validate images size
     User page
     Search User
     View 1 task

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { Image } from 'src/images/entities/image.entity';
 import { Like } from 'src/likes/entities/like.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Not, Repository } from 'typeorm';
@@ -14,6 +15,7 @@ export class TasksService {
     @InjectRepository(Task) private tasksRepository: Repository<Task>,
     @InjectRepository(Comment) private commentsRepository: Repository<Comment>,
     @InjectRepository(Like) private likesRepository: Repository<Like>,
+    @InjectRepository(Image) private imagesRepository: Repository<Image>,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
@@ -46,7 +48,8 @@ export class TasksService {
       where: {id: newTask.id},
       relations: {user: {likes: true}, 
                   comments: {user: true}, 
-                  likes: {user: true}
+                  likes: {user: true},
+                  images: true
                 },
     })
   }
@@ -55,7 +58,10 @@ export class TasksService {
     return this.tasksRepository.find({
       relations: {user: {likes: true}, 
                   comments: {user: true}, 
-                  likes: {user: true}},
+                  likes: {user: true},
+                  images: true
+                },
+
     })
   }
 
@@ -64,7 +70,8 @@ export class TasksService {
       where: {id: id},
       relations: {user: {likes: true}, 
                   comments: {user: true}, 
-                  likes: {user: true}
+                  likes: {user: true},
+                  images: true
               },
     });
 
@@ -89,6 +96,7 @@ export class TasksService {
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
     this.commentsRepository.delete({task: task});
     this.likesRepository.delete({task: task});
+    this.imagesRepository.delete({task: task});
     this.tasksRepository.delete({id: taskId});
   }
 
