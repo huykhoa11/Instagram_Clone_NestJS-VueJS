@@ -23,6 +23,11 @@ const routes = [
     component: () => import('../components/DashBoard.vue')
   },
   {
+    path: '/edit-current-user',
+    name: 'EditCurrentUser',
+    component: () => import('../components/EditUser/EditUser.vue')
+  },
+  {
     path: '/user/:id',
     name: 'UserPage',
     component: () => import('../components/UserPage.vue')

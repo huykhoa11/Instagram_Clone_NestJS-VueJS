@@ -27,6 +27,7 @@ bootstrap();
     Max 5 images ------ (Done)
     create task with images ------ (Done)
     task with carousel of images ------ (Done)
+    Setting user page 
     edit task with images drag drop
     validate images size
     User page

@@ -1,6 +1,7 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './dto/getUserDecorator';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
@@ -16,6 +17,7 @@ export class UsersController {
 
     @Get('/currentuser')
     async getCurrentUser(@GetUser() user: User) {
+        // console.log(user);
         return user;
     }
 
@@ -31,6 +33,14 @@ export class UsersController {
         @Param('id', ParseIntPipe) id: number) 
     {
         return this.usersService.findSpecificUser(id);
+    }
+
+    @Patch(':id')
+    async editCurrentUser(
+        @Body() updateUserDto: UpdateUserDto,
+        @GetUser() user: User
+    ) {
+        return this.usersService.editCurrentUser(updateUserDto);
     }
 
 

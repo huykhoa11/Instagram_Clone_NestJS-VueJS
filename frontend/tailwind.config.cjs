@@ -4,7 +4,11 @@ module.exports = {
     "./public/index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",],
   theme: {
-    extend: {},
+    extend: {
+      minWidth: {
+        '24': '6rem',
+      },
+    },
   },
   plugins: [],
 }

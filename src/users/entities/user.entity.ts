@@ -3,7 +3,7 @@ import { Exclude } from "class-transformer";
 import { Task } from "src/tasks/entities/task.entity";
 import { Comment } from "src/comments/entities/comment.entity";
 import { Like } from "src/likes/entities/like.entity";
-import { IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 import moment from "moment";
 import { Image } from "src/images/entities/image.entity";
 
@@ -11,6 +11,22 @@ import { Image } from "src/images/entities/image.entity";
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ default: 'logo.png' })
+    @IsString()
+    avatar: string;
+
+    @Column()
+    @IsString()
+    name: string;
+
+    @Column()
+    @IsString()
+    bio: string;
+
+    @Column()
+    @IsString()
+    email: string;
 
     @Column({unique: true,})
     @IsNotEmpty()
