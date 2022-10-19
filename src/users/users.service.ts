@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { VerifyPassword } from './dto/verify-password.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -31,8 +33,29 @@ export class UsersService {
         })
     }
 
-    async editCurrentUser(updateUserDto: UpdateUserDto) {
+    async editCurrentUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
+        const {name, bio, email} = updateUserDto;
 
+        if(name !== '') {user.name = name;} 
+        if(bio !== '')  {user.bio = bio;} 
+        if(email !== ''){user.email = email;} 
+        await this.usersRepository.save(user);
+
+        return user;
+    }
+
+    async editPassword(verifyPassword: VerifyPassword, user: User) {
+        const {password} = verifyPassword;
+
+        if(user && (await bcrypt.compare(password, user.password))) {
+            console.log('compare password for edit')
+            user.password = password;
+            await this.usersRepository.save(user);
+        
+            return user;
+        } else {
+            throw new UnauthorizedException('edit password failed ha ha ha ha')
+        }
     }
 
 }

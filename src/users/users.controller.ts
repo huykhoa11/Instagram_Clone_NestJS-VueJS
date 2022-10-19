@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, UseGuards } from '@n
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './dto/getUserDecorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { VerifyPassword } from './dto/verify-password.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
@@ -38,10 +39,18 @@ export class UsersController {
     @Patch(':id')
     async editCurrentUser(
         @Body() updateUserDto: UpdateUserDto,
+        @Param('id', ParseIntPipe) userId: number,
         @GetUser() user: User
     ) {
-        return this.usersService.editCurrentUser(updateUserDto);
+        return this.usersService.editCurrentUser(updateUserDto, user);
     }
 
-
+    @Patch('/edit-password/:id')
+    async editPassword(
+        @Body() verifyPassword: VerifyPassword,
+        @Param('id', ParseIntPipe) userId: number,
+        @GetUser() user: User
+    ) {
+        return this.usersService.editPassword(verifyPassword, user);
+    }
 }
