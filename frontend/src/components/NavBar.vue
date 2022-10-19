@@ -4,7 +4,6 @@
         <div class="flex space-x-3">
           <router-link to="/dashboard" class=" text-pink-300 hover:text-white">HOME</router-link>
           <p class=" text-pink-300">Hello {{ currentUser.username }}</p>
-          <router-link to="/edit-current-user" class=" text-pink-300 hover:text-white">Edit user</router-link>
         </div>
         <div class="">
           <button id="signOutBtn" @click="signOut()" class=" text-pink-300 hover:text-gray-50 hover:bg-pink-300 cursor-pointer">Sign Out</button>
