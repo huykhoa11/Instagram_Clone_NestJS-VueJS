@@ -1,6 +1,6 @@
 <template>
     <nav>
-      <div v-if="currentUser" class="drop-shadow-sm bg-zinc-700 flex justify-between font-semibold">
+      <div v-if="currentUser" class="drop-shadow-sm h-14 bg-zinc-700 flex justify-between items-center font-semibold">
         <div class="flex space-x-3">
           <router-link to="/dashboard" class=" text-pink-300 hover:text-white">HOME</router-link>
           <p class=" text-pink-300">Hello {{ currentUser.username }}</p>

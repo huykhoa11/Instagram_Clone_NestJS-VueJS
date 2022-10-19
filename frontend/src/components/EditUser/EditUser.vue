@@ -12,7 +12,7 @@
                         Edit infomations
                     </button>
                     <button @click="changeTab('EditPassword')"
-                            class="btnList hover:bg-gray-100 hover:border-l-2 hover:border-gray-400 px-3 py-3">
+                            class="btnList hover:bg-gray-100 hover:border-l-2 hover:border-gray-300 px-3 py-3">
                         Change password
                     </button>
                     <input type="radio" ref="inputEditBasicInfoRef" 
@@ -52,7 +52,7 @@ const changeTab = (tab) => {
         btn.classList.toggle('border-black');
         btn.classList.toggle('hover:bg-gray-100');
         btn.classList.toggle('hover:border-l-2');
-        btn.classList.toggle('hover:border-gray-400');
+        btn.classList.toggle('hover:border-gray-300');
     })
 
     if(tab === 'EditBasicInfo') { inputEditBasicInfoRef.value.click(); }
