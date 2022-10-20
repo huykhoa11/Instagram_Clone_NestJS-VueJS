@@ -424,7 +424,6 @@ const editTask = async(taskId) => {
     try {
         isEditting.value = true;
         const editInputElement = document.getElementById(`editInput${taskId}`);
-    
         const data = {content: editInputElement.value}
         await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
         const task = tasks.value.find(element => element.id === taskId);
@@ -434,19 +433,7 @@ const editTask = async(taskId) => {
         console.log(isEdit.value.find(ele => ele.taskId === task.id).status);
         editInputElement.value = '';
     } catch (error) {
-        Toastify({
-            text: "Task must has its content !",
-            duration: 3000,
-            destination: "#",
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "#EC6A71",
-            },
-            onClick: function(){} // Callback after click
-        }).showToast();
+        displayToast("Task must has its content !", "#EC6A71")
     }
 }
 
@@ -494,14 +481,6 @@ const deleteComment = async(commentId, task) => {
     // arr = arr.filter(item => item !== value)
 }
 
-// const getCmtsFromOneTask = async(taskId) => {
-//     const response = await axios.get(
-//         `http://localhost:3000/tasks/${taskId}/comments`, 
-//         {withCredentials: true}
-//     );
-//     commentsOfOneTask.value = response.data;
-// }
-
 
 // Likes
 const likeClick = async(task) => {
@@ -542,17 +521,7 @@ const likeClick = async(task) => {
 }
 
 onMounted( async() => {
-    // Dropzone.options.myDropzone = {
-    //     // Configuration options go here
-    //     paramName: "file", // The name that will be used to transfer the file
-    //     maxFilesize: 2, // MB
-    //     accept: function(file, done) {
-    //     if (file.name == "justinbieber.jpg") {
-    //         done("Naha, you don't.");
-    //     }
-    //     else { done(); }
-    //     }
-    // };
+
 
     try {
         // const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});
