@@ -43,6 +43,14 @@ export class TasksService {
     newTask.user = user;
 
     await this.tasksRepository.save(newTask);
+
+    // const returnImages = [];
+    // files.forEach(async(file) => {
+    //   const imgObj = {
+    //     name: file.filename,
+    //   }
+    //   returnImages.push(imgObj);
+    // })
   
     // return newTask;
     return this.tasksRepository.findOne({

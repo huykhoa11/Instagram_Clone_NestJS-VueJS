@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateImageDto } from 'src/tasks/dto/create-image.dto';
 import { Task } from 'src/tasks/entities/task.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -17,8 +18,8 @@ export class ImagesService {
         const task = await this.tasksRepository.findOne({where: {id: taskId}});
         const returnImages = [];
         files.forEach(async(file) => {
-            const newImage = this.imagesRepository.create();
-            newImage.name = file.filename;
+            const newImage = this.imagesRepository.create({name: file.filename});
+            // newImage.name = file.filename;
             newImage.createdAt = `${Date.now()}`;
             newImage.updatedAt = `${Date.now()}`;
             newImage.user = user;

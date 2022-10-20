@@ -39,15 +39,18 @@
 
 
                 <!-- drag & drop images -->
-                <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop" class=" w-full h-28 mt-10 pt-2 border-t-2">
-                    <p class="drop-zone__prompt text-gray-400">Drop file here or click to upload</p>
-                    <input type="file" name="myFile" class=" hidden" id="dropzone-input" multiple>
+                <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop"
+                    class=" relative w-full h-28 mt-10 pt-2 border-t-2 hover:cursor-pointer hover:bg-gray-100 hover:border-emerald-500">
+                    <p class="drop-zone__prompt text-gray-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        Drop file here or click to upload
+                    </p>
+                    <input type="file" name="myFile" class=" hidden" id="dropzone-input" @change="dropzoneInputChange" multiple>
                     <div class=" flex space-x-2">
-                        <div v-for="file in previewDropFile" :key="file" class=" h-24 w-1/5 group relative">
+                        <div v-for="file in previewDropFile" :key="file" class=" h-24 w-1/5 group relative z-10">
                             <img :src="file.source" alt="Red dot" class=" h-full w-full group-hover:blur-sm peer relative" >
                             <div class="hidden peer-hover:flex peer-hover:flex-col hover:flex hover:flex-col justify-center items-center h-full w-full space-y-3 absolute text-[12px] top-0">
                                 <i class="fa-solid fa-circle-xmark absolute top-0 right-0 text-lg
-                                         text-zinc-50 text-opacity-50 hover:text-opacity-100 hover:cursor-pointer" @click="removeImage(file)"></i>
+                                         text-zinc-50 text-opacity-50 hover:text-opacity-100 hover:cursor-pointer" @click="removeImage($event, file)"></i>
                                 <p class=" bg-zinc-50 bg-opacity-50 flex justify-center items-center truncate w-1/2 cursor-default rounded-full">{{ file.name }}</p>
                                 <p class=" bg-zinc-50 bg-opacity-50 flex justify-center items-center truncate w-1/2 cursor-default rounded-full">{{ Math.round(file.size/1024) }} KB</p>
                             </div>
@@ -99,7 +102,7 @@
                         
                         <!-- splide images -->
                         <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
-                            <SplideSlide v-for="image in task.images" :key="image" class=" w-full h-[360px]">
+                            <SplideSlide v-for="image in task.images" :key="image.name" class=" w-full h-[360px]">
                                 <img :src="require('./../assets/' + image.name)" alt="Sample 1" class=" w-full h-full">
                             </SplideSlide>
                         </Splide>
@@ -201,13 +204,58 @@ const uploadFile = ref(new FormData());       //For send data to backend
 const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
 
 const dropZoneElement = ref(null);
+
+const dropzoneInputChange = (e) => {
+    e.preventDefault();
+    console.log(e.target.files);
+
+    // First time - remove the prompt
+	if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
+		dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
+	}
+
+    if ((previewDropFile.value.length+e.target.files.length) <= 5) {
+        let formData = new FormData();
+        
+        for(let i=0; i<e.target.files.length; i++ ) {
+            console.log(e.target.files[i]);
+            let file = e.target.files[i];
+            uploadFile.value.append('image', file);
+
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
+                    previewDropFile.value.push(obj);
+                };
+            }
+            else {  //only image can drop in
+                displayToast('Only images can be accepted !', '#EC6A71')
+            }
+            formData.append('image', file);
+            // uploadFile.value.append('image', file);
+        }
+    } else {
+        displayToast('Cant upload over 5 images', '#EC6A71');
+    }
+
+    console.log(dropZoneElement.value);
+    console.log(previewDropFile.value);
+    // dropZoneElement.value.classList.remove("bg-gray-100");
+    // dropZoneElement.value.classList.remove("border-emerald-500");
+}
+
+const dropZoneElementClick = (e) => {
+}
+
 const dropZoneElementDrop = (e) => {
     e.preventDefault();
     console.log(e.dataTransfer.files);
 
     // First time - remove the prompt
 	if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
-		dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
+		dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "none";
 	}
 
     if ((previewDropFile.value.length+e.dataTransfer.files.length) <= 5) {
@@ -290,9 +338,13 @@ const onSubmit = async() => {
     console.log('dmm');
 }
 
-const removeImage = (file) => {
+const removeImage = (e, file) => {
+    e.stopPropagation();
     const index = previewDropFile.value.indexOf(file);
     previewDropFile.value.splice(index, 1);
+    if(previewDropFile.value.length === 0) {
+        dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "block";
+    }
 }
 
 
@@ -335,14 +387,14 @@ const createTask = async() => {
                 withCredentials: true,
             })
             uploadFile.value = new FormData();
+            location.reload();
             createTaskBtnRef.value.disabled = true;
             createTaskBtnRef.value.innerText = 'Loading...'
             inputTask.value = '';
 
-            // const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-            // tasks.value = res.data;
+            // const res = await axios.get(`http://localhost:3000/tasks/${response.data.id}`, {withCredentials: true});
 
-            tasks.value.push(response.data);
+            // tasks.value.push(res.data);
             console.log(tasks.value);
             isEdit.value.push({taskId: response.data.id, status: false});
             createTaskBtnRef.value.disabled = false;
@@ -514,35 +566,11 @@ onMounted( async() => {
         const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
         console.log(response.data);
         tasks.value = response.data;
+        tasks.value.reverse();
 
         if(tasks.value.length !== 0) {
             tasks.value.forEach(async(ele) => {
                 isEdit.value.push({taskId: ele.id, status: false});
-
-                // userOfTasks.value[ele.id] = ele.user;
-
-                // comments.value[ele.id] = ele.comments;
-    
-                // let response;
-                // response = await axios.get(
-                //     `http://localhost:3000/tasks/${ele.id}/comments`, 
-                //     {withCredentials: true}
-                // );
-                // comments.value[ele.id] = response.data;
-    
-                // response = await axios.get(
-                //     `http://localhost:3000/tasks/${ele.id}/likes`, 
-                //     {withCredentials: true}
-                // );
-                // likes.value[ele.id] = response.data;
-                // isEdit.value[ele.id] = false;
-    
-                // response = await axios.get(
-                //     `http://localhost:3000/tasks/${ele.id}/countLikesOfTask`, 
-                //     {withCredentials: true}
-                // );
-                // countLikes.value[ele.id] = response.data;
-
             })
         }
     } catch (error) {
@@ -582,6 +610,9 @@ onMounted( async() => {
         dropZoneElement.classList.remove('border-emerald-500');
     });
 
+    dropZoneElement.addEventListener('click', (e) => {
+        inputElement.click();
+    })
 })
 
 </script>

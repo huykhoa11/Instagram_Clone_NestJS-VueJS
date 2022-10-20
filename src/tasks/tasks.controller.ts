@@ -64,7 +64,7 @@ export class TasksController {
       const newTask = await this.tasksService.create(createTaskDto, files, user);
       const createImages = await this.imagesService.create(files, user, newTask.id);
 
-      // this.imagesService.create(files, user)
+      newTask.images = createImages;
 
       const response = [];
       const typeOf = value => Object.prototype.toString.call(value);
