@@ -36,13 +36,14 @@ export class TasksService {
   //   })
   // }
 
-  async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto, files: Array<Express.Multer.File>, user: User): Promise<Task> {
     const newTask = this.tasksRepository.create(createTaskDto);
     newTask.createdAt = new Date().toISOString();
     newTask.updatedAt = new Date().toISOString();
     newTask.user = user;
-    await this.tasksRepository.save(newTask);
 
+    await this.tasksRepository.save(newTask);
+  
     // return newTask;
     return this.tasksRepository.findOne({
       where: {id: newTask.id},
@@ -71,7 +72,7 @@ export class TasksService {
       relations: {user: {likes: true}, 
                   comments: {user: true}, 
                   likes: {user: true},
-                  images: true
+                  images: true,
               },
     });
 
@@ -94,10 +95,10 @@ export class TasksService {
 
   async remove(taskId: number) {
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
-    this.commentsRepository.delete({task: task});
-    this.likesRepository.delete({task: task});
-    this.imagesRepository.delete({task: task});
-    this.tasksRepository.delete({id: taskId});
+    await this.commentsRepository.delete({task: task});
+    await this.likesRepository.delete({task: task});
+    await this.imagesRepository.delete({task: task});
+    await this.tasksRepository.delete({id: taskId});
   }
 
   // async findOtherUsers(userId: number): Promise<User[]> {

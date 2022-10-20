@@ -31,7 +31,7 @@ export class Task {
     likes: Like[]
 
     @OneToMany(() => Image, (image) =>image.task)
-    @IsNotEmpty()
+    // @IsNotEmpty()
     images: Image[]
 
     @ManyToOne(() => User, (user) => user.tasks)

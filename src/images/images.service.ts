@@ -13,6 +13,7 @@ export class ImagesService {
     ) {}
 
     async create(files: Array<Express.Multer.File>, user: User, taskId: number) {
+        console.log('INSIDE CREATE METHOD OF IMAGES SERVICE');
         const task = await this.tasksRepository.findOne({where: {id: taskId}});
         const returnImages = [];
         files.forEach(async(file) => {
@@ -22,10 +23,17 @@ export class ImagesService {
             newImage.updatedAt = `${Date.now()}`;
             newImage.user = user;
             newImage.task = task;
+            const imgObj = {
+                id: newImage.id,
+                name: newImage.name,
+                createdAt: newImage.createdAt,
+                updatedAt: newImage.updatedAt,
+            }
+            returnImages.push(imgObj);
             await this.imagesRepository.save(newImage);
-            returnImages.push(newImage);
         })
 
-      return returnImages;
+        console.log(returnImages);
+        return returnImages;
     }
 }

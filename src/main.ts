@@ -27,12 +27,12 @@ bootstrap();
     Max 5 images ------ (Done)
     create task with images ------ (Done)
     task with carousel of images ------ (Done)
-    Setting user page ------ (Done)
+    Edit user info page ------ (Done)
+    User page ------ (Done)
+    View 1 task
     edit task with images drag drop
     validate images size
-    User page
     Search User
-    View 1 task
     Regex username, username cant have space
  */
 

@@ -36,7 +36,7 @@ export class AuthController {
     @Query('rememberMe', ParseBoolPipe) isRememberMeQuery: boolean,
     @Res({passthrough: true}) res: Response,
   ){
-
+    const {username, password} = authCredentialsDto;
     if(isRememberMeQuery === true) {
       const {accessToken, refreshToken} = await this.authService.signIn(authCredentialsDto, 86400);
       const secretData = {accessToken, refreshToken};
@@ -49,7 +49,7 @@ export class AuthController {
       const secretData = {accessToken, refreshToken};
       res.cookie('auth-cookie-dmm', secretData, {httpOnly: true});
 
-      return {accessToken, refreshToken};
+      return {username, accessToken, refreshToken};
     }
   }
 

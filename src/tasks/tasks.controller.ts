@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, UseInterceptors, UploadedFile, UploadedFiles, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, UseInterceptors, UploadedFile, UploadedFiles, Request, Query, Req } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -47,8 +47,8 @@ export class TasksController {
       }
     }))
   async create(
-      // @Body() createTaskDto: CreateTaskDto,
-      @Body() createTaskDto: any,
+      @Body() createTaskDto: CreateTaskDto,
+      // @Body() createTaskDto: any,
       @GetUser() user: User,
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
@@ -59,9 +59,9 @@ export class TasksController {
       console.log()
       console.log(files)
 
-      const {image, content} = createTaskDto;
-      const contentCreateTaskDto = {content: content};
-      const newTask = await this.tasksService.create(contentCreateTaskDto, user);
+      // const {image, content} = createTaskDto;
+      // const contentCreateTaskDto = {content: content};
+      const newTask = await this.tasksService.create(createTaskDto, files, user);
       const createImages = await this.imagesService.create(files, user, newTask.id);
 
       // this.imagesService.create(files, user)

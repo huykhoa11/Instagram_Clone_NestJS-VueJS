@@ -12,6 +12,12 @@ export class UsersService {
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) {}
 
+    async changeAvatar(user: User, filename: string):Promise<User> {
+        user.avatar = filename;
+        await this.usersRepository.save(user);
+        return user;
+    }
+
     async findAllUsers(): Promise<User[]> {
         return this.usersRepository.find({
             relations: {tasks: true, comments: true, likes: true},

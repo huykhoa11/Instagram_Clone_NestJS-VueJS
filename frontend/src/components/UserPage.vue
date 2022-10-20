@@ -8,11 +8,11 @@
                 <div class="">
                     <div class=" flex items-center h-10 space-x-5">
                         <h3 class=" text-4xl h-full font-thin">{{ user.username }}</h3>
-                        <router-link to="/edit-current-user"
+                        <router-link v-if="user.id === currentUserId" to="/edit-current-user"
                                     class=" text-sm px-2 py-1 font-semibold border border-gray-300 rounded-sm hover:text-gray-300 hover:bg-black duration-100">
                             Edit user
                         </router-link>
-                        
+                        <button v-else class="text-white bg-blue-400 px-2 py-1 rounded-sm">Follow</button>
                     </div>
 
                     <div class=" flex space-x-10 mt-7">
@@ -62,17 +62,21 @@ import axios from "axios";
 
 const router = useRouter();
 const user = ref(null);
+const currentUserId = ref(null);
 
 // console.log(router.currentRoute.value.params.id);
 
 onMounted( async() => {
     // const userId = parseInt(router.currentRoute.value.params.id);
     const userId = router.currentRoute.value.params.id;
-    // console.log(router);
+    currentUserId.value = parseInt(router.currentRoute.value.query.currentUserId);
 
     try {
         const response = await axios.get('http://localhost:3000/users/' + userId, {withCredentials: true});
         user.value = response.data;
+        console.log(typeof user.value.id);
+        console.log(typeof currentUserId.value);
+        console.log('user.id', user.value.id, ' currentUserId', currentUserId.value);
 
     } catch (error) {
         console.log(error);

@@ -3,7 +3,13 @@
         <div v-if="currentUser" class=" space-y-4 py-5">
             <div class=" flex items-center space-x-5 ml-16">
                 <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14">
-                <p class=" text-lg font-semibold">{{ currentUser.username }}</p>
+                <div class="">
+                    <p class=" text-lg font-semibold">{{ currentUser.username }}</p>
+                    <input type="file" @change="inputChangeAvatar" class=" hidden" ref="changeAvatarInput">
+                    <button @click="btnChangeAvatar()" class=" text-sm text-sky-500 hover:underline hover:decoration-solid">
+                        Change avatar
+                    </button>
+                </div>
             </div>
             
             <div class=" flex items-center h-9">
@@ -46,26 +52,38 @@ import { onMounted, ref } from 'vue';
 import axios from "axios";
 import { displayToast } from './../../composables/DisplayToast.js'
 
+const successColor = '#5CB85C';
+const dangerColor = '#EC6A71';
+
 const currentUser = ref(null);
 const nameInput = ref('');
 const bioInput = ref('');
 const emailInput = ref('');
+const changeAvatarInput = ref(null);
 
-// const displayToast = (text, color) => {
-//     Toastify({
-//         text: text,
-//         duration: 3000,
-//         destination: "#",
-//         close: true,
-//         gravity: "top", // `top` or `bottom`
-//         position: "right", // `left`, `center` or `right`
-//         stopOnFocus: true, // Prevents dismissing of toast on hover
-//         style: {
-//             background: color,
-//         },
-//         onClick: function(){} // Callback after click
-//     }).showToast();
-// }
+const btnChangeAvatar = (e) => {
+    changeAvatarInput.value.click();
+}
+
+const inputChangeAvatar = async (e) => {
+    console.log(e.target.files[0].name);
+    let formData = new FormData();
+    formData.append('image', e.target.files[0]);
+    try {        
+        const response = await axios
+                .patch('http://localhost:3000/users/change-avatar', formData, {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data",
+                    },
+                    withCredentials: true,
+                });
+        displayToast('New avatar uploaded successfully', successColor)
+        currentUser.value = response.data;
+    } catch (error) {
+        displayToast('Upload failed', dangerColor);
+    }
+}
 
 const update = async () => {
     const data = {name: nameInput.value, bio: bioInput.value, email: emailInput.value};

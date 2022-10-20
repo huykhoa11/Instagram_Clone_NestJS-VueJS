@@ -67,13 +67,17 @@
                 <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
                     <div class="">
                         <div class="px-2 flex justify-between items-center">
-                            <div>
-                                <p class=" font-semibold text-pink-500">
-                                    <router-link :to="'/user/' + task.user.id" class=" hover:underline hover:decoration-solid">
-                                        {{ task.user.username }}
-                                    </router-link>
-                                </p>
-                                <p class=" text-xs">{{ task.updatedAt.split('T')[0] }}</p>
+                            <div class=" flex items-center space-x-2">
+                                <img :src="require('./../assets/' + task.user.avatar)" alt="" class=" w-8 h-8 rounded-full">
+                                <div>
+                                    <p class=" font-semibold text-pink-500">
+                                        <router-link :to="'/user/' +task.user.id+ '?currentUserId=' +currentUser.id" 
+                                                    class=" hover:underline hover:decoration-solid">
+                                            {{ task.user.username }}
+                                        </router-link>
+                                    </p>
+                                    <p class=" text-xs">{{ task.updatedAt.split('T')[0] }}</p>
+                                </div>
                             </div>
                             <!-- <div @sendToDashboard="(fetchUserData) => {
                                 currentUser = fetchUserData.user;  
@@ -95,7 +99,7 @@
                         
                         <!-- splide images -->
                         <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
-                            <SplideSlide v-for="image in task.images" :key="image" class=" w-full h-full">
+                            <SplideSlide v-for="image in task.images" :key="image" class=" w-full h-[360px]">
                                 <img :src="require('./../assets/' + image.name)" alt="Sample 1" class=" w-full h-full">
                             </SplideSlide>
                         </Splide>
@@ -116,11 +120,18 @@
                     <hr>
                     <ul class=" overflow-auto mt-2 h-28">
                         <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
-                            <p class="text-sm">
-                                <span class=" font-semibold">{{ comment.user.username }}: </span>  
-                                {{comment.content}}  
-                                <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
-                            </p>
+                            <div class="text-sm flex items-center space-x-2">
+                                <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
+                                <div>
+                                    <!-- <span class=" font-semibold">{{ comment.user.username }}: </span> -->
+                                    <router-link :to="'/user/' +comment.user.id+ '?currentUserId=' +currentUser.id" 
+                                                    class=" font-semibold hover:underline hover:decoration-solid">
+                                        {{ comment.user.username }}
+                                    </router-link>
+                                    {{comment.content}}  
+                                    <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
+                                </div>
+                            </div>
                             <i v-if="currentUser.id === comment.user.id" @click="deleteComment(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
                                 hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
                         </li>
@@ -160,7 +171,7 @@ import { reactive, ref, onMounted, computed  } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
-// import Dropzone from "dropzone";
+import { displayToast } from './../composables/DisplayToast.js'
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -181,28 +192,12 @@ const inputTask = ref('');
 const isEdit = ref([]);
 const isEditting = ref(false);
 
-const displayToast = (text, bgColor) => {
-    Toastify({
-        text: text,
-        duration: 3000,
-        destination: "#",
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-            background: bgColor,
-        },
-        onClick: function(){} // Callback after click
-    }).showToast();
-}
-
 // const commentsOfOneTask = ref(null);
 
 const createTaskBtnRef = ref(null);
 
 // test method
-const uploadFile = ref(null);       //For send data to backend
+const uploadFile = ref(new FormData());       //For send data to backend
 const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
 
 const dropZoneElement = ref(null);
@@ -217,7 +212,7 @@ const dropZoneElementDrop = (e) => {
 
     if ((previewDropFile.value.length+e.dataTransfer.files.length) <= 5) {
         let formData = new FormData();
-        uploadFile.value = new FormData();
+        
         for(let i=0; i<e.dataTransfer.files.length; i++ ) {
             console.log(e.dataTransfer.files[i]);
             let file = e.dataTransfer.files[i];
@@ -240,8 +235,6 @@ const dropZoneElementDrop = (e) => {
     } else {
         displayToast('Cant upload over 5 images', '#EC6A71');
     }
-
-    
 
     console.log(dropZoneElement.value);
     console.log(previewDropFile.value);
@@ -321,7 +314,12 @@ const createTask = async() => {
     //     console.log(value);
     // }
     if(previewDropFile.value.length === 0) {
-        displayToast('Task must has image', '#EC6A71')
+        displayToast('Task must has image', '#EC6A71');
+        console.log(previewDropFile.value);
+    }
+    else if(inputTask.value === '') {
+        displayToast('Task muts has its content', '#EC6A71');
+        console.log(previewDropFile.value);
     }
     else {
         try {
@@ -336,28 +334,21 @@ const createTask = async() => {
                 },
                 withCredentials: true,
             })
+            uploadFile.value = new FormData();
             createTaskBtnRef.value.disabled = true;
             createTaskBtnRef.value.innerText = 'Loading...'
-            
             inputTask.value = '';
+
+            // const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
+            // tasks.value = res.data;
+
             tasks.value.push(response.data);
+            console.log(tasks.value);
             isEdit.value.push({taskId: response.data.id, status: false});
             createTaskBtnRef.value.disabled = false;
             createTaskBtnRef.value.innerText = 'Create Task';
         } catch (error) {
-            Toastify({
-                text: "Task must has its content !",
-                duration: 3000,
-                destination: "#",
-                close: true,
-                gravity: "top", // `top` or `bottom`
-                position: "right", // `left`, `center` or `right`
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                    background: "#EC6A71",
-                },
-                onClick: function(){} // Callback after click
-            }).showToast();
+            displayToast("Something went wrong! Please check again", "#EC6A71");
         }
     }
 
@@ -597,5 +588,5 @@ onMounted( async() => {
 
 
 <style scoped>
-@import 'https://unpkg.com/dropzone@5/dist/min/dropzone.min.css';
+/* @import 'https://unpkg.com/dropzone@5/dist/min/dropzone.min.css'; */
 </style>

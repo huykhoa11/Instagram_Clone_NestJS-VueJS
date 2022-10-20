@@ -35,7 +35,7 @@ import { UsersService } from './users.service';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UsersService],
+  providers: [AuthService, JwtStrategy],
   exports: [TypeOrmModule, JwtStrategy]
 })
 export class AuthModule {}
