@@ -28,6 +28,7 @@ export class TasksController {
     FilesInterceptor('image', 5, {
       storage: diskStorage({
         destination: './frontend/src/assets',
+        // destination: './frontend/uploads',
         filename: (req, file, callback) => {
           const name = file.originalname.split('.')[0];
           const fileExtName = extname(file.originalname);

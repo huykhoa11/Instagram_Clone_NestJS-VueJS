@@ -11,24 +11,7 @@
         </div>
     </div>
     <section v-else class=" bg-gray-50 pt-10">
-        <!-- <div>
-            <div>
-                <form enctype="multipart/form-data" @submit.prevent="onSubmit" class="upload">
-                    <input type="file" id="input-file" name="uploadFile" required multiple @change="loge">
-                    <button>Submit</button>
-                </form>
-            </div>
-            
-            <div>
-                <div v-for="file in testDropName" :key="file">
-                    <img :src="require('./../assets/' + file.filename)" class=" h-36 w-48" alt="">
-                </div>
-            </div>
-            <img :src="require('./../assets/' + imgName)" class=" h-36 w-48" alt="">
-            <img src="./../assets/MVCmodel-c81010.jpg" class=" h-36 w-48" alt="">
-        </div> -->
 
-        
         <div class="w-screen flex justify-center mb-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
@@ -72,6 +55,7 @@
                         <div class="px-2 flex justify-between items-center">
                             <div class=" flex items-center space-x-2">
                                 <img :src="require('./../assets/' + task.user.avatar)" alt="" class=" w-8 h-8 rounded-full">
+                                <!-- <img :src="`./../uploads/${task.user.avatar}`" alt="" class=" w-8 h-8 rounded-full"> -->
                                 <div>
                                     <p class=" font-semibold text-pink-500">
                                         <router-link :to="'/user/' +task.user.id+ '?currentUserId=' +currentUser.id" 
@@ -91,7 +75,7 @@
                                 <div v-if="currentUser.username === task.user.username">
                                     <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
                                         <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
-                                            <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus(task.id, 'edit')">Edit</div>
+                                            <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus($event, task.id, 'edit')">Edit</div>
                                             <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTask(task.id)">Delete</div>
                                         </div>
                                     </i>
@@ -102,13 +86,15 @@
                         
                         <!-- splide images -->
                         <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
-                            <SplideSlide v-for="image in task.images" :key="image.name" class=" w-full h-[360px]">
-                                <img :src="require('./../assets/' + image.name)" alt="Sample 1" class=" w-full h-full">
+                            <SplideSlide v-for="image in Object.assign({}, task.images)" :key="image.id" class=" w-full h-[360px]">
+                                <!-- <img :src="`./../uploads/${image.name}`" alt="sample-1" class=" w-full h-full"> -->
+                                <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
+                                <!-- <img src="./../assets/XAlonso2008-28d3.jpg" alt='' class=" w-full h-full"> -->
                             </SplideSlide>
                         </Splide>
 
                         <!-- task content -->
-                        <div class="flex h-20 relative" v-if="isEdit.find(ele => ele.taskId === task.id).status === true">
+                        <div class="flex h-20 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
                             <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
                                     class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
                             <!-- <div class="" v-if="isEditting === false"> -->
@@ -117,7 +103,7 @@
                             <!-- </div> -->
                             <!-- <div class="" v-else>Loading...</div> -->
                         </div>
-                        <p v-else class=" h-20 pl-2">{{ task.content }}</p>
+                        <p v-show="isEdit.find(ele => ele.taskId === task.id).status === false" class=" h-20 pl-2">{{ task.content }}</p>
 
                     </div>
                     <hr>
@@ -125,6 +111,7 @@
                         <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
                             <div class="text-sm flex items-center space-x-2">
                                 <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
+                                <!-- <img :src="`./../uploads/${comment.user.avatar}`" alt="" class=" w-5 h-5 rounded-full"> -->
                                 <div>
                                     <!-- <span class=" font-semibold">{{ comment.user.username }}: </span> -->
                                     <router-link :to="'/user/' +comment.user.id+ '?currentUserId=' +currentUser.id" 
@@ -170,7 +157,7 @@
 
 <script setup>
 import SuggestFriends from './SuggestFriends.vue';
-import { reactive, ref, onMounted, computed  } from "vue";
+import { reactive, ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
@@ -179,7 +166,6 @@ import { displayToast } from './../composables/DisplayToast.js'
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
-
 
 const store = useStore();
 const router = useRouter();
@@ -202,7 +188,6 @@ const createTaskBtnRef = ref(null);
 // test method
 const uploadFile = ref(new FormData());       //For send data to backend
 const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
-
 const dropZoneElement = ref(null);
 
 const dropzoneInputChange = (e) => {
@@ -348,17 +333,6 @@ const removeImage = (e, file) => {
 }
 
 
-// Times ago in comment
-const timeAgoComment = (comment) => {
-    const createdAt = parseInt(comment.createdAt) / (1000 * 3600 * 24);
-    const now = Date.now() / (1000 * 3600 * 24);
-    const diff = Math.floor(now - createdAt);
-    if( diff === 0) {return 'Today'}
-    else if( diff === 1) {return '1 day ago'}
-    else if(diff > 30) { return 'over 30 days ago' }
-    else {return `${diff} days ago` }
-}
-
 // Tasks
 const createTask = async() => {
     // uploadFile.value.append('content', inputTask.value)
@@ -387,25 +361,33 @@ const createTask = async() => {
                 withCredentials: true,
             })
             uploadFile.value = new FormData();
-            location.reload();
+            // location.reload();
             createTaskBtnRef.value.disabled = true;
             createTaskBtnRef.value.innerText = 'Loading...'
             inputTask.value = '';
 
-            // const res = await axios.get(`http://localhost:3000/tasks/${response.data.id}`, {withCredentials: true});
-
-            // tasks.value.push(res.data);
+            const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
+            tasks.value = res.data;
+            tasks.value.reverse();
+            // tasks.value.forEach(task => {
+            //     task.images.forEach(image => {
+            //         image.name = `require('./../assets/' + ${image.name})`
+            //     })
+            // })
             console.log(tasks.value);
+            
             isEdit.value.push({taskId: response.data.id, status: false});
             createTaskBtnRef.value.disabled = false;
             createTaskBtnRef.value.innerText = 'Create Task';
         } catch (error) {
-            displayToast("Something went wrong! Please check again", "#EC6A71");
+            displayToast("Something went wrong! Please try again", "#EC6A71");
         }
     }
-
-    
 }
+
+const getImage = (img) => {
+    return img ? require(`./../assets/${img}`) : '';
+} 
 
 const getTasks = async() => {
     const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
@@ -437,10 +419,30 @@ const editTask = async(taskId) => {
     }
 }
 
-const changeIsEditStatus = (taskId, action) => {
-    const isEditNeedModify = isEdit.value.find(ele => ele.taskId === taskId);
-    isEditNeedModify.status = !isEditNeedModify.status;   
+const changeIsEditStatus = (e, taskId, action) => {
+    isEdit.value.forEach(element => {
+        if(element.taskId === taskId) {
+            // e.preventDefault();
+            element.status = !element.status;
+            console.log(document.getElementById(`editInput${taskId}`));
+            console.log(taskId);
+            document.getElementById(`editInput${taskId}`).autofocus = true;
+        }
+        else {element.status = false}
+    })
+    
+    // const isEditNeedModify = isEdit.value.find(ele => ele.taskId === taskId);
+    // isEditNeedModify.status = !isEditNeedModify.status;   
 }
+
+watch(isEdit.value, (newIsEdit) => {
+    isEdit.value.forEach(element => {
+        if(element.status === true) {
+            document.getElementById(`editInput${element.taskId}`).focus();
+        }
+        
+    })
+})
 
 
 // Comments
@@ -481,6 +483,16 @@ const deleteComment = async(commentId, task) => {
     // arr = arr.filter(item => item !== value)
 }
 
+// Times ago in comment
+const timeAgoComment = (comment) => {
+    const createdAt = parseInt(comment.createdAt) / (1000 * 3600 * 24);
+    const now = Date.now() / (1000 * 3600 * 24);
+    const diff = Math.floor(now - createdAt);
+    if( diff === 0) {return 'Today'}
+    else if( diff === 1) {return '1 day ago'}
+    else if(diff > 30) { return 'over 30 days ago' }
+    else {return `${diff} days ago` }
+}
 
 // Likes
 const likeClick = async(task) => {
