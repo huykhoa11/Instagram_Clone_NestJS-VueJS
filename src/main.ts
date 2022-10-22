@@ -32,8 +32,8 @@ bootstrap();
     validate images size ------ (Done)
     Regex username, username cant have space ------ (Done)
     View 1 task
-    edit task with images drag drop
     Search User
+    edit task with images drag drop
  */
 
     /**

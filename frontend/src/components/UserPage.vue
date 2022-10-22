@@ -1,9 +1,9 @@
 <template>
     <div v-if="user" class="w-screen relative flex-row justify-center mt-10">
-        <div class=" w-2/3 absolute left-0 right-0 mx-auto">
+        <div class=" w-3/5 absolute left-0 right-0 mx-auto">
             <div class="flex justify-center items-center space-x-20">
                 <!-- avatar -->
-                <img :src="require('./../assets/' + user.avatar)" alt="" class=" h-36 w-36 rounded-full">
+                <img :src="require('./../assets/' + user.avatar)" alt="" class=" h-36 w-36 border border-gray-100 rounded-full">
 
                 <div class="">
                     <div class=" flex items-center h-10 space-x-5">
@@ -30,8 +30,8 @@
 
 
             <div class=" mt-7 pt-7 border-t-2 border-gray-200 grid grid-cols-3 gap-4">
-                <div v-for="task in user.tasks" :key="task" class=" h-60 hover:cursor-pointer group">
-                    <img :src="require('./../assets/' + task.images[0].name)" alt="" class=" w-full h-full">
+                <div v-for="task in user.tasks" :key="task" class=" h-60 hover:cursor-pointer group" @click="open = true">
+                    <img :src="require('./../assets/' + task.images[0].name)" class=" w-full h-full" alt="" >
                     <div class=" relative hidden -top-full w-full h-full justify-center items-center
                          group-hover:bg-black group-hover:bg-opacity-40 group-hover:flex">
                         <div class=" flex space-x-10 text-white">
@@ -39,6 +39,20 @@
                             <p><i class="fa-solid fa-comment mr-2"></i>{{ computed(() => task.comments.length) }}</p>
                         </div>
                     </div>
+
+                    <Teleport to="body">
+                        <div v-if="open" class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false">
+                            <!-- <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false"> -->
+                                <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open = false"></i>
+                            <!-- </div> -->
+                            <div >
+                                <Task :passData="{task: task}" />
+
+                                <!-- <p>Hello from the modal!</p>-->
+                            </div>
+                        </div>
+                    </Teleport>
+
                 </div>
             </div>
         </div>
@@ -53,6 +67,8 @@
             </svg>
         </div>
     </div>
+
+    
 </template>
 
 <script setup>
@@ -60,9 +76,12 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
 
+import Task from './Task.vue'
+
 const router = useRouter();
 const user = ref(null);
 const currentUserId = ref(null);
+const open = ref(false);
 
 // console.log(router.currentRoute.value.params.id);
 
