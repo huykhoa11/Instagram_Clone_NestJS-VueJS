@@ -72,13 +72,13 @@ const inputFocus = (id) => {
 }
 
 const validateOnBlur = () => {
-  const usernameCondition = username.value === '';
+  const usernameCondition = username.value.length < 4 || password.value.length > 12;
   const passwordCondition = password.value.length < 6 || password.value.length > 12;
 
   if (usernameCondition && passwordCondition) {
     const usernameInputElement = document.getElementById('usernameInput');
     usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username can't be blank";
+    usernameError.value = "Username is invalid";
 
     const passwordInputElement = document.getElementById('passwordInput');
     passwordInputElement.style.border = "solid 1px red";
@@ -87,7 +87,7 @@ const validateOnBlur = () => {
   else if(usernameCondition) {
     const usernameInputElement = document.getElementById('usernameInput');
     usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username can't be blank";
+    usernameError.value = "Username is invalid";
   } 
   else if(passwordCondition) {
     const passwordInputElement = document.getElementById('passwordInput');

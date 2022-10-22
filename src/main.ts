@@ -30,10 +30,10 @@ bootstrap();
     Edit user info page ------ (Done)
     User page ------ (Done)
     validate images size ------ (Done)
+    Regex username, username cant have space ------ (Done)
     View 1 task
     edit task with images drag drop
     Search User
-    Regex username, username cant have space
  */
 
     /**

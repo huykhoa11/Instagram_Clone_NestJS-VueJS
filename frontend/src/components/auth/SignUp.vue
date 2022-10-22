@@ -1,11 +1,12 @@
 <template>
   <section>
     <div class=" relative w-screen h-screen bg-gray-200 ">
-      <div class=" absolute left-0 right-0 top-10 mx-auto w-1/3 h-[600px] rounded-sm border border-gray-100 bg-white p-10">
+      <div class=" absolute left-0 right-0 top-10 mx-auto w-1/3 rounded-sm border border-gray-100 bg-white p-10">
         <header class=" w-full h-1/6 flex items-center pl-2 bg-pink-200 text-3xl mb-5">Sign Up</header>
         <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
         <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2" 
                           v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
+        <p class=" text-xs text-gray-400">(*) Username can't contain white space</p>
         <p class=" h-4 text-red-500">{{ usernameError }}</p>
         <br>
 
@@ -56,7 +57,7 @@ const signUpRef = ref(null);
 const router = useRouter();
 
 const inputChange = () => {
-  if(username.value.length > 0) {
+  if(username.value.length >= 4 && username.value.length <= 12) {
     usernameError.value = '';
   }
   if(password.value.length >= 6 && password.value.length <= 12) {
@@ -79,39 +80,52 @@ const validateOnBlur = () => {
   const confirmPasswordInputElement = document.getElementById('confirmPasswordInput');
 
 
-  const usernameCondition = username.value === '';
+  const usernameConditionBlank = username.value.length < 4 || password.value.length > 12;
+  const usernameConditionContainWhiteSpace = /\s/.test(username.value);
   const passwordCondition = password.value.length < 6 || password.value.length > 12;
   const confirmCondition  = confirmPassword.value === '' || confirmPassword.value !== password.value;  
 
-  if (usernameCondition && passwordCondition && confirmCondition) {
-    usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username can't be blank";
+  if (usernameConditionBlank && passwordCondition && confirmCondition) {
+    setError('username', "Username can't be blank");
+    setError('password', "Password must contains 6-12 characters");
+    setError('confirmPassword', "Must match the previous entry");
+    return false;
+  }
+  else if (usernameConditionContainWhiteSpace) {
+    setError('username', "Username can't contain white space");
+    return false;
+  }
+  else if(usernameConditionBlank) {
+    setError('username', "Username can't be blank");
+    return false;
+  }
+  if(passwordCondition) {
+    setError('password', "Password must contains 6-12 characters");
+    return false;
+  }
+  if(confirmCondition) {
+    setError('confirmPassword', "Must match the previous entry");
+    return false;
+  }
 
-    passwordInputElement.style.border = "solid 1px red";
-    passwordError.value = "Password must contains 6-12 characters";
+  return true;
+  
+}
 
-    confirmPasswordInputElement.style.border = "solid 1px red";
-    confirmPasswordError.value = "Must match the previous entry";
-  }
-  else if(usernameCondition) {
-    usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username can't be blank";
-  } 
-  else if(passwordCondition) {
-    passwordInputElement.style.border = "solid 1px red";
-    passwordError.value = "Password must contains 6-12 characters";
-  }
-  else if(confirmCondition) {
-    confirmPasswordInputElement.style.border = "solid 1px red";
-    confirmPasswordError.value = "Must match the previous entry";
-  }
-  else {
-    return true;
-  }
+const errorElement = {
+  username: usernameError,
+  password: passwordError,
+  confirmPassword: confirmPasswordError,
+}
+
+const setError = (ele, text) => {
+  document.getElementById(`${ele}Input`).style.border = "solid 1px red";
+  errorElement[ele].value = text;
 }
 
 const signUp = async () => {
   const validate = validateOnBlur();
+  console.log('validateOnBlur', validate);
   if(validate === true) {
     const data = {
       username: username.value,
@@ -128,8 +142,6 @@ const signUp = async () => {
         },
         withCredentials: true,
       });
-      returnUser.value = response.data;
-      console.log(returnUser.value);
       router.push('/auth/signin')
     } catch (error) {
       console.log(error);
@@ -138,9 +150,10 @@ const signUp = async () => {
         signUpRef.value.classList.toggle('hover:bg-gray-500');
         signUpRef.value.innerText = 'User register';
 
-        const usernameInputElement = document.getElementById('usernameInput');
-        usernameInputElement.style.border = "solid 1px red";
-        usernameError.value = "Sorry, username already taken";
+        // const usernameInputElement = document.getElementById('usernameInput');
+        // usernameInputElement.style.border = "solid 1px red";
+        // usernameError.value = "Sorry, username already taken";
+        setError('username', "Sorry, username already taken")
       }
     } 
   }

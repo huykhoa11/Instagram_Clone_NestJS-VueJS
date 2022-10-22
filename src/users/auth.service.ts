@@ -29,8 +29,11 @@ export class AuthService {
       updatedAt: new Date().toISOString(),
       refreshToken: '',
       refreshTokenExp: parseInt(time),
+      avatar: 'logo.png',
+      name: '',
+      bio: '',
+      email: '',
     });
-
     try {
       await this.usersRepository.save(user);
     } catch (error) {
@@ -38,7 +41,8 @@ export class AuthService {
         throw new ConflictException('Username already exists, duplicate cmnr');
       }
       else {
-        throw new InternalServerErrorException();
+        console.log('loi rui dcm');
+        throw new InternalServerErrorException('something went wrong cmnr, check lai auth service xem nao');
       }
     }
 

@@ -30,6 +30,8 @@ export class User {
 
     @Column({unique: true,})
     @IsNotEmpty()
+    @MinLength(4)
+    @MaxLength(12)
     username: string;
 
     @Exclude()
