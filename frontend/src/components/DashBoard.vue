@@ -167,6 +167,9 @@ import { displayToast } from './../composables/DisplayToast.js'
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
 
+const dangerColor = '#EC6A71';
+const successColor = '#5CB85C';
+
 const store = useStore();
 const router = useRouter();
 
@@ -194,35 +197,44 @@ const dropzoneInputChange = (e) => {
     e.preventDefault();
     console.log(e.target.files);
 
-    // First time - remove the prompt
-	if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
-		dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
-	}
+    
 
     if ((previewDropFile.value.length+e.target.files.length) <= 5) {
         let formData = new FormData();
         
         for(let i=0; i<e.target.files.length; i++ ) {
             console.log(e.target.files[i]);
-            let file = e.target.files[i];
-            uploadFile.value.append('image', file);
+            if(e.dataTransfer.files[i].size/(1024*1024) > 1 ) {
+                displayToast(`${e.dataTransfer.files[i].name} size is too big, please upload another`, dangerColor);
+                displayToast('File size is too big, max files size is 1MB',  dangerColor);
+            }
+            else {
+                let file = e.target.files[i];
 
-            if (file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
-                    previewDropFile.value.push(obj);
-                };
+                if (file.type.startsWith("image/")) {
+                    // // First time - remove the prompt
+                    if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
+                        dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
+                    }
+
+                    uploadFile.value.append('image', file);
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
+                        previewDropFile.value.push(obj);
+                    };
+                }
+                else {  //only image can drop in
+                    displayToast('Only images can be accepted !', dangerColor)
+                }
+                formData.append('image', file);
+                // uploadFile.value.append('image', file);
             }
-            else {  //only image can drop in
-                displayToast('Only images can be accepted !', '#EC6A71')
-            }
-            formData.append('image', file);
-            // uploadFile.value.append('image', file);
+
         }
     } else {
-        displayToast('Cant upload over 5 images', '#EC6A71');
+        displayToast("Can't upload over 5 images", dangerColor);
     }
 
     console.log(dropZoneElement.value);
@@ -238,35 +250,44 @@ const dropZoneElementDrop = (e) => {
     e.preventDefault();
     console.log(e.dataTransfer.files);
 
-    // First time - remove the prompt
-	if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
-		dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "none";
-	}
+    
 
     if ((previewDropFile.value.length+e.dataTransfer.files.length) <= 5) {
         let formData = new FormData();
         
         for(let i=0; i<e.dataTransfer.files.length; i++ ) {
             console.log(e.dataTransfer.files[i]);
-            let file = e.dataTransfer.files[i];
-            uploadFile.value.append('image', file);
+            if(e.dataTransfer.files[i].size/(1024*1024) > 1 ) {
+                displayToast(`${e.dataTransfer.files[i].name} size is too big, max files size is 1MB`, dangerColor);
+                // displayToast('File size is too big, max files size is 1MB',  dangerColor);
+            }
+            else {
+                let file = e.dataTransfer.files[i];
 
-            if (file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
-                    previewDropFile.value.push(obj);
-                };
+                if (file.type.startsWith("image/")) {
+                    // First time - remove the prompt
+                    if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
+                        dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "none";
+                    }
+                    uploadFile.value.append('image', file);
+
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        const obj = {name: file.name, type: file.type, size: file.size, source: reader.result};
+                        previewDropFile.value.push(obj);
+                    };
+                }
+                else {  //only image can drop in
+                    displayToast('Only images can be accepted !', dangerColor)
+                }
+                formData.append('image', file);
+                // uploadFile.value.append('image', file);
             }
-            else {  //only image can drop in
-                displayToast('Only images can be accepted !', '#EC6A71')
-            }
-            formData.append('image', file);
-            // uploadFile.value.append('image', file);
+
         }
     } else {
-        displayToast('Cant upload over 5 images', '#EC6A71');
+        displayToast('Cant upload over 5 images', dangerColor);
     }
 
     console.log(dropZoneElement.value);
@@ -340,11 +361,11 @@ const createTask = async() => {
     //     console.log(value);
     // }
     if(previewDropFile.value.length === 0) {
-        displayToast('Task must has image', '#EC6A71');
+        displayToast('Task must has atleast 1 image', dangerColor);
         console.log(previewDropFile.value);
     }
     else if(inputTask.value === '') {
-        displayToast('Task muts has its content', '#EC6A71');
+        displayToast('Task muts has its content', dangerColor);
         console.log(previewDropFile.value);
     }
     else {
@@ -361,7 +382,7 @@ const createTask = async() => {
                 withCredentials: true,
             })
             uploadFile.value = new FormData();
-            // location.reload();
+            location.reload();
             createTaskBtnRef.value.disabled = true;
             createTaskBtnRef.value.innerText = 'Loading...'
             inputTask.value = '';
@@ -369,18 +390,14 @@ const createTask = async() => {
             const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
             tasks.value = res.data;
             tasks.value.reverse();
-            // tasks.value.forEach(task => {
-            //     task.images.forEach(image => {
-            //         image.name = `require('./../assets/' + ${image.name})`
-            //     })
-            // })
+
             console.log(tasks.value);
             
             isEdit.value.push({taskId: response.data.id, status: false});
             createTaskBtnRef.value.disabled = false;
             createTaskBtnRef.value.innerText = 'Create Task';
         } catch (error) {
-            displayToast("Something went wrong! Please try again", "#EC6A71");
+            displayToast("Something went wrong! Please try again", dangerColor);
         }
     }
 }
@@ -473,7 +490,7 @@ const addComment = async(task) => {
         buttonCommentElement.classList.toggle('hover:bg-slate-100');
         task.comments.unshift(response.data)
     } catch (error) {
-        displayToast('Comment must has its content!', '#EC6A71');
+        displayToast('Comment must has its content!', dangerColor);
     }
 }
 

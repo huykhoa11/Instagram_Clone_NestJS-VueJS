@@ -29,9 +29,9 @@ bootstrap();
     task with carousel of images ------ (Done)
     Edit user info page ------ (Done)
     User page ------ (Done)
+    validate images size ------ (Done)
     View 1 task
     edit task with images drag drop
-    validate images size
     Search User
     Regex username, username cant have space
  */

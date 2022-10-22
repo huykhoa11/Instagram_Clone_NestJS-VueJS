@@ -44,6 +44,9 @@ export class TasksController {
           // throw new Error('please uplaod image only hihihihi');
           return callback(new Error('Only image files are allowed! hihihihihi'), false);
         }
+        else if(file.size/(1024*1024) > 1) {
+          return callback(new Error('image size is too big, max files size 1MB'), false);
+        }
         callback(null, true);
       }
     }))

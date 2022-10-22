@@ -98,9 +98,6 @@ const update = async () => {
             });
         if(response.data) {
             displayToast('Save successfully', '#5CB85C');
-            nameInput.value = '';
-            bioInput.value = '';
-            emailInput.value = '';
         }
     } catch (error) {
         displayToast('Save failed', '#EC6A71');
@@ -113,6 +110,9 @@ onMounted( async() => {
         console.log(response.data);
         currentUser.value = response.data;
         console.log(currentUser.value);
+        nameInput.value = currentUser.value.name;
+        bioInput.value = currentUser.value.bio;
+        emailInput.value = currentUser.value.email;
     } catch (error) {
         console.log(error);
     }
