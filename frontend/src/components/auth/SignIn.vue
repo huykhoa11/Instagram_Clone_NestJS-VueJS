@@ -36,6 +36,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
+import { displayToast } from '/src/composables/DisplayToast';
 
 const store = useStore();
 const router = useRouter();
@@ -63,40 +64,42 @@ const inputChange = () => {
 const inputFocus = (id) => {
   const inputElement = document.getElementById(id);
   inputElement.style.border = 'solid 1px black';
-  // if(id === 'usernameInput') {
-  //   usernameError.value = '';
-  // }
-  // else {
-  //   passwordError.value = '';
-  // }
 }
 
 const validateOnBlur = () => {
-  const usernameCondition = username.value.length < 4 || password.value.length > 12;
+  const usernameConditionBlank = username.value.length < 4 || password.value.length > 12;
+  const usernameConditionContainWhiteSpace = /\s/.test(username.value);
   const passwordCondition = password.value.length < 6 || password.value.length > 12;
 
-  if (usernameCondition && passwordCondition) {
-    const usernameInputElement = document.getElementById('usernameInput');
-    usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username is invalid";
+  if (usernameConditionBlank && passwordCondition) {
+    setError('username', "Username can't be blank");
+    setError('password', "Password must contains 6-12 characters");
+    return false;
+  }
+  else if (usernameConditionContainWhiteSpace) {
+    setError('username', "Username can't contain white space");
+    return false;
+  }
+  else if(usernameConditionBlank) {
+    setError('username', "Username can't be blank");
+    return false;
+  }
+  if(passwordCondition) {
+    setError('password', "Password must contains 6-12 characters");
+    return false;
+  }
 
-    const passwordInputElement = document.getElementById('passwordInput');
-    passwordInputElement.style.border = "solid 1px red";
-    passwordError.value = "Password must contains 6-12 characters";
-  }
-  else if(usernameCondition) {
-    const usernameInputElement = document.getElementById('usernameInput');
-    usernameInputElement.style.border = "solid 1px red";
-    usernameError.value = "Username is invalid";
-  } 
-  else if(passwordCondition) {
-    const passwordInputElement = document.getElementById('passwordInput');
-    passwordInputElement.style.border = "solid 1px red";
-    passwordError.value = "Password must contains 6-12 characters";
-  }
-  else {
-    return true;
-  }
+  return true;
+}
+
+const errorElement = {
+  username: usernameError,
+  password: passwordError,
+}
+
+const setError = (ele, text) => {
+  document.getElementById(`${ele}Input`).style.border = "solid 1px red";
+  errorElement[ele].value = text;
 }
 
 const signIn = async () => {
@@ -128,6 +131,12 @@ const signIn = async () => {
       // console.log(returnValue.value);
     } catch (error) {
       console.log(error);
+      signInRef.value.disabled = false;
+      signInRef.value.classList.toggle('hover:text-zinc-600');
+      signInRef.value.innerText = 'Sign in';
+      username.value = '';
+      password.value = '';
+      displayToast('Account not found, please input again', '#EC6A71');
     }
 
     // try {

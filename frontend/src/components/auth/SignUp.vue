@@ -75,10 +75,9 @@ const inputFocus = (id) => {
 }
 
 const validateOnBlur = () => {
-  const usernameInputElement = document.getElementById('usernameInput');
-  const passwordInputElement = document.getElementById('passwordInput');
-  const confirmPasswordInputElement = document.getElementById('confirmPasswordInput');
-
+  // const usernameInputElement = document.getElementById('usernameInput');
+  // const passwordInputElement = document.getElementById('passwordInput');
+  // const confirmPasswordInputElement = document.getElementById('confirmPasswordInput');
 
   const usernameConditionBlank = username.value.length < 4 || password.value.length > 12;
   const usernameConditionContainWhiteSpace = /\s/.test(username.value);
@@ -109,7 +108,6 @@ const validateOnBlur = () => {
   }
 
   return true;
-  
 }
 
 const errorElement = {
