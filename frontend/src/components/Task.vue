@@ -34,7 +34,7 @@
         </div> 
 
 
-        <div class=" w-2/5 ">
+        <div class=" w-2/5 relative">
             <div class=" flex items-center h-16 border border-b-gray-100">
                 <div class=" flex items-center space-x-3 ml-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
@@ -48,8 +48,8 @@
                 </div>
             </div>
 
-            <div class=" mt-4">
-                <div class=" flex items-center space-x-3 ml-3">
+            <div class=" mt-4 h-4/5 border border-green-400">
+                <div class=" flex items-center space-x-3 ml-3 border border-red-400">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
                     <p class="">
                         <router-link :to="'/user/' +passData.task.user.id+ '?currentUserId=' +currentUserId" 
@@ -59,6 +59,28 @@
                         {{ passData.task.content }}
                     </p>
                 </div>
+
+                
+            </div>
+
+            <div class=" relative flex justify-between px-3">
+                <div class="">
+                    <button :class="[passData.task.likes.find(ele=>ele.user.id===currentUserId) === undefined ?  'text-gray-400' : 'text-blue-400 bg-sky-100'  ]" 
+                            @click="likeClick(task)" 
+                            class=" px-2 text-sm  hover:bg-slate-200 hover:cursor-pointer">
+                            <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
+                    </button>
+                    <span class=" flex justify-center items-center text-white bg-blue-500
+                                        h-4 w-4 text-[13px] rounded-full absolute left-16 -top-1">{{ passData.task.likes.length }}</span>
+                </div>
+                <p class=" text-xs text-gray-400">{{ passData.task.updatedAt.split('T')[0] }}</p>
+            </div>
+
+            <div class=" flex absolute bottom-0 w-full">
+                <input type="text" :id="'inputComment' + passData.task.id"  placeholder="leave a comment" maxlength="50"
+                        class=" h-9 outline-none flex-1 pl-3 border border-t-gray-200">
+                <button @click="addComment(task)" :id="'buttonComment' + passData.task.id" 
+                        class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
             </div>
         </div>
 
@@ -69,6 +91,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
+import { displayToast } from './../composables/DisplayToast.js'
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -89,6 +112,43 @@ const slideIndex = ref(0);
 const props = defineProps({
     passData: Object
 });
+
+const likeClick = async(task) => {
+
+    const isLiked = props.passData.task.likes.find(ele=>ele.user.id===currentUserId.value) !== undefined;
+    // const isLiked = task.user.likes.length !== 0; 
+    if(isLiked === false) {
+
+        const data = {status: true};
+        const response = await axios.post(`http://localhost:3000/tasks/${task.id}/likes`, data, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+            withCredentials: true,
+        });
+
+        const newLike = response.data;
+        task.likes.unshift(newLike);
+        task.user.likes.push({id: newLike.id, status: newLike.status});  //for changing color of like button
+    }
+    else {
+
+        await axios.delete(`http://localhost:3000/tasks/${task.id}/likes`, {
+            headers: {
+                Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+            },
+            withCredentials: true,
+        });
+
+        const likeNeedRemove = task.likes.find(ele => ele.user.id === currentUser.value.id);
+        const indexOfLikeNeedRemove = task.likes.indexOf(likeNeedRemove);
+        task.likes.splice(indexOfLikeNeedRemove, 1);
+        task.user.likes.pop(); //for changing color of like button
+
+    }
+}
 
 onMounted( async() => {
     console.log(props.passData);
