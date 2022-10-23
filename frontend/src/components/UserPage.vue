@@ -30,7 +30,7 @@
 
 
             <div class=" mt-7 pt-7 border-t-2 border-gray-200 grid grid-cols-3 gap-4">
-                <div v-for="task in user.tasks" :key="task" class=" h-60 hover:cursor-pointer group" @click="open = true">
+                <div v-for="task in user.tasks" :key="task" class=" h-60 hover:cursor-pointer group" @click="open[`${task.id}`] = true">
                     <img :src="require('./../assets/' + task.images[0].name)" class=" w-full h-full" alt="" >
                     <div class=" relative hidden -top-full w-full h-full justify-center items-center
                          group-hover:bg-black group-hover:bg-opacity-40 group-hover:flex">
@@ -41,9 +41,9 @@
                     </div>
 
                     <Teleport to="body">
-                        <div v-if="open" class=" fixed top-0 left-0 h-screen w-screen">
-                            <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false">
-                                <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open = false"></i>
+                        <div v-if="open[`${task.id}`]" class=" fixed top-0 left-0 h-screen w-screen">
+                            <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open[`${task.id}`] = false">
+                                <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open[`${task.id}`] = false"></i>
                             </div>
 
                                 <Task :passData="{task: task}" />
@@ -81,7 +81,7 @@ import Task from './Task.vue'
 const router = useRouter();
 const user = ref(null);
 const currentUserId = ref(null);
-const open = ref(false);
+const open = ref({});
 
 // console.log(router.currentRoute.value.params.id);
 
@@ -93,6 +93,9 @@ onMounted( async() => {
     try {
         const response = await axios.get('http://localhost:3000/users/' + userId, {withCredentials: true});
         user.value = response.data;
+        user.value.tasks.forEach(element => {
+            open.value[`${element.id}`] = false;
+        });
         console.log(typeof user.value.id);
         console.log(typeof currentUserId.value);
         console.log('user.id', user.value.id, ' currentUserId', currentUserId.value);

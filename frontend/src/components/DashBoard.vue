@@ -165,7 +165,7 @@ import { displayToast } from './../composables/DisplayToast.js'
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import '@splidejs/vue-splide/css';
+// import '@splidejs/vue-splide/css';
 
 const dangerColor = '#EC6A71';
 const successColor = '#5CB85C';
