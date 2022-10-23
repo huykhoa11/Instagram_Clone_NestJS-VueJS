@@ -41,15 +41,15 @@
                     </div>
 
                     <Teleport to="body">
-                        <div v-if="open" class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false">
-                            <!-- <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false"> -->
+                        <div v-if="open" class=" fixed top-0 left-0 h-screen w-screen">
+                            <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open = false">
                                 <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open = false"></i>
-                            <!-- </div> -->
-                            <div >
+                            </div>
+
                                 <Task :passData="{task: task}" />
 
                                 <!-- <p>Hello from the modal!</p>-->
-                            </div>
+
                         </div>
                     </Teleport>
 
