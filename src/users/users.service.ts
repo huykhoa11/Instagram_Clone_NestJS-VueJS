@@ -35,7 +35,7 @@ export class UsersService {
     async findSpecificUser(userId: number): Promise<User> {
         return this.usersRepository.findOne({
             where: {id: userId},
-            relations: {tasks: {images: true, comments: true, likes: true, user: true}, 
+            relations: {tasks: {images: true, comments: {user: true}, likes: {user: true}, user: true}, 
                         comments: true, 
                         likes: true}
         })

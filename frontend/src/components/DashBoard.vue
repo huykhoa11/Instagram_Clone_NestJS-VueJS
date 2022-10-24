@@ -1,6 +1,4 @@
 <template>
-
-
     <div class="" v-if="isReady">
         <div role="status" class=" absolute left-0 right-0 top-0 bottom-0 flex flex-col justify-center items-center">
             <p class=" block text-4xl mb-2">Loading...</p>
@@ -146,13 +144,8 @@
             <SuggestFriends :fetchUserData="{currentUser: currentUser, users: users}" />
         </div>
 
-
-
     </section>
 </template>
-
-
-
 
 
 <script setup>
@@ -550,7 +543,6 @@ const likeClick = async(task) => {
 }
 
 onMounted( async() => {
-
 
     try {
         // const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});

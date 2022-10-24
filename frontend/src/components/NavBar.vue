@@ -11,7 +11,7 @@
         
       </div>
 
-      <div v-else class="drop-shadow-sm bg-zinc-600 flex justify-between font-semibold">
+      <div v-else class="drop-shadow-sm h-14 bg-zinc-700 flex justify-between items-center font-semibold">
         <div class="">
           <p class=" text-pink-500">Let sign in ^^</p>
         </div>

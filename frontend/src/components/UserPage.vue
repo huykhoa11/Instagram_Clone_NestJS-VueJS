@@ -46,7 +46,7 @@
                                 <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open[`${task.id}`] = false"></i>
                             </div>
 
-                                <Task :passData="{task: task}" />
+                                <Task :passData="{task: task}" @sendFromTaskVue="(res) => task = res"/>
 
                                 <!-- <p>Hello from the modal!</p>-->
 
@@ -102,6 +102,10 @@ onMounted( async() => {
 
     } catch (error) {
         console.log(error);
+        if(error.response.status === 401) {
+            router.push('/auth/signin');
+            localStorage.removeItem('username');
+        }
     }
 
 })

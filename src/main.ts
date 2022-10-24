@@ -17,6 +17,7 @@ async function bootstrap() {
 }
 bootstrap();
 
+// C:\Program Files\nodejs\node_modules\npm\bin
 
 /**
  *  valdiate Sign Up ------ (Done)
@@ -32,8 +33,9 @@ bootstrap();
     validate images size ------ (Done)
     Regex username, username cant have space ------ (Done)
     View 1 task
-    forget password
+    Follow User
     Search User
+    forget password
     edit task with images drag drop
  */
 
