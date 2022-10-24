@@ -46,7 +46,8 @@
                                 <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open[`${task.id}`] = false"></i>
                             </div>
 
-                                <Task :passData="{task: task}" @sendFromTaskVue="(res) => task = res"/>
+                                <Task :passData="{task: task, open: open[`${task.id}`]}" 
+                                        @sendFromTaskVue="(res) => {user.tasks = user.tasks.filter(item => item.id !== res.taskId); open[`${task.id}`] = res.open}"/>
 
                                 <!-- <p>Hello from the modal!</p>-->
 

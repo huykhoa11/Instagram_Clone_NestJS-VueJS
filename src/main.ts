@@ -33,6 +33,7 @@ bootstrap();
     validate images size ------ (Done)
     Regex username, username cant have space ------ (Done)
     View 1 task
+    Spin loading when create Task
     Follow User
     Search User
     forget password

@@ -48,7 +48,7 @@
                     <button v-if="userId !== currentUserId" class="text-blue-400 font-semibold">Follow</button>
                 </div>
 
-                <div v-if="userId === currentUserId" class=" flex items-center space-x-2 mr-2">
+                <div v-if="userId === currentUserId" class=" flex items-center space-x-2 mr-2" id="EditOrDeleteFeature">
                     <div class=" hover:text-blue-500 hover:cursor-pointer" @click="isEdit = true" v-if="isEdit === false"><i class="fa-solid fa-pen-to-square"></i></div>
                     <div class=" hover:text-red-500 hover:cursor-pointer" @click="removeTask(passData.task.id)"><i class="fa-solid fa-trash"></i></div>
                 </div>
@@ -168,7 +168,7 @@ const likeClick = async(task) => {
         btnLikeElement.classList.add('hover:bg-slate-200', 'hover:cursor-pointer');
 
         props.passData.task.likes.unshift(newLike);
-        emit('sendFromTaskVue', props.passData.task);
+        // emit('sendFromTaskVue', props.passData.task);
 
         // props.passData.task.user.likes.push({id: newLike.id, status: newLike.status});  //for changing color of like button
     }
@@ -178,7 +178,7 @@ const likeClick = async(task) => {
         const likeNeedRemove = props.passData.task.likes.find(ele => ele.user.id === currentUserId.value);
         const indexOfLikeNeedRemove = task.likes.indexOf(likeNeedRemove);
         props.passData.task.likes.splice(indexOfLikeNeedRemove, 1);
-        emit('sendFromTaskVue', props.passData.task);
+        // emit('sendFromTaskVue', props.passData.task);
         // props.passData.task.user.likes.pop(); //for changing color of like button
     }
 }
@@ -232,7 +232,16 @@ const editTask = async(taskId) => {
 }
 
 const removeTask = async(taskId) => {
+    const EditOrDeleteFeatureElement = document.getElementById('EditOrDeleteFeature');
+    const tmp = EditOrDeleteFeatureElement.innerHTML;
+    EditOrDeleteFeatureElement.innerHTML = spin();
+
     await deleteTask(taskId);
+    console.log('delete done')
+
+    EditOrDeleteFeatureElement.innerHTML = tmp;
+    emit('sendFromTaskVue', {taskId: taskId, open: false});
+
 }
 
 onMounted( async() => {
