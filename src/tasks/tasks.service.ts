@@ -96,6 +96,7 @@ export class TasksService {
 
     const task = await this.tasksRepository.findOne({where: {id: taskId}});
     task.content = content;
+    task.updatedAt = new Date().toISOString();
     await this.tasksRepository.save(task);
 
     return task;

@@ -36,7 +36,7 @@
         <div class=" w-2/5 relative">
             <!-- {{ passData.task }} -->
 
-            <div class=" flex items-center h-16 border-b-2 border-gray-100">
+            <div class=" flex justify-between items-center h-16 border-b-2 border-gray-100">
                 <div class=" flex items-center space-x-3 ml-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
                     <p class=" font-semibold">
@@ -47,11 +47,16 @@
                     </p>
                     <button v-if="userId !== currentUserId" class="text-blue-400 font-semibold">Follow</button>
                 </div>
+
+                <div v-if="userId === currentUserId" class=" flex items-center space-x-2 mr-2">
+                    <div class=" hover:text-blue-500 hover:cursor-pointer" @click="isEdit = true" v-if="isEdit === false"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class=" hover:text-red-500 hover:cursor-pointer" @click="removeTask(passData.task.id)"><i class="fa-solid fa-trash"></i></div>
+                </div>
             </div>
 
             <div class=" mt-2 pl-3 h-4/5 border-b-2 border-gray-100">
                 <!-- Task content -->
-                <div class=" flex items-center space-x-3">
+                <div v-if="isEdit === false" class=" flex items-center space-x-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
                     <p class="">
                         <router-link :to="'/user/' +passData.task.user.id+ '?currentUserId=' +currentUserId" 
@@ -62,8 +67,18 @@
                     </p>
                 </div>
 
+                <div class="flex h-20 relative" v-else>
+                    <textarea type="text" v-model="inputEditContent" 
+                            class=" flex-1 pl-1 border border-gray-500 outline-none border-none" maxlength="140"></textarea>
+                    <div id="EditFeature" class=" block">
+                        <p class="absolute bottom-1 right-36 min-w-[50px] text-sm text-gray-200"> {{ inputEditContent.length }} /140</p>
+                        <button @click="editTask(passData.task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
+                        <button @click="isEdit = false" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
+                    </div>
+                </div>
+
                 <!-- Task comments -->
-                <ul class=" overflow-auto mt-2 h-28">
+                <ul v-if="isEdit === false" class=" overflow-auto mt-2 h-28">
                     <li v-for="comment in passData.task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
                         <div class="text-sm flex items-center space-x-2">
                             <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
@@ -112,7 +127,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
 import { displayToast } from './../composables/DisplayToast.js';
-import { addLike, deleteLike, spin, createComment, deleteComment ,timeAgoComment } from './../composables/Fetch.js';
+import { addLike, deleteLike, spin, createComment, deleteComment, saveEditTask, deleteTask, timeAgoComment } from './../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -127,6 +142,8 @@ const currentUser = ref({});
 
 const userId = ref(null);
 const currentUserId = ref(null);
+const isEdit = ref(false);
+const inputEditContent = ref('');
 
 const slideIndex = ref(0);
 
@@ -194,8 +211,33 @@ const removeComment = async(commentId) => {
     await deleteComment(commentId);
 }
 
+const editTask = async(taskId) => {
+    try {
+        const EditFeatureElement = document.getElementById('EditFeature');
+        const tmp = EditFeatureElement.innerHTML;
+        EditFeatureElement.innerHTML = spin();
+
+        const data = {content: inputEditContent.value};
+        const newUpdateTask = await saveEditTask(taskId, data);
+        
+        console.log(newUpdateTask);
+        EditFeatureElement.innerHTML = tmp;
+        isEdit.value = false;
+        props.passData.task.content = inputEditContent.value;
+        props.passData.task.updatedAt = newUpdateTask.updatedAt;
+    } catch (error) {
+        displayToast("Task must has its content !", dangerColor);
+    }
+    
+}
+
+const removeTask = async(taskId) => {
+    await deleteTask(taskId);
+}
+
 onMounted( async() => {
     console.log(props.passData);
+    inputEditContent.value = props.passData.task.content;
 
     userId.value = parseInt(router.currentRoute.value.params.id);
     currentUserId.value = parseInt(router.currentRoute.value.query.currentUserId);

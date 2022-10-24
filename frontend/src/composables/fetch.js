@@ -85,3 +85,15 @@ export const timeAgoComment = (comment) => {
     else if(diff > 30) { return 'over 30 days ago' }
     else {return `${diff} days ago` }
 } 
+
+
+export const saveEditTask = async(taskId, data) => {
+    console.log('inside saveEditTask Fetch');
+    const response = await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
+    return response.data; 
+}
+
+
+export const deleteTask = async(taskId) => {
+    await axios.delete(`http://localhost:3000/tasks/${taskId}`, {withCredentials: true});
+}
