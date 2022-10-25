@@ -35,7 +35,7 @@
 
         <div class=" w-2/5 relative">
             <!-- {{ passData.task }} -->
-
+            <!-- Header -->
             <div class=" flex justify-between items-center h-16 border-b-2 border-gray-100">
                 <div class=" flex items-center space-x-3 ml-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
@@ -54,6 +54,7 @@
                 </div>
             </div>
 
+            <!-- Main content -->
             <div class=" mt-2 pl-3 h-4/5 border-b-2 border-gray-100">
                 <!-- Task content -->
                 <div v-if="isEdit === false" class=" flex items-center space-x-3">
@@ -97,6 +98,7 @@
                 </ul>
             </div>
 
+            <!-- Like button -->
             <div class=" relative flex justify-between px-3">
                 <div class="">
                     <button id="btnLike"
@@ -111,9 +113,10 @@
                 <p class=" text-xs text-gray-400">{{ passData.task.updatedAt.split('T')[0] }}</p>
             </div>
 
-            <div class=" flex absolute bottom-0 w-full">
+            <!-- Comment section -->
+            <div class=" w-full flex absolute bottom-0 border-t-2 border-gray-200">
                 <input type="text" :id="'inputComment' + passData.task.id"  placeholder="leave a comment" maxlength="50"
-                        class=" h-9 outline-none flex-1 pl-3 border border-t-gray-200">
+                        class=" h-9 outline-none flex-1 pl-3">
                 <button @click="addComment(passData.task)" :id="'buttonComment' + passData.task.id"
                         class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
             </div>
@@ -225,6 +228,7 @@ const editTask = async(taskId) => {
         isEdit.value = false;
         props.passData.task.content = inputEditContent.value;
         props.passData.task.updatedAt = newUpdateTask.updatedAt;
+        displayToast('Edit task succesfully', successColor);
     } catch (error) {
         displayToast("Task must has its content !", dangerColor);
     }

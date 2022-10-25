@@ -74,7 +74,7 @@
                                     <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
                                         <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
                                             <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus($event, task.id, 'edit')">Edit</div>
-                                            <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTask(task.id)">Delete</div>
+                                            <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTaskEvent(task.id)">Delete</div>
                                         </div>
                                     </i>
                                 </div>
@@ -120,17 +120,17 @@
                                     <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
                                 </div>
                             </div>
-                            <i v-if="currentUser.id === comment.user.id" @click="deleteComment(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
+                            <i v-if="currentUser.id === comment.user.id" @click="deleteCommentEvent(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
                                 hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
                         </li>
                     </ul>
                     <div class="relative">
-                        <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-blue-400 bg-sky-100'  ]" 
+                        <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-pink-400 bg-pink-100'  ]" 
                                 @click="likeClick(task)" 
                                 class=" px-2 text-sm block border border-gray-200 hover:bg-slate-200 hover:cursor-pointer">
                                 <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
                         </button>
-                        <span class=" flex justify-center items-center text-white bg-blue-500
+                        <span class=" flex justify-center items-center text-white bg-pink-500
                                      h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ task.likes.length }}</span>
                     </div>
                     <div class=" flex">
@@ -154,7 +154,8 @@ import { reactive, ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
-import { displayToast } from './../composables/DisplayToast.js'
+import { displayToast } from './../composables/DisplayToast.js';
+import { deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from './../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -363,6 +364,11 @@ const createTask = async() => {
     }
     else {
         try {
+            createTaskBtnRef.value.disabled = true;
+            const tmp = createTaskBtnRef.value.innerHTML;
+            createTaskBtnRef.value.innerHTML = spin();
+            inputTask.value = '';
+
             const data = {content: inputTask.value};
             uploadFile.value.append('content', inputTask.value)
             const response = await axios
@@ -376,9 +382,6 @@ const createTask = async() => {
             })
             uploadFile.value = new FormData();
             location.reload();
-            createTaskBtnRef.value.disabled = true;
-            createTaskBtnRef.value.innerText = 'Loading...'
-            inputTask.value = '';
 
             const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
             tasks.value = res.data;
@@ -395,19 +398,15 @@ const createTask = async() => {
     }
 }
 
-const getImage = (img) => {
-    return img ? require(`./../assets/${img}`) : '';
-} 
-
 const getTasks = async() => {
     const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
     tasks.value = response.data;
     // state.tasks = response.data;
 }
 
-const deleteTask = async (taskId) => {
+const deleteTaskEvent = async (taskId) => {
     console.log(taskId);
-    await axios.delete(`http://localhost:3000/tasks/${taskId}`, {withCredentials: true});
+    await deleteTask(taskId);
     tasks.value = tasks.value.filter(item => item.id !== taskId);
     console.log(tasks.value);
 }
@@ -416,10 +415,14 @@ const editTask = async(taskId) => {
     try {
         isEditting.value = true;
         const editInputElement = document.getElementById(`editInput${taskId}`);
+
         const data = {content: editInputElement.value}
-        await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
+        const newUpdateTask = await saveEditTask(taskId, data);
+
         const task = tasks.value.find(element => element.id === taskId);
         task.content = editInputElement.value;
+        task.updatedAt = newUpdateTask.updatedAt;
+
         isEditting.value = false;
         isEdit.value.find(ele => ele.taskId === task.id).status = false;
         console.log(isEdit.value.find(ele => ele.taskId === task.id).status);
@@ -462,16 +465,9 @@ const addComment = async(task) => {
         const inputCommentElement  = document.getElementById(`inputComment${task.id}`);
         const buttonCommentElement = document.getElementById(`buttonComment${task.id}`);
         console.log(inputCommentElement.value);
+
         const data = {content: inputCommentElement.value};
-        
-        const response = await axios
-        .post(`http://localhost:3000/tasks/${task.id}/comments`, data, {
-            headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json;charset=UTF-8",
-            },
-            withCredentials: true,
-        })
+        const response = await createComment(task.id, data); 
         
         buttonCommentElement.disabled = true;
         buttonCommentElement.classList.toggle('hover:bg-slate-100');
@@ -481,27 +477,15 @@ const addComment = async(task) => {
         buttonCommentElement.disabled = false;
         buttonCommentElement.innerText = 'Send';
         buttonCommentElement.classList.toggle('hover:bg-slate-100');
-        task.comments.unshift(response.data)
+        task.comments.unshift(response)
     } catch (error) {
         displayToast('Comment must has its content!', dangerColor);
     }
 }
 
-const deleteComment = async(commentId, task) => {
+const deleteCommentEvent = async(commentId, task) => {
     task.comments = task.comments.filter(item => item.id !== commentId);
-    await axios.delete(`http://localhost:3000/tasks/comments/${commentId}`, {withCredentials: true});
-    // arr = arr.filter(item => item !== value)
-}
-
-// Times ago in comment
-const timeAgoComment = (comment) => {
-    const createdAt = parseInt(comment.createdAt) / (1000 * 3600 * 24);
-    const now = Date.now() / (1000 * 3600 * 24);
-    const diff = Math.floor(now - createdAt);
-    if( diff === 0) {return 'Today'}
-    else if( diff === 1) {return '1 day ago'}
-    else if(diff > 30) { return 'over 30 days ago' }
-    else {return `${diff} days ago` }
+    await deleteComment(commentId);
 }
 
 // Likes
@@ -571,15 +555,7 @@ onMounted( async() => {
 
     
     isReady.value = false;
-    // if(tasks.length === 0 || comments.length === 0 || likes.length === 0 || countLikes.length === 0) {
-    // }
-    // console.log(tasks.value);
-    // console.log(comments.value);
-    // console.log(likes.value);
-    // console.log(isEdit.value);
-    // console.log(countLikes.value);
-    
-
+    /////////////////////////////////////////////////////////////////////
 
     const dropZoneElement = document.getElementById('dropzone');
     const inputElement = document.getElementById('dropzone-input');
@@ -606,8 +582,3 @@ onMounted( async() => {
 })
 
 </script>
-
-
-<style scoped>
-/* @import 'https://unpkg.com/dropzone@5/dist/min/dropzone.min.css'; */
-</style>
