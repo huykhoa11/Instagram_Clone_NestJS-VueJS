@@ -21,8 +21,8 @@
           </router-link>
         </div>
 
-        <button @mousedown="signIn()" class=" block mt-7 py-1 px-3 bg-black rounded-md 
-                                    text-xl text-white hover:text-zinc-600 hover:bg-slate-200" ref="signInRef">Login</button>
+        <button @mousedown="signIn()" class=" flex justify-center items-center mt-7 py-1 px-3 bg-black rounded-md 
+                                    text-xl text-white " ref="signInRef">Login</button>
 
       </div>
     </div>
@@ -37,6 +37,7 @@ import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
 import { displayToast } from '/src/composables/DisplayToast';
+import { login, spin } from '/src/composables/Fetch.js';
 
 const store = useStore();
 const router = useRouter();
@@ -110,47 +111,25 @@ const signIn = async () => {
       username: username.value,
       password: password.value,
     };
+    const tmp = signInRef.value.innerHTML;
 
     try {
       console.log('remember me ', isRememberMeCheck.value);
       signInRef.value.disabled = true;
-      signInRef.value.classList.toggle('hover:text-zinc-600');
-      signInRef.value.innerText = 'Signing in...';
-      const response = await axios.post(`http://localhost:3000/auth/signin?rememberMe=${isRememberMeCheck.value}`, data, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        withCredentials: true,
-      });
-      // returnValue.value = response.data;
-      // store.dispatch('getCurrentUser', {username: username.value})
+      signInRef.value.innerHTML = spin();
+      const response = await login(isRememberMeCheck.value, data);
+
       localStorage.setItem('username' ,username.value);
-      // router.push('/dashboard')
       window.location.replace("http://localhost:8080/dashboard");
-      // console.log(returnValue.value);
     } catch (error) {
       console.log(error);
       signInRef.value.disabled = false;
-      signInRef.value.classList.toggle('hover:text-zinc-600');
-      signInRef.value.innerText = 'Sign in';
+      signInRef.value.innerHTML = tmp;
       username.value = '';
       password.value = '';
       displayToast('Account not found, please input again', '#EC6A71');
     }
-
-    // try {
-    //   const response = await fetch('http://localhost:3000/auth/signin', {
-    //     method: "POST",
-    //     headers: {'Content-Type': 'application/json',},
-    //     body: JSON.stringify(data),
-    //   })
-    //   returnValue.value = await response.json();
-    // } catch (error) {
-    //   console.log(error);
-    // }
   }
-  
   
 };
 

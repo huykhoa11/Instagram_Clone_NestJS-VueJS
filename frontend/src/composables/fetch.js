@@ -33,6 +33,7 @@ export const createTask = async(data) => {
     })
 }
 
+// Like
 export const addLike = async (taskId) => {
     console.log('inside addLike Fetch.js');
     const data = {status: true};
@@ -58,7 +59,7 @@ export const deleteLike = async(taskId) => {
     return true;
 }
 
-
+// Comment
 export const createComment = async(taskId, data) => {
     const response = await axios.post(`http://localhost:3000/tasks/${taskId}/comments`, data, {
         headers: {
@@ -86,14 +87,27 @@ export const timeAgoComment = (comment) => {
     else {return `${diff} days ago` }
 } 
 
-
+// Task
 export const saveEditTask = async(taskId, data) => {
     console.log('inside saveEditTask Fetch');
     const response = await axios.patch(`http://localhost:3000/tasks/${taskId}`, data ,{withCredentials: true});
     return response.data; 
 }
 
-
 export const deleteTask = async(taskId) => {
     await axios.delete(`http://localhost:3000/tasks/${taskId}`, {withCredentials: true});
+}
+
+
+// AUthentication
+export const login = async(isRememberMe, data) => {
+    const response = await axios.post(`http://localhost:3000/auth/signin?rememberMe=${isRememberMe}`, data, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+        },
+        withCredentials: true,
+    });
+
+    return response.data;
 }

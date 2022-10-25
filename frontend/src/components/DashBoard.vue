@@ -40,13 +40,14 @@
                 </div>
                 <!-- <button @click="onSubmit" class=" bg-red-500">Submit</button> -->
                 <button @click="createTask()" ref="createTaskBtnRef" 
-                        class=" text-sm p-1 float-right rounded-md text-blue-500 hover:bg-blue-500 hover:text-white duration-100">
-                        Create Task
+                        class=" text-sm py-1 px-2 float-right rounded-md border
+                             hover:text-blue-400 hover:bg-white text-white bg-blue-400 hover:border-blue-400 duration-100">
+                        Post
                 </button>
             </div>
         </div>
 
-        <div class=" relative mx-auto w-3/4 flex justify-around my-3 ">
+        <div class=" relative mx-auto w-3/4 flex justify-center space-x-5 my-3 ">
             <ul class=" space-y-10 w-2/4">
                 <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
                     <div class="">
