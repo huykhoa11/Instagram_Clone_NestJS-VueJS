@@ -5,13 +5,13 @@ const routes = [
   {
     path: '',
     name: 'Home',
-    component: () => import('../components/DashBoard.vue')
+    component: () => import('../components/HomePage.vue')
   },
-  {
-    path: '/auth',
-    name: 'Auth',
-    component: () => import('../components/auth/Auth.vue')
-  },
+  // {
+  //   path: '/auth',
+  //   name: 'Auth',
+  //   component: () => import('../components/auth/Auth.vue')
+  // },
   {
     path: '/auth/signup',
     name: 'SignUp',
@@ -23,9 +23,9 @@ const routes = [
     component: () => import('../components/auth/SignIn.vue')
   },
   {
-    path: '/dashboard',
-    name: 'DashBoard',
-    component: () => import('../components/DashBoard.vue')
+    path: '/homepage',
+    name: 'HomePage',
+    component: () => import('../components/HomePage.vue')
   },
   {
     path: '/edit-current-user',

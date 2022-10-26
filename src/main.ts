@@ -35,10 +35,12 @@ bootstrap();
     View 1 task ------ (Done)
     Spin loading when create Task ------ (Done)
     Follow User ------ (Done)
+    bugs uploadFile when remove images ------ (Done)
+    404 Page
+    'See all suggest friends' button feature
     Search User
     lazy loading
     forget password
-    edit task with images drag drop
  */
 
     /**

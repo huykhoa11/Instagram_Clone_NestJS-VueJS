@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class=" relative mx-auto w-3/4 flex justify-center space-x-5 my-3 ">
+        <div class=" relative mx-auto w-3/5 flex justify-center space-x-5 my-3 ">
             <ul class=" space-y-10 w-2/4">
                 <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
                     <div class="">
@@ -154,8 +154,8 @@ import { reactive, ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
-import { displayToast } from './../composables/DisplayToast.js';
-import { getTasks, deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from './../composables/Fetch.js';
+import { displayToast } from '../composables/DisplayToast.js';
+import { getTasks, deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -184,6 +184,7 @@ const createTaskBtnRef = ref(null);
 
 // test method
 const uploadFile = ref(new FormData());       //For send data to backend
+const mockUploadFile = ref([]);
 const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
 const dropZoneElement = ref(null);
 
@@ -210,8 +211,8 @@ const dropzoneInputChange = (e) => {
                     if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
                         dropZoneElement.value.querySelector(".drop-zone__prompt").remove();
                     }
-
-                    uploadFile.value.append('image', file);
+                    mockUploadFile.value.push(file);
+                    // uploadFile.value.append('image', file);
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = () => {
@@ -223,7 +224,6 @@ const dropzoneInputChange = (e) => {
                     displayToast('Only images can be accepted !', dangerColor)
                 }
                 formData.append('image', file);
-                // uploadFile.value.append('image', file);
             }
 
         }
@@ -263,7 +263,8 @@ const dropZoneElementDrop = (e) => {
                     if (dropZoneElement.value.querySelector(".drop-zone__prompt")) {
                         dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "none";
                     }
-                    uploadFile.value.append('image', file);
+                    mockUploadFile.value.push(file);
+                    // uploadFile.value.append('image', file);
 
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
@@ -276,7 +277,6 @@ const dropZoneElementDrop = (e) => {
                     displayToast('Only images can be accepted !', dangerColor)
                 }
                 formData.append('image', file);
-                // uploadFile.value.append('image', file);
             }
 
         }
@@ -291,20 +291,6 @@ const dropZoneElementDrop = (e) => {
 }
 
 
-const loge = async (e) => {
-    console.log(e.target.files[0]);
-    console.log(e.target.files[1]);
-    // const filesArr =  Array.from(files)
-
-    let formData = new FormData();
-    uploadFile.value = new FormData();
-    for(let i=0; i<2; i++ ) {
-        let file = e.target.files[i];
-        formData.append('image', file);
-        uploadFile.value.append('image', file);
-    }
-}
-
 const onSubmit = async() => {
     try {
         console.log('onSubmit button click, processing....');
@@ -316,19 +302,7 @@ const onSubmit = async() => {
             withCredentials: true,
         });
     } catch (error) {
-        Toastify({
-            text: "Some thing has occured in onSubmit function",
-            duration: 3000,
-            destination: "#",
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-                background: "#EC6A71",
-            },
-            onClick: function(){} // Callback after click
-        }).showToast();
+        displayToast('error inside onsubmit', dangerColor);
     }
 
 
@@ -340,8 +314,13 @@ const onSubmit = async() => {
 
 const removeImage = (e, file) => {
     e.stopPropagation();
-    const index = previewDropFile.value.indexOf(file);
+    let index = previewDropFile.value.indexOf(file);
     previewDropFile.value.splice(index, 1);
+
+    const uploadFileImageNeedRemove = mockUploadFile.value.find(ele => ele.name === file.name );
+    index = mockUploadFile.value.indexOf(uploadFileImageNeedRemove);
+    mockUploadFile.value.splice(index, 1);
+
     if(previewDropFile.value.length === 0) {
         dropZoneElement.value.querySelector(".drop-zone__prompt").style.display = "block";
     }
@@ -350,10 +329,7 @@ const removeImage = (e, file) => {
 
 // Tasks
 const createTask = async() => {
-    // uploadFile.value.append('content', inputTask.value)
-    // for (const value of uploadFile.value) {
-    //     console.log(value);
-    // }
+
     if(previewDropFile.value.length === 0) {
         displayToast('Task must has atleast 1 image', dangerColor);
         console.log(previewDropFile.value);
@@ -369,6 +345,9 @@ const createTask = async() => {
             createTaskBtnRef.value.innerHTML = spin('gray');
 
             const data = {content: inputTask.value};
+            mockUploadFile.value.forEach(file => {
+                uploadFile.value.append('image', file);
+            })
             uploadFile.value.append('content', inputTask.value)
             const response = await axios
             .post('http://localhost:3000/tasks/upload', uploadFile.value, {
