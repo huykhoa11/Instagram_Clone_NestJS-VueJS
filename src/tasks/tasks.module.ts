@@ -9,9 +9,10 @@ import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Image } from 'src/images/entities/image.entity';
 import { ImagesService } from 'src/images/images.service';
+import { Follow } from 'src/follows/entities/follows.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Task, Comment, Like, User, Image]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Task, Comment, Like, User, Image, Follow]), AuthModule],
   controllers: [TasksController],
   providers: [TasksService, ImagesService],
   exports: [TypeOrmModule]

@@ -98,6 +98,28 @@ export const deleteTask = async(taskId) => {
     await axios.delete(`http://localhost:3000/tasks/${taskId}`, {withCredentials: true});
 }
 
+// Follow
+export const follow = async(data) => {
+    console.log('insdide follow Fetch');
+    const response = await axios.post(`http://localhost:3000/follows`, data, {
+        headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        },
+        withCredentials: true,
+    })
+    return response.data;
+}
+
+export const getAllRelations = async() => {
+    const response = await axios.get('http://localhost:3000/follows', {withCredentials: true});
+    return response.data;
+}
+
+export const deleteFollow = async(relationId) => {
+    console.log('inside delelteFollow Fetch');
+    await axios.delete(`http://localhost:3000/follows/${relationId}`, {withCredentials: true});
+}
 
 // AUthentication
 export const login = async(isRememberMe, data) => {

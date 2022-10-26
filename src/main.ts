@@ -32,9 +32,9 @@ bootstrap();
     User page ------ (Done)
     validate images size ------ (Done)
     Regex username, username cant have space ------ (Done)
-    View 1 task
-    Spin loading when create Task
-    Follow User
+    View 1 task ------ (Done)
+    Spin loading when create Task ------ (Done)
+    Follow User ------ (Done)
     Search User
     forget password
     edit task with images drag drop

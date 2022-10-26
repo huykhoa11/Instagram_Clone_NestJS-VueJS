@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { Follow } from 'src/follows/entities/follows.entity';
 import { Image } from 'src/images/entities/image.entity';
 import { Like } from 'src/likes/entities/like.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
@@ -17,24 +18,8 @@ export class TasksService {
     @InjectRepository(Like) private likesRepository: Repository<Like>,
     @InjectRepository(Image) private imagesRepository: Repository<Image>,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(Follow) private followsRepository: Repository<Follow>,
   ) {}
-
-  // async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-  //   const newTask = this.tasksRepository.create(createTaskDto);
-  //   newTask.createdAt = new Date().toISOString();
-  //   newTask.updatedAt = new Date().toISOString();
-  //   newTask.user = user;
-  //   await this.tasksRepository.save(newTask);
-
-  //   // return newTask;
-  //   return this.tasksRepository.findOne({
-  //     where: {id: newTask.id},
-  //     relations: {user: {likes: true}, 
-  //                 comments: {user: true}, 
-  //                 likes: {user: true}
-  //               },
-  //   })
-  // }
 
   async create(createTaskDto: CreateTaskDto, files: Array<Express.Multer.File>, user: User): Promise<Task> {
     const newTask = this.tasksRepository.create(createTaskDto);
@@ -44,15 +29,6 @@ export class TasksService {
 
     await this.tasksRepository.save(newTask);
 
-    // const returnImages = [];
-    // files.forEach(async(file) => {
-    //   const imgObj = {
-    //     name: file.filename,
-    //   }
-    //   returnImages.push(imgObj);
-    // })
-  
-    // return newTask;
     return this.tasksRepository.findOne({
       where: {id: newTask.id},
       relations: {user: {likes: true}, 
@@ -63,14 +39,22 @@ export class TasksService {
     })
   }
 
-  findAll(user: User): Promise<Task[]> {
-    return this.tasksRepository.find({
+  async findAll(user: User) {
+    const followingRelations = await this.followsRepository.find({where: {followerId: user.id}});
+    let arr = [];
+    arr.push(user.id);
+    followingRelations.forEach(element => {
+      arr.push(element.followingId);
+    });
+    console.log('arr', arr);
+
+    return await this.tasksRepository.find({
+      where: {user: {id: In(arr)}},
       relations: {user: {likes: true}, 
                   comments: {user: true}, 
                   likes: {user: true},
                   images: true
                 },
-
     })
   }
 

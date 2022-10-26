@@ -65,6 +65,7 @@ export class TasksController {
 
       // const {image, content} = createTaskDto;
       // const contentCreateTaskDto = {content: content};
+
       const newTask = await this.tasksService.create(createTaskDto, files, user);
       const createImages = await this.imagesService.create(files, user, newTask.id);
 

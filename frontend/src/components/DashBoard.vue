@@ -14,7 +14,6 @@
             <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
                 <div>
-                    
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
                 </div>
 
@@ -199,7 +198,7 @@ const dropzoneInputChange = (e) => {
         
         for(let i=0; i<e.target.files.length; i++ ) {
             console.log(e.target.files[i]);
-            if(e.dataTransfer.files[i].size/(1024*1024) > 1 ) {
+            if(e.target.files[i].size/(1024*1024) > 1 ) {
                 displayToast(`${e.dataTransfer.files[i].name} size is too big, please upload another`, dangerColor);
                 displayToast('File size is too big, max files size is 1MB',  dangerColor);
             }
@@ -368,7 +367,6 @@ const createTask = async() => {
             createTaskBtnRef.value.disabled = true;
             const tmp = createTaskBtnRef.value.innerHTML;
             createTaskBtnRef.value.innerHTML = spin();
-            inputTask.value = '';
 
             const data = {content: inputTask.value};
             uploadFile.value.append('content', inputTask.value)
@@ -381,7 +379,10 @@ const createTask = async() => {
                 },
                 withCredentials: true,
             })
+
+            console.log('test create TAsk');
             uploadFile.value = new FormData();
+            inputTask.value = '';
             location.reload();
 
             const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
@@ -394,6 +395,7 @@ const createTask = async() => {
             createTaskBtnRef.value.disabled = false;
             createTaskBtnRef.value.innerText = 'Create Task';
         } catch (error) {
+            console.error(error);
             displayToast("Something went wrong! Please try again", dangerColor);
         }
     }

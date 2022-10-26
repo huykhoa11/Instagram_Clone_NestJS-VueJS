@@ -17,7 +17,16 @@
                             {{ user.username }}
                         </router-link>
                     </div>
-                    <button class="text-blue-400" @click="addFollow(user.id)">Follow</button>
+                    <button v-if="!getRelationStatus(fetchUserData.currentUser.id, user.id)" 
+                    :id="'followBtn' + user.id" class="text-blue-400" 
+                    @click="followEvent(fetchUserData.currentUser.id, user.id)">
+                        Follow
+                    </button>
+                    <button v-else 
+                    :id="'followBtn' + user.id" class="text-black" 
+                    @click="followEvent(fetchUserData.currentUser.id, user.id)">
+                        Following
+                    </button>
                 </li>
             </ul>
         </div>
@@ -27,16 +36,77 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from "axios";
-const emit = defineEmits(['sendToDashboard'])
+import { displayToast } from '../composables/DisplayToast'
+import { deleteFollow, getAllRelations, follow, spin } from '../composables/Fetch';
+const dangerColor = '#EC6A71';
+const successColor = '#5CB85C';
 
+const emit = defineEmits(['sendToDashboard'])
 
 const currentUserChild = ref({});
 const usersChild = ref(null);
+const relations = ref([]);
 
 const props = defineProps({
     // currentUser: Object,
     // users: Object
     fetchUserData: Object
+})
+
+const followEvent = async(followerId, followingId) => {
+    const followBtnElement = document.getElementById(`followBtn${followingId}`);
+    const tmp = followBtnElement.innerHTML;
+    followBtnElement.innerHTML = spin();
+
+    const relation = relations.value.find(ele => ele.followerId === followerId && ele.followingId === followingId);
+    if(relation) {removeRelation(relation, followBtnElement);}
+    else {addRelation(followerId, followingId, followBtnElement);}    
+}
+
+const removeRelation = async(relation, followBtnElement) => {
+    console.log('in removeRelation');
+    try {
+        console.log('remove Follow test 1');
+        const response = await deleteFollow(relation.id);
+        console.log('remove Follow test 2');
+        const indexOfElementNeedRemove = relations.value.indexOf(relation);
+        console.log(indexOfElementNeedRemove);
+        relations.value.splice(indexOfElementNeedRemove, 1);
+        followBtnElement.innerHTML = 'Follow';
+        followBtnElement.classList.remove('text-black');
+        followBtnElement.classList.add('text-blue-400');
+    } catch (error) {
+        followBtnElement.innerHTML = 'Following';
+        displayToast('Error happend, cant unfollow user', dangerColor);
+    }
+}
+
+const addRelation = async (followerId, followingId, followBtnElement) => {
+    console.log('in addRelation');
+    try {
+        const data = {followerId: followerId, followingId: followingId};
+        const response = await follow(data);
+        console.log('test addRelation 1');
+        relations.value.push(response);
+        console.log('test addRelation 2');
+        followBtnElement.innerHTML = 'Following';
+        followBtnElement.classList.remove('text-blue-400');
+        followBtnElement.classList.add('text-black');
+    } catch (error) {
+        followBtnElement.innerHTML = 'Follow';
+        displayToast('Error happend, cant follow user', dangerColor);
+    }
+}
+
+
+const getRelationStatus = (followerId, followingId) => {
+    const relation = relations.value.find(ele => ele.followerId === followerId && ele.followingId === followingId);
+    return relation;
+}
+
+onMounted( async() => {
+    relations.value = await getAllRelations();
+    console.log(relations.value);
 })
 
 </script>
