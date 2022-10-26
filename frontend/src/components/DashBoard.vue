@@ -155,7 +155,7 @@ import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
 import { displayToast } from './../composables/DisplayToast.js';
-import { deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from './../composables/Fetch.js';
+import { getTasks, deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from './../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -366,7 +366,7 @@ const createTask = async() => {
         try {
             createTaskBtnRef.value.disabled = true;
             const tmp = createTaskBtnRef.value.innerHTML;
-            createTaskBtnRef.value.innerHTML = spin();
+            createTaskBtnRef.value.innerHTML = spin('gray');
 
             const data = {content: inputTask.value};
             uploadFile.value.append('content', inputTask.value)
@@ -399,12 +399,6 @@ const createTask = async() => {
             displayToast("Something went wrong! Please try again", dangerColor);
         }
     }
-}
-
-const getTasks = async() => {
-    const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-    tasks.value = response.data;
-    // state.tasks = response.data;
 }
 
 const deleteTaskEvent = async (taskId) => {
@@ -540,9 +534,10 @@ onMounted( async() => {
         currentUser.value = user;  
         users.value = otherUsers;
 
-        const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-        console.log(response.data);
-        tasks.value = response.data;
+        // const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
+        const response = await getTasks();
+        console.log(response);
+        tasks.value = response;
         tasks.value.reverse();
 
         if(tasks.value.length !== 0) {

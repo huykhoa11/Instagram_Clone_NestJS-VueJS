@@ -56,7 +56,6 @@ const props = defineProps({
 const followEvent = async(followerId, followingId) => {
     const followBtnElement = document.getElementById(`followBtn${followingId}`);
     const tmp = followBtnElement.innerHTML;
-    followBtnElement.innerHTML = spin();
 
     const relation = relations.value.find(ele => ele.followerId === followerId && ele.followingId === followingId);
     if(relation) {removeRelation(relation, followBtnElement);}
@@ -65,10 +64,9 @@ const followEvent = async(followerId, followingId) => {
 
 const removeRelation = async(relation, followBtnElement) => {
     console.log('in removeRelation');
+    followBtnElement.innerHTML = spin('gray');
     try {
-        console.log('remove Follow test 1');
         const response = await deleteFollow(relation.id);
-        console.log('remove Follow test 2');
         const indexOfElementNeedRemove = relations.value.indexOf(relation);
         console.log(indexOfElementNeedRemove);
         relations.value.splice(indexOfElementNeedRemove, 1);
@@ -83,12 +81,11 @@ const removeRelation = async(relation, followBtnElement) => {
 
 const addRelation = async (followerId, followingId, followBtnElement) => {
     console.log('in addRelation');
+    followBtnElement.innerHTML = spin('gray');
     try {
         const data = {followerId: followerId, followingId: followingId};
         const response = await follow(data);
-        console.log('test addRelation 1');
         relations.value.push(response);
-        console.log('test addRelation 2');
         followBtnElement.innerHTML = 'Following';
         followBtnElement.classList.remove('text-blue-400');
         followBtnElement.classList.add('text-black');

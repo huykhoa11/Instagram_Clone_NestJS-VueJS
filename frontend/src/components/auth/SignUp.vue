@@ -42,6 +42,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
+import { register, spin } from '/src/composables/Fetch.js';
 
 const store = useStore();
 
@@ -132,14 +133,9 @@ const signUp = async () => {
     try {
       signUpRef.value.disabled = true;
       signUpRef.value.classList.toggle('hover:bg-gray-500');
-      signUpRef.value.innerText = 'Signing up...';
-      const response = await axios.post('http://localhost:3000/auth/signup', data, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json;charset=UTF-8",
-        },
-        withCredentials: true,
-      });
+      signUpRef.value.innerText = spin('pink');
+      const response = await register(data);
+      
       router.push('/auth/signin')
     } catch (error) {
       console.log(error);
@@ -156,8 +152,6 @@ const signUp = async () => {
     } 
   }
 
-
 };
 
 </script>
-

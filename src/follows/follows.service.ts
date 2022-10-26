@@ -14,6 +14,16 @@ export class FollowsService {
         return this.followsRepository.find();
     }
 
+    async isFollowed(followerId: number, followingId: number) {
+        const relation = await this.followsRepository.findOne({
+            where: {
+                followerId: followerId,
+                followingId: followingId,
+            }
+        })
+        return relation;
+    }
+
     async create(createFollowDto: CreateFollowDto) {
         const newFollow = await this.followsRepository.create(createFollowDto);
         newFollow.createdAt = new Date().toISOString();

@@ -36,6 +36,7 @@ bootstrap();
     Spin loading when create Task ------ (Done)
     Follow User ------ (Done)
     Search User
+    lazy loading
     forget password
     edit task with images drag drop
  */

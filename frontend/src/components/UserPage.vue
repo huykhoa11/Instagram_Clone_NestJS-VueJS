@@ -1,18 +1,29 @@
 <template>
-    <div v-if="user" class="w-screen relative flex-row justify-center mt-10">
+    <div v-if="user && relation !== null" class="w-screen relative flex-row justify-center mt-10">
         <div class=" w-3/5 absolute left-0 right-0 mx-auto">
             <div class="flex justify-center items-center space-x-20">
                 <!-- avatar -->
                 <img :src="require('./../assets/' + user.avatar)" alt="" class=" h-36 w-36 border border-gray-100 rounded-full">
 
                 <div class="">
-                    <div class=" flex items-center h-10 space-x-5">
+                    <div class=" flex items-end h-10 space-x-5">
                         <h3 class=" text-4xl h-full font-thin">{{ user.username }}</h3>
                         <router-link v-if="user.id === currentUserId" to="/edit-current-user"
                                     class=" text-sm px-2 py-1 font-semibold border border-gray-300 rounded-sm hover:text-gray-300 hover:bg-black duration-100">
                             Edit user
                         </router-link>
-                        <button v-else class="text-white bg-blue-400 px-2 py-1 rounded-sm">Follow</button>
+                        <div v-else>
+                            <button v-if="relation" id="followBtn"
+                                    class="text-sm text-gray-700 px-2 py-1 font-semibold rounded-sm border border-gray-300" 
+                                    @click="followEvent(currentUserId, user.id)">
+                                Following
+                            </button>
+                            <button v-else id="followBtn"
+                                    class="text-sm text-white px-2 py-1 font-semibold rounded-sm bg-blue-400"
+                                    @click="followEvent(currentUserId, user.id)">
+                                Follow
+                            </button>
+                        </div>
                     </div>
 
                     <div class=" flex space-x-10 mt-7">
@@ -76,15 +87,58 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
-
+import { displayToast } from './../composables/DisplayToast.js';
+import { follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
 import Task from './Task.vue'
+
+const dangerColor = '#EC6A71';
+const successColor = '#5CB85C';
 
 const router = useRouter();
 const user = ref(null);
 const currentUserId = ref(null);
+const relation = ref(null);
 const open = ref({});
 
 // console.log(router.currentRoute.value.params.id);
+
+const followEvent = async(followerId, followingId) => {
+    const followBtnElement = document.getElementById('followBtn');
+    const tmp = followBtnElement.innerHTML;
+
+    if(relation.value) {removeRelation(relation.value, followBtnElement);}
+    else {addRelation(followerId, followingId, followBtnElement);}    
+}
+
+const removeRelation = async(relation, followBtnElement) => {
+    console.log('in removeRelation');
+    console.log(relation);
+    followBtnElement.innerHTML = spin('gray');
+    try {
+        const response = await deleteFollow(relation.id);
+        followBtnElement.innerHTML = 'Follow';
+        followBtnElement.classList.remove('text-gray-700', 'border', 'border-gray-300');
+        followBtnElement.classList.add('text-white', 'bg-blue-400');
+    } catch (error) {
+        followBtnElement.innerHTML = 'Following';
+        displayToast('Error happend, cant unfollow user', dangerColor);
+    }
+}
+
+const addRelation = async (followerId, followingId, followBtnElement) => {
+    console.log('in addRelation');
+    followBtnElement.innerHTML = spin('gray');
+    try {
+        const data = {followerId: followerId, followingId: followingId};
+        const response = await follow(data);
+        followBtnElement.innerHTML = 'Following';
+        followBtnElement.classList.remove('text-white', 'bg-blue-400');
+        followBtnElement.classList.add('text-gray-700', 'border', 'border-gray-300');
+    } catch (error) {
+        followBtnElement.innerHTML = 'Follow';
+        displayToast("Error happend, can't follow user", dangerColor);
+    }
+}
 
 onMounted( async() => {
     // const userId = parseInt(router.currentRoute.value.params.id);
@@ -101,6 +155,10 @@ onMounted( async() => {
         console.log(typeof currentUserId.value);
         console.log('user.id', user.value.id, ' currentUserId', currentUserId.value);
 
+        relation.value = await getRelation(currentUserId.value, userId);
+        console.log(relation.value);
+
+        // response = await 
     } catch (error) {
         console.log(error);
         if(error.response.status === 401) {

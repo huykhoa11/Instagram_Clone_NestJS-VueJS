@@ -116,7 +116,7 @@ const signIn = async () => {
     try {
       console.log('remember me ', isRememberMeCheck.value);
       signInRef.value.disabled = true;
-      signInRef.value.innerHTML = spin();
+      signInRef.value.innerHTML = spin('pink');
       const response = await login(isRememberMeCheck.value, data);
 
       localStorage.setItem('username' ,username.value);
