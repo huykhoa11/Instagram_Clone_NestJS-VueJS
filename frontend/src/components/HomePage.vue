@@ -192,8 +192,6 @@ const dropzoneInputChange = (e) => {
     e.preventDefault();
     console.log(e.target.files);
 
-    
-
     if ((previewDropFile.value.length+e.target.files.length) <= 5) {
         let formData = new FormData();
         

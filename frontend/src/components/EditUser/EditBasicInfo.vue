@@ -2,7 +2,7 @@
     <section>
         <div v-if="currentUser" class=" space-y-4 py-5">
             <div class=" flex items-center space-x-5 ml-16">
-                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14">
+                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14 rounded-full">
                 <div class=" flex flex-col">
                     <router-link :to="'/user/' +currentUser.id+ '?currentUserId=' +currentUser.id" 
                                 class=" text-lg font-semibold hover:underline hover:decoration-solid">

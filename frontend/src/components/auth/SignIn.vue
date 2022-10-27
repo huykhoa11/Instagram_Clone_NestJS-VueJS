@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
@@ -136,6 +136,19 @@ const signIn = async () => {
   }
   
 };
+
+onMounted( async() => {
+  alert
+  if(localStorage.getItem('username')) {
+    if (confirm('User is already signed in. Do you want to sign out first?')) {
+      // sign out
+      localStorage.removeItem('username');
+    } else {
+      // redirect to homepage
+      window.location.replace("http://localhost:8080/homepage");
+    }
+  }
+})
 
 </script>
 

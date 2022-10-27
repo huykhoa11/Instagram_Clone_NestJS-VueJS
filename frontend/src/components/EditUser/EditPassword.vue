@@ -2,7 +2,7 @@
     <section>
         <div v-if="currentUser" class=" space-y-4 py-5">
             <div class=" flex items-center space-x-5 ml-16">
-                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14">
+                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14 rounded-full">
                 <p class=" text-lg font-semibold">{{ currentUser.username }}</p>
             </div>
 
