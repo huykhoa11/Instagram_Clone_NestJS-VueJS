@@ -7,8 +7,8 @@
                 </SplideSlide>
         </Splide> -->
 
-         <div class=" relative w-3/5 h-full bg-yellow-400">
-            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full bg-blue-400">
+         <div class=" relative w-3/5 h-full">
+            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full">
                 <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
             </div>
 
@@ -45,7 +45,6 @@
                             {{ passData.task.user.username }}
                         </router-link>
                     </p>
-                    <button v-if="userId !== currentUserId" class="text-blue-400 font-semibold">Follow</button>
                 </div>
 
                 <div v-if="userId === currentUserId" class=" flex items-center space-x-2 mr-2" id="EditOrDeleteFeature">

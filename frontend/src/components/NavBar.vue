@@ -1,17 +1,41 @@
 <template>
-    <nav>
-      <div v-if="currentUser" class="drop-shadow-sm h-14 bg-zinc-700 flex justify-between items-center font-semibold">
-        <div class="flex space-x-3">
-          <router-link to="/homepage" class=" text-pink-300 hover:text-white">HOME</router-link>
-          <p class=" text-pink-300">Hello {{ currentUser.username }}</p>
+    <nav class="">
+      <div v-if="currentUser" class=" fixed z-[100] w-full drop-shadow-md h-12 bg-white flex justify-around items-center">
+        <div class="flex space-x-5">
+          <router-link to="/homepage" class=" text-pink-300 hover:text-white">
+            <img src="./../assets/instagram.png" alt="" class=" w-8 h-8">
+          </router-link>
+          <input type="search" name="q" placeholder="&#128269; Search User"  
+                class=" bg-gray-100 border border-gray-200 outline outline-none rounded-md pl-2">
         </div>
-        <div class="">
-          <button id="signOutBtn" @click="signOut()" class=" text-pink-300 hover:text-gray-50 hover:bg-pink-300 cursor-pointer">Sign Out</button>
+        <div class=" flex items-center space-x-4">
+          <i class="fa-solid fa-house text-lg"></i>
+          <i class="fa-regular fa-heart text-lg"></i>
+          <div class=" group relative">
+            <img :src="require('./../assets/' + currentUser.avatar)" alt="" class=" w-6 h-6 rounded-full">
+            <div class=" hidden hover:flex group-hover:flex flex-col w-36 bg-white drop-shadow z-[200] absolute -right-2 top-8
+                        before:absolute before:w-full before:h-5 before:-top-4">
+              <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
+                <router-link :to="'/user/' +currentUser.id+ '?currentUserId=' +currentUser.id">
+                  <i class="fa-regular fa-user mr-3"></i>My Page
+                </router-link>
+              </div>
+              <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
+                <router-link to="/edit-current-user">
+                  <i class="fa-solid fa-gear mr-3"></i>Edit user
+                </router-link>
+              </div><hr>
+              <div id="signOutBtn" @click="signOut()" 
+                      class=" text-pink-500 px-2 py-1 hover:text-gray-50 hover:bg-pink-300 cursor-pointer">
+                Sign Out
+              </div>
+            </div>
+          </div>
         </div>
         
       </div>
 
-      <div v-else class="drop-shadow-sm h-14 bg-zinc-700 flex justify-between items-center font-semibold">
+      <!-- <div v-else class=" fixed z-[100] w-full drop-shadow-md h-12 bg-white font-semibold flex justify-around items-center">
         <div class="">
           <p class=" text-pink-500">Let sign in ^^</p>
         </div>
@@ -19,7 +43,7 @@
           <router-link to="/auth/signup" class=" text-pink-500 hover:text-white">Sign Up</router-link>
           <router-link to="/auth/signin" class=" text-pink-500 hover:text-white">Sign In</router-link>
         </div>
-      </div>
+      </div> -->
 
         
     </nav>

@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { GetUser } from "src/users/dto/getUserDecorator";
+import { User } from "src/users/entities/user.entity";
 import { CreateFollowDto } from "./dto/create-follow.dto";
 import { FollowsService } from "./follows.service";
 
@@ -20,6 +22,13 @@ export class FollowsController {
     ) {
         const relation = this.followsSerive.isFollowed(followerId, followingId);
         return relation;
+    }
+
+    @Get('/user/:userId')
+    getNumOfFollowersFollowing(
+        @Param('userId', ParseIntPipe) userId: number,
+    ) {
+        return this.followsSerive.getNumOfFollowersFollowing(userId);
     }
 
     @Post()

@@ -6,20 +6,20 @@
         
         <div class=" p-10">
           <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
-          <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+          <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                             v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
           <p class=" text-xs text-gray-400">(*) Username can't contain white space</p>
           <p class=" h-4 text-red-500">{{ usernameError }}</p>
           <br>
 
           <label for="" class=" text-lg block">Password<span class="text-red-500">*</span></label>
-          <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+          <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                             v-model="password" @blur="validateOnBlur()" @focus="inputFocus('passwordInput')" @input="inputChange">
           <p class=" h-4 text-red-500">{{ passwordError }}</p>
           <br>
 
           <label for="" class=" text-lg block">Confirm Password<span class="text-red-500">*</span></label>
-          <input id="confirmPasswordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+          <input id="confirmPasswordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                                 v-model="confirmPassword" @blur="validateOnBlur()" @focus="inputFocus('confirmPasswordInput')" @input="inputChange">
           <p class=" h-4 text-red-500">{{ confirmPasswordError }}</p>
           <br>

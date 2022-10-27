@@ -1,5 +1,5 @@
 <template>
-    <div v-if="user && relation !== null" class="w-screen relative flex-row justify-center mt-10">
+    <div v-if="user && relation !== null && followers !== null && following !== null" class="w-screen relative flex-row justify-center pt-16">
         <div class=" w-3/5 absolute left-0 right-0 mx-auto">
             <div class="flex justify-center items-center space-x-20">
                 <!-- avatar -->
@@ -28,8 +28,8 @@
 
                     <div class=" flex space-x-10 mt-7">
                         <p> <span class=" font-semibold">{{ computed(() => user.tasks.length) }}</span> posts </p>
-                        <p> 0 followers</p>
-                        <p> 0 following </p>
+                        <p> <span class=" font-semibold">{{followers}}</span> followers</p>
+                        <p> <span class=" font-semibold">{{following}}</span> following </p>
                     </div>
 
                     <div class=" mt-7">
@@ -98,6 +98,8 @@ const router = useRouter();
 const user = ref(null);
 const currentUserId = ref(null);
 const relation = ref(null);
+const followers = ref(null);
+const following = ref(null);
 const open = ref({});
 
 // console.log(router.currentRoute.value.params.id);
@@ -146,7 +148,7 @@ onMounted( async() => {
     currentUserId.value = parseInt(router.currentRoute.value.query.currentUserId);
 
     try {
-        const response = await axios.get('http://localhost:3000/users/' + userId, {withCredentials: true});
+        let response = await axios.get('http://localhost:3000/users/' + userId, {withCredentials: true});
         user.value = response.data;
         user.value.tasks.forEach(element => {
             open.value[`${element.id}`] = false;
@@ -157,6 +159,11 @@ onMounted( async() => {
 
         relation.value = await getRelation(currentUserId.value, userId);
         console.log(relation.value);
+
+        response = await axios.get('http://localhost:3000/follows/user/' + userId, {withCredentials: true});
+        const {numFollowers, numFollowing} = response.data;
+        followers.value = numFollowers;
+        following.value = numFollowing;
 
         // response = await 
     } catch (error) {

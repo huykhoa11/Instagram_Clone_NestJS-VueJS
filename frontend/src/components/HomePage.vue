@@ -8,7 +8,7 @@
             </svg>
         </div>
     </div>
-    <section v-else class=" bg-gray-50 pt-10">
+    <section v-else class=" bg-gray-50 pt-16">
 
         <div class="w-screen flex justify-center mb-3 mx-3">
             <div class=" border-double border-4 border-gray-200 p-3 w-[900px] ">

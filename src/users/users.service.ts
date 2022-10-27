@@ -36,8 +36,7 @@ export class UsersService {
         return this.usersRepository.findOne({
             where: {id: userId},
             relations: {tasks: {images: true, comments: {user: true}, likes: {user: true}, user: true}, 
-                        comments: true, 
-                        likes: true}
+                        }
         })
     }
 

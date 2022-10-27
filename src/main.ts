@@ -38,8 +38,10 @@ bootstrap();
     bugs uploadFile when remove images ------ (Done)
     404 Page ------ (Done)
     lazy posts loading ------ (Done)
-    'See all suggest friends' button feature
     Search User
+    show followers, following user when click on tag 
+    Responsive
+    'See all suggest friends' button feature
     forget password
  */
 
