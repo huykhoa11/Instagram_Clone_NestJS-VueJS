@@ -1,34 +1,37 @@
 <template>
   <section>
     <div class=" relative w-screen h-screen bg-gray-200 ">
-      <div class=" absolute left-0 right-0 top-10 mx-auto w-1/3 rounded-sm border border-gray-100 bg-white p-10">
-        <header class=" w-full h-1/6 flex items-center pl-2 bg-pink-200 text-3xl mb-5">Sign Up</header>
-        <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
-        <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2" 
-                          v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
-        <p class=" text-xs text-gray-400">(*) Username can't contain white space</p>
-        <p class=" h-4 text-red-500">{{ usernameError }}</p>
-        <br>
+      <div class=" absolute left-0 right-0 top-10 mx-auto max-w-[500px] min-w-[350px] rounded-lg bg-white overflow-hidden">
+        <header class=" w-full h-20 pl-10 flex items-center bg-gradient-to-r from-fuchsia-600 to-pink-400 font-bold text-white text-4xl">Sign Up</header>
+        
+        <div class=" p-10">
+          <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
+          <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+                            v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
+          <p class=" text-xs text-gray-400">(*) Username can't contain white space</p>
+          <p class=" h-4 text-red-500">{{ usernameError }}</p>
+          <br>
 
-        <label for="" class=" text-lg block">Password<span class="text-red-500">*</span></label>
-        <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2" 
-                          v-model="password" @blur="validateOnBlur()" @focus="inputFocus('passwordInput')" @input="inputChange">
-        <p class=" h-4 text-red-500">{{ passwordError }}</p>
-        <br>
+          <label for="" class=" text-lg block">Password<span class="text-red-500">*</span></label>
+          <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+                            v-model="password" @blur="validateOnBlur()" @focus="inputFocus('passwordInput')" @input="inputChange">
+          <p class=" h-4 text-red-500">{{ passwordError }}</p>
+          <br>
 
-        <label for="" class=" text-lg block">Confirm Password<span class="text-red-500">*</span></label>
-        <input id="confirmPasswordInput" type="password" class="border border-gray-200 h-10 w-full pl-2" 
-                              v-model="confirmPassword" @blur="validateOnBlur()" @focus="inputFocus('confirmPasswordInput')" @input="inputChange">
-        <p class=" h-4 text-red-500">{{ confirmPasswordError }}</p>
-        <br>
-        <div>
-          <router-link to="/auth/signin" class=" text-sm text-sky-500 hover:underline hover:decoration-solid">
-            Already have an account? Sign in 
-          </router-link>
+          <label for="" class=" text-lg block">Confirm Password<span class="text-red-500">*</span></label>
+          <input id="confirmPasswordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm focus:outline-none" 
+                                v-model="confirmPassword" @blur="validateOnBlur()" @focus="inputFocus('confirmPasswordInput')" @input="inputChange">
+          <p class=" h-4 text-red-500">{{ confirmPasswordError }}</p>
+          <br>
+          <div>
+            <router-link to="/auth/signin" class=" text-sm text-sky-500 hover:underline hover:decoration-solid">
+              Already have an account? Sign in 
+            </router-link>
+          </div>
+
+          <button @click="signUp()" class=" mt-7 py-1 px-3 bg-black rounded-md 
+                                      text-xl text-white hover:bg-gray-500" ref="signUpRef">User register</button>
         </div>
-
-        <button @click="signUp()" class=" mt-7 py-1 px-3 bg-black rounded-md 
-                                    text-xl text-white hover:bg-gray-500" ref="signUpRef">User register</button>
 
       </div>
     </div>
