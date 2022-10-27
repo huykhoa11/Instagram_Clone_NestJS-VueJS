@@ -37,9 +37,9 @@ bootstrap();
     Follow User ------ (Done)
     bugs uploadFile when remove images ------ (Done)
     404 Page ------ (Done)
+    lazy posts loading ------ (Done)
     'See all suggest friends' button feature
     Search User
-    lazy loading
     forget password
  */
 
