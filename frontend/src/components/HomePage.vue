@@ -10,8 +10,8 @@
     </div>
     <section v-else class=" bg-gray-50 pt-10">
 
-        <div class="w-screen flex justify-center mb-3">
-            <div class=" border-double border-4 border-gray-200 p-3 w-1/2">
+        <div class="w-screen flex justify-center mb-3 mx-3">
+            <div class=" border-double border-4 border-gray-200 p-3 w-[900px] ">
                 <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
                 <div>
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
@@ -46,8 +46,8 @@
             </div>
         </div>
 
-        <div class=" relative mx-auto w-3/5 flex justify-center space-x-5 my-3 ">
-            <ul class=" space-y-10 w-2/4">
+        <div class=" relative mx-auto max-w-[900px] min-w-[350px] flex justify-center space-x-5 my-3">
+            <ul class=" space-y-10 max-w-[450px]">
                 <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
                     <div class="">
                         <div class="px-2 flex justify-between items-center">

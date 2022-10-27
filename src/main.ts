@@ -36,7 +36,7 @@ bootstrap();
     Spin loading when create Task ------ (Done)
     Follow User ------ (Done)
     bugs uploadFile when remove images ------ (Done)
-    404 Page
+    404 Page ------ (Done)
     'See all suggest friends' button feature
     Search User
     lazy loading
