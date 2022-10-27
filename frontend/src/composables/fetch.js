@@ -17,8 +17,8 @@ export const getCmtsFromOneTask = async(taskId) => {
     return result;
 }
 
-export const getTasks = async() => {
-    const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
+export const getTasks = async(loadedPost) => {
+    const response = await axios.get(`http://localhost:3000/tasks?loadedPost=${loadedPost}`, {withCredentials: true});
     return response.data;
 };
 

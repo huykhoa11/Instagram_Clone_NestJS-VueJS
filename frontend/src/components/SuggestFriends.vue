@@ -1,5 +1,5 @@
 <template>
-    <div class=" bg-white w-1/4 h-96 p-2 rounded-sm">
+    <div class=" bg-white w-1/4 h-96 p-2 rounded-sm drop-shadow-md">
         <p class=" text-sm font-semibold text-gray-400">Suggest friends for you</p>
         <div v-if="fetchUserData.users === null" class="mt-2">
             <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -13,7 +13,7 @@
                     <div class=" flex space-x-2">
                         <img :src="require('./../assets/' + user.avatar)" alt="" class=" w-5 h-5 rounded-full">
                         <router-link :to="'/user/' +user.id+ '?currentUserId=' +fetchUserData.currentUser.id" 
-                                        class=" font-semibold hover:underline hover:decoration-solid">
+                                        class=" font-semibold hover:text-gray-500">
                             {{ user.username }}
                         </router-link>
                     </div>

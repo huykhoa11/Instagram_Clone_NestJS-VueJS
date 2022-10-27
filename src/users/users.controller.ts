@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -26,7 +26,9 @@ export class UsersController {
     }
 
     @Get('/currentuser-and-otherusers')
-    async getUsers (@GetUser() user: User) {
+    async getUsers (
+        @GetUser() user: User,
+    ) {
         const otherUsers = await this.usersService.findOtherUsers(user.id);
         console.log(user, otherUsers);
         return {user, otherUsers};

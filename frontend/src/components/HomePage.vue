@@ -47,99 +47,111 @@
         </div>
 
         <div class=" relative mx-auto max-w-[900px] min-w-[350px] flex justify-center space-x-5 my-3">
-            <ul class=" space-y-10 max-w-[450px]">
-                <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white">
-                    <div class="">
-                        <div class="px-2 flex justify-between items-center">
-                            <div class=" flex items-center space-x-2">
-                                <img :src="require('./../assets/' + task.user.avatar)" alt="" class=" w-8 h-8 rounded-full">
-                                <!-- <img :src="`./../uploads/${task.user.avatar}`" alt="" class=" w-8 h-8 rounded-full"> -->
-                                <div>
-                                    <p class=" font-semibold text-pink-500">
-                                        <router-link :to="'/user/' +task.user.id+ '?currentUserId=' +currentUser.id" 
-                                                    class=" hover:underline hover:decoration-solid">
-                                            {{ task.user.username }}
-                                        </router-link>
-                                    </p>
-                                    <p class=" text-xs">{{ task.updatedAt.split('T')[0] }}</p>
+            <div class="max-w-[450px]">
+                <ul class=" space-y-10">
+                    <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white drop-shadow-md">
+                        <div class="">
+                            <div class="px-2 flex justify-between items-center">
+                                <div class=" flex items-center space-x-2">
+                                    <img :src="require('./../assets/' + task.user.avatar)" alt="" class=" w-8 h-8 rounded-full">
+                                    <!-- <img :src="`./../uploads/${task.user.avatar}`" alt="" class=" w-8 h-8 rounded-full"> -->
+                                    <div>
+                                        <p class=" font-semibold text-pink-500">
+                                            <router-link :to="'/user/' +task.user.id+ '?currentUserId=' +currentUser.id" 
+                                                        class=" hover:underline hover:decoration-solid">
+                                                {{ task.user.username }}
+                                            </router-link>
+                                        </p>
+                                        <p class=" text-xs">{{ task.updatedAt.split('T')[0] }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- <div @sendToDashboard="(fetchUserData) => {
-                                currentUser = fetchUserData.user;  
-                                users = fetchUserData.otherUsers;
-                            }"> -->
+                                <!-- <div @sendToDashboard="(fetchUserData) => {
+                                    currentUser = fetchUserData.user;  
+                                    users = fetchUserData.otherUsers;
+                                }"> -->
 
-                                <!-- <div v-if="currentUser.username === userOfTasks[task.id].username"> -->
-                                <div v-if="currentUser.username === task.user.username">
-                                    <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
-                                        <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
-                                            <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus($event, task.id, 'edit')">Edit</div>
-                                            <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTaskEvent(task.id)">Delete</div>
-                                        </div>
-                                    </i>
-                                </div>
-                            <!-- </div> -->
+                                    <!-- <div v-if="currentUser.username === userOfTasks[task.id].username"> -->
+                                    <div v-if="currentUser.username === task.user.username">
+                                        <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
+                                            <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
+                                                <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus($event, task.id, 'edit')">Edit</div>
+                                                <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTaskEvent(task.id)">Delete</div>
+                                            </div>
+                                        </i>
+                                    </div>
+                                <!-- </div> -->
+                            </div>
+                            <hr>
+                            
+                            <!-- splide images -->
+                            <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
+                                <SplideSlide v-for="image in Object.assign({}, task.images)" :key="image.id" class=" w-full h-[360px]">
+                                    <!-- <img :src="`./../uploads/${image.name}`" alt="sample-1" class=" w-full h-full"> -->
+                                    <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
+                                    <!-- <img src="./../assets/XAlonso2008-28d3.jpg" alt='' class=" w-full h-full"> -->
+                                </SplideSlide>
+                            </Splide>
+
+                            <!-- task content -->
+                            <div class="flex h-20 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
+                                <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
+                                        class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
+                                <!-- <div class="" v-if="isEditting === false"> -->
+                                    <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
+                                    <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
+                                <!-- </div> -->
+                                <!-- <div class="" v-else>Loading...</div> -->
+                            </div>
+                            <p v-show="isEdit.find(ele => ele.taskId === task.id).status === false" class=" h-20 pl-2">{{ task.content }}</p>
+
                         </div>
                         <hr>
-                        
-                        <!-- splide images -->
-                        <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-full">
-                            <SplideSlide v-for="image in Object.assign({}, task.images)" :key="image.id" class=" w-full h-[360px]">
-                                <!-- <img :src="`./../uploads/${image.name}`" alt="sample-1" class=" w-full h-full"> -->
-                                <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
-                                <!-- <img src="./../assets/XAlonso2008-28d3.jpg" alt='' class=" w-full h-full"> -->
-                            </SplideSlide>
-                        </Splide>
-
-                        <!-- task content -->
-                        <div class="flex h-20 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
-                            <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
-                                    class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
-                            <!-- <div class="" v-if="isEditting === false"> -->
-                                <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
-                                <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
-                            <!-- </div> -->
-                            <!-- <div class="" v-else>Loading...</div> -->
-                        </div>
-                        <p v-show="isEdit.find(ele => ele.taskId === task.id).status === false" class=" h-20 pl-2">{{ task.content }}</p>
-
-                    </div>
-                    <hr>
-                    <ul class=" overflow-auto mt-2 h-28">
-                        <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
-                            <div class="text-sm flex items-center space-x-2">
-                                <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
-                                <!-- <img :src="`./../uploads/${comment.user.avatar}`" alt="" class=" w-5 h-5 rounded-full"> -->
-                                <div>
-                                    <!-- <span class=" font-semibold">{{ comment.user.username }}: </span> -->
-                                    <router-link :to="'/user/' +comment.user.id+ '?currentUserId=' +currentUser.id" 
-                                                    class=" font-semibold hover:underline hover:decoration-solid">
-                                        {{ comment.user.username }}
-                                    </router-link>
-                                    {{comment.content}}  
-                                    <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
+                        <ul class=" overflow-auto mt-2 h-28">
+                            <li v-for="comment in task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
+                                <div class="text-sm flex items-center space-x-2">
+                                    <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
+                                    <!-- <img :src="`./../uploads/${comment.user.avatar}`" alt="" class=" w-5 h-5 rounded-full"> -->
+                                    <div>
+                                        <!-- <span class=" font-semibold">{{ comment.user.username }}: </span> -->
+                                        <router-link :to="'/user/' +comment.user.id+ '?currentUserId=' +currentUser.id" 
+                                                        class=" font-semibold hover:underline hover:decoration-solid">
+                                            {{ comment.user.username }}
+                                        </router-link>
+                                        {{comment.content}}  
+                                        <span class=" text-[9px]">{{ timeAgoComment(comment) }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <i v-if="currentUser.id === comment.user.id" @click="deleteCommentEvent(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
-                                hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
-                        </li>
-                    </ul>
-                    <div class="relative">
-                        <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-pink-400 bg-pink-100'  ]" 
-                                @click="likeClick(task)" 
-                                class=" px-2 text-sm block border border-gray-200 hover:bg-slate-200 hover:cursor-pointer">
-                                <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
-                        </button>
-                        <span class=" flex justify-center items-center text-white bg-pink-500
-                                     h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ task.likes.length }}</span>
+                                <i v-if="currentUser.id === comment.user.id" @click="deleteCommentEvent(comment.id, task)" class="fa-solid fa-x mr-4 text-xs hidden opacity-50 
+                                    hover:cursor-pointer hover:opacity-80 hover:text-red-500 group-hover:inline-block"></i>
+                            </li>
+                        </ul>
+                        <div class="relative">
+                            <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-pink-400 bg-pink-100'  ]" 
+                                    @click="likeClick(task)" 
+                                    class=" px-2 text-sm block border border-gray-200 hover:bg-slate-200 hover:cursor-pointer">
+                                    <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
+                            </button>
+                            <span class=" flex justify-center items-center text-white bg-pink-500
+                                        h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ task.likes.length }}</span>
+                        </div>
+                        <div class=" flex">
+                            <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="leave a comment" maxlength="50">
+                            <button @click="addComment(task)" :id="'buttonComment' + task.id" 
+                                    class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
+                        </div>
+                    </li>
+                </ul>
+
+                <footer class=" flex flex-col items-center mt-2">
+                    <div id="scoll-trigger"></div>
+                    <div class=" " v-show="showLoader">
+                        <svg class="mr-2 inline h-10 w-10 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                        </svg>
                     </div>
-                    <div class=" flex">
-                        <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="leave a comment" maxlength="50">
-                        <button @click="addComment(task)" :id="'buttonComment' + task.id" 
-                                class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
-                    </div>
-                </li>
-            </ul>
+                </footer>
+            </div>
 
             <SuggestFriends :fetchUserData="{currentUser: currentUser, users: users}" />
         </div>
@@ -167,6 +179,12 @@ const successColor = '#5CB85C';
 const store = useStore();
 const router = useRouter();
 
+const loadedPost = ref(2);
+const currentPage = ref(1);
+const maxPerPage = ref(2);
+const totalPosts = ref(null);
+const showLoader = ref(false);
+
 const isReady = ref(false);
 
 const state = reactive({tasks: [], comments: [], likes: []});
@@ -187,6 +205,26 @@ const uploadFile = ref(new FormData());       //For send data to backend
 const mockUploadFile = ref([]);
 const previewDropFile = ref([]);  //For preview image on dropzone of frontend 
 const dropZoneElement = ref(null);
+
+const scollTrigger = () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach( async(entry) => {
+            if(entry.intersectionRatio > 0 && currentPage.value < (currentPage.value * maxPerPage.value)) {
+                showLoader.value = true;
+                loadedPost.value += 2;
+                const response = await getTasks(loadedPost.value);
+                response.forEach(res => {
+                    tasks.value.push(res);
+                    isEdit.value.push({taskId: res.id, status: false});
+                })
+                showLoader.value = false;
+            }
+        });
+    });
+    const triggerElement = document.getElementById('scoll-trigger');
+    observer.observe(triggerElement);
+}
+
 
 const dropzoneInputChange = (e) => {
     e.preventDefault();
@@ -512,10 +550,10 @@ onMounted( async() => {
         users.value = otherUsers;
 
         // const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-        const response = await getTasks();
+        const response = await getTasks(loadedPost.value);
         console.log(response);
         tasks.value = response;
-        tasks.value.reverse();
+        // tasks.value.reverse();
 
         if(tasks.value.length !== 0) {
             tasks.value.forEach(async(ele) => {
@@ -527,8 +565,8 @@ onMounted( async() => {
         router.push('/auth/signin');
         localStorage.removeItem('username');        
     }
-
     
+    scollTrigger();
     isReady.value = false;
     /////////////////////////////////////////////////////////////////////
 
@@ -554,6 +592,7 @@ onMounted( async() => {
     dropZoneElement.addEventListener('click', (e) => {
         inputElement.click();
     })
+
 })
 
 </script>

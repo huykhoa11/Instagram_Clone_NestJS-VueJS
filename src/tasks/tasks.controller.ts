@@ -99,8 +99,11 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@GetUser() user: User) {
-    return this.tasksService.findAll(user);
+  findAll(
+    @GetUser() user: User,
+    @Query('loadedPost', ParseIntPipe) loadedPost: number
+  ) {
+    return this.tasksService.findAll(user, loadedPost);
   }
   
   @Get(':id')

@@ -39,7 +39,7 @@ export class TasksService {
     })
   }
 
-  async findAll(user: User) {
+  async findAll(user: User, loadedPost: number) {
     const followingRelations = await this.followsRepository.find({where: {followerId: user.id}});
     let arr = [];
     arr.push(user.id);
@@ -55,6 +55,11 @@ export class TasksService {
                   likes: {user: true},
                   images: true
                 },
+      order: {
+        id: "DESC",
+      },
+      skip: loadedPost-2,
+      take: 2,
     })
   }
 
