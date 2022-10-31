@@ -40,6 +40,15 @@ export class UsersService {
         })
     }
 
+    async findByUsername(username: string): Promise<number> {
+        const foundUser = await this.usersRepository.findOne({
+            where: {username: username},
+            relations: {tasks: {images: true, comments: {user: true}, likes: {user: true}, user: true}, 
+                        }
+        })
+        return foundUser.id;
+    }
+
     async editCurrentUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
         const {name, bio, email} = updateUserDto;
 

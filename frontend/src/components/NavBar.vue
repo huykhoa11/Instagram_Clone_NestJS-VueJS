@@ -1,12 +1,15 @@
 <template>
     <nav class="">
       <div v-if="currentUser" class=" fixed z-[100] w-full drop-shadow-md h-12 bg-white flex justify-around items-center">
-        <div class="flex space-x-5">
+        <div class="flex items-center space-x-5">
           <router-link to="/homepage" class=" text-pink-300 hover:text-white">
             <img src="./../assets/instagram.png" alt="" class=" w-8 h-8">
           </router-link>
-          <input type="search" name="q" placeholder="&#128269; Search User"  
-                class=" bg-gray-100 border border-gray-200 outline outline-none rounded-md pl-2">
+          <div class=" flex items-center">
+            <input type="text" name="q" placeholder="Search User" v-model="inputSearchUser"
+                  class=" bg-gray-100 border border-gray-200 outline outline-none rounded-md pl-2">
+            <button id="searchBtn" class=" -translate-x-6" @click="searchUserEvent"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </div>
         </div>
         <div class=" flex items-center space-x-4">
           <i class="fa-solid fa-house text-lg"></i>
@@ -55,6 +58,8 @@
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router"
 import { computed, onMounted, ref } from 'vue';
+import { searchUserbyUsername, spin } from './../composables/Fetch.js';
+import { displayToast } from './../composables/DisplayToast.js';
 import axios from 'axios';
 
 const router = useRouter();
@@ -63,6 +68,24 @@ const store = useStore();
 const username = ref(null);
 const currentUser = ref(null);
 
+const dangerColor = '#EC6A71';
+const successColor = '#5CB85C';
+
+const inputSearchUser = ref('');
+
+const searchUserEvent = async () => {
+  const searchBtnElement = document.getElementById('searchBtn');
+  const tmp = searchBtnElement.innerHTML; 
+  searchBtnElement.innerHTML = spin('gray');
+  try {
+    const searchUserId = await searchUserbyUsername(inputSearchUser.value);
+    window.location.replace(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
+  } catch (error) {
+    console.log(error);
+    searchBtnElement.innerHTML = tmp;
+    displayToast(`User ${inputSearchUser.value} doesn't exist`, dangerColor);
+  }
+}
 
 const signOut = async () => {
   const signOutBtnElement = document.getElementById('signOutBtn');

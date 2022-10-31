@@ -41,6 +41,13 @@ export class UsersController {
         return this.usersService.findSpecificUser(id);
     }
 
+    @Get('/search/:username')
+    async getUserByUsername (
+        @Param('username') username: string
+    ) {
+        return this.usersService.findByUsername(username);
+    }
+
     @Patch(':id')
     async editCurrentUser(
         @Body() updateUserDto: UpdateUserDto,

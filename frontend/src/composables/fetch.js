@@ -33,6 +33,13 @@ export const createTask = async(data) => {
     })
 }
 
+
+// Search User
+export const searchUserbyUsername = async (username) => {
+    const response = await axios.get(`http://localhost:3000/users/search/${username}`, {withCredentials: true});
+    return response.data;
+}
+
 // Like
 export const addLike = async (taskId) => {
     console.log('inside addLike Fetch.js');

@@ -38,8 +38,9 @@ bootstrap();
     bugs uploadFile when remove images ------ (Done)
     404 Page ------ (Done)
     lazy posts loading ------ (Done)
-    Search User
-    show followers, following user when click on tag 
+    Normal user search ------ (Done)
+    Meilia Search or Elastic search
+    show followers, following user when click on tag at UserPage.vue
     Responsive
     'See all suggest friends' button feature
     forget password
