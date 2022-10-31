@@ -1,3 +1,6 @@
+export const dangerColor = '#EC6A71';
+export const successColor = '#5CB85C';
+
 export const displayToast = (text, color) => {
     Toastify({
         text: text,

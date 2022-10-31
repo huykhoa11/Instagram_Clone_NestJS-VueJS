@@ -166,15 +166,12 @@ import { reactive, ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
-import { displayToast } from '../composables/DisplayToast.js';
+import { displayToast, dangerColor, successColor } from '../composables/DisplayToast.js';
 import { getTasks, deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
-
-const dangerColor = '#EC6A71';
-const successColor = '#5CB85C';
 
 const store = useStore();
 const router = useRouter();
@@ -367,7 +364,7 @@ const removeImage = (e, file) => {
 const createTask = async() => {
 
     if(previewDropFile.value.length === 0) {
-        displayToast('Task must has atleast 1 image', dangerColor);
+        displayToast('Task must has at least 1 image', dangerColor);
         console.log(previewDropFile.value);
     }
     else if(inputTask.value === '') {

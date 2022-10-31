@@ -32,9 +32,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from "axios";
-import { displayToast } from './../../composables/DisplayToast.js';
-const successColor = '#5CB85C';
-const dangerColor = '#EC6A71';
+import { displayToast, dangerColor, successColor } from './../../composables/DisplayToast.js';
 
 const currentUser = ref(null);
 

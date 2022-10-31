@@ -40,7 +40,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
-import { displayToast } from '/src/composables/DisplayToast';
+import { displayToast, dangerColor, successColor } from '/src/composables/DisplayToast';
 import { login, spin } from '/src/composables/Fetch.js';
 
 const store = useStore();
@@ -131,7 +131,7 @@ const signIn = async () => {
       signInRef.value.innerHTML = tmp;
       username.value = '';
       password.value = '';
-      displayToast('Account not found, please input again', '#EC6A71');
+      displayToast('Account not found, please input again', dangerColor);
     }
   }
   

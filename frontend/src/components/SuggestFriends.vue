@@ -36,10 +36,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from "axios";
-import { displayToast } from '../composables/DisplayToast'
+import { displayToast, dangerColor, successColor } from '../composables/DisplayToast'
 import { deleteFollow, getAllRelations, follow, spin } from '../composables/Fetch';
-const dangerColor = '#EC6A71';
-const successColor = '#5CB85C';
 
 const emit = defineEmits(['sendToDashboard'])
 

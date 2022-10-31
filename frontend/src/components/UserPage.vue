@@ -87,12 +87,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
-import { displayToast } from './../composables/DisplayToast.js';
+import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import { follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
 import Task from './Task.vue'
-
-const dangerColor = '#EC6A71';
-const successColor = '#5CB85C';
 
 const router = useRouter();
 const user = ref(null);

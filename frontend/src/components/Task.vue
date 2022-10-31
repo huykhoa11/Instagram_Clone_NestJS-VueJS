@@ -128,7 +128,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
-import { displayToast } from './../composables/DisplayToast.js';
+import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import { addLike, deleteLike, spin, createComment, deleteComment, saveEditTask, deleteTask, timeAgoComment } from './../composables/Fetch.js';
 
 // import splide
@@ -136,8 +136,6 @@ import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
 
 const router = useRouter();
-const dangerColor = '#EC6A71';
-const successColor = '#5CB85C';
 
 const users = ref([]);
 const currentUser = ref({});

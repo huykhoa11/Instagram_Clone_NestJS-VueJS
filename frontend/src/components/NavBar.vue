@@ -59,7 +59,7 @@ import { useStore } from 'vuex';
 import { useRouter } from "vue-router"
 import { computed, onMounted, ref } from 'vue';
 import { searchUserbyUsername, spin } from './../composables/Fetch.js';
-import { displayToast } from './../composables/DisplayToast.js';
+import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import axios from 'axios';
 
 const router = useRouter();
@@ -67,9 +67,6 @@ const store = useStore();
 
 const username = ref(null);
 const currentUser = ref(null);
-
-const dangerColor = '#EC6A71';
-const successColor = '#5CB85C';
 
 const inputSearchUser = ref('');
 

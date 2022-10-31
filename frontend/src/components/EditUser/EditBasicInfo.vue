@@ -54,10 +54,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import axios from "axios";
-import { displayToast } from './../../composables/DisplayToast.js'
-
-const successColor = '#5CB85C';
-const dangerColor = '#EC6A71';
+import { displayToast, dangerColor, successColor } from './../../composables/DisplayToast.js'
 
 const currentUser = ref(null);
 const nameInput = ref('');
@@ -101,10 +98,10 @@ const update = async () => {
                 withCredentials: true,
             });
         if(response.data) {
-            displayToast('Save successfully', '#5CB85C');
+            displayToast('Save successfully', successColor);
         }
     } catch (error) {
-        displayToast('Save failed', '#EC6A71');
+        displayToast('Save failed', dangerColor);
     }
 }
 
