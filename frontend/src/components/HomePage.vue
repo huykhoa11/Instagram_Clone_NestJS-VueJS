@@ -74,8 +74,12 @@
                                     <div v-if="currentUser.username === task.user.username">
                                         <i class="fa-solid fa-ellipsis pl-3 mr-3 inline-block hover:cursor-pointer group relative">
                                             <div class=" absolute -right-6 top-4 w-20 border border-gray-300 bg-white hidden group-hover:inline-block z-10">
-                                                <div class=" text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-5" @click="changeIsEditStatus($event, task.id, 'edit')">Edit</div>
-                                                <div class=" text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-5" @click="deleteTaskEvent(task.id)">Delete</div>
+                                                <div class=" flex items-center space-x-2 text-xs text-blue-400 hover:bg-sky-200 hover:cursor-pointer pl-1 h-6 " @click="changeIsEditStatus($event, task.id, 'edit')">
+                                                    <i class="fa-solid fa-pen-to-square"></i><span>Edit</span>
+                                                </div>
+                                                <div class=" flex items-center space-x-2 text-xs text-red-500 hover:bg-red-200 hover:cursor-pointer pl-1 h-6 " @click="deleteTaskEvent(task.id)">
+                                                    <i class="fa-solid fa-trash"></i><span>Delete</span>
+                                                </div>
                                             </div>
                                         </i>
                                     </div>
