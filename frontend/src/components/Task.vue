@@ -10,7 +10,8 @@
                 </SplideSlide>
         </Splide> -->
 
-         <div class=" relative w-full h-3/5 md:w-3/5 md:h-full ">
+        <!-- left -->
+        <div class=" relative w-full h-3/5 md:w-3/5 md:h-full ">
             <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full border border-red-500">
                 <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
             </div>
@@ -36,6 +37,7 @@
         </div> 
 
 
+        <!-- right -->
         <div class=" w-full h-2/5 md:w-2/5 md:h-full relative">
             <!-- {{ passData.task }} -->
             <!-- Header -->
@@ -57,7 +59,7 @@
             </div>
 
             <!-- Main content -->
-            <div class=" mt-2 pl-3 h-4/5 border-b-2 border-gray-100">
+            <div class=" mt-2 pl-3 h-3/5 md:h-4/5 border-b-2 border-gray-100">
                 <!-- Task content -->
                 <div v-if="isEdit === false" class=" flex items-center space-x-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
@@ -70,7 +72,7 @@
                     </p>
                 </div>
 
-                <div v-else class="flex h-20 relative">
+                <div v-else class="flex h-20 relative text-sm md:text-md">
                     <textarea type="text" v-model="inputEditContent" 
                             class=" flex-1 pl-1 border border-gray-500 outline-none border-none" maxlength="140"></textarea>
                     <div id="EditFeature" class=" block">
@@ -81,8 +83,8 @@
                 </div>
 
                 <!-- Task comments -->
-                <ul v-if="isEdit === false" class=" mt-2 hidden 
-                                            sm:inline-block sm:h-14 sm:border sm:border-red-400 
+                <ul v-if="isEdit === false" class=" mt-2 hidden bg-yellow-500
+                                            sm:inline-block sm:border sm:border-red-400 
                                             md:h-28">
                     <li v-for="comment in passData.task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
                         <div class="flex items-center space-x-2">
@@ -111,8 +113,8 @@
                             class=" px-2 text-sm  hover:bg-slate-200 hover:cursor-pointer">
                             <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
                     </button>
-                    <span class=" flex justify-center items-center text-white bg-pink-500
-                                        h-4 w-4 text-[13px] rounded-full absolute left-16 -top-1">{{ passData.task.likes.length }}</span>
+                    <span class="absolute left-16 -top-1 flex justify-center items-center text-white bg-pink-500
+                                        h-4 w-4 text-[13px] rounded-full ">{{ passData.task.likes.length }}</span>
                 </div>
                 <p class=" text-xs text-gray-400">{{ passData.task.updatedAt.split('T')[0] }}</p>
             </div>
