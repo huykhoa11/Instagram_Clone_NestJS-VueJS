@@ -8,8 +8,8 @@
             </svg>
         </div>
         <div v-else class=" mt-3">
-            <ul class=" flex flex-col space-y-2">
-                <li v-for="user in fetchUserData.users" :key="user" class=" flex justify-between items-center mx-3 text-semibold">
+            <ul class=" flex flex-col space-y-2 sm:text-sm">
+                <li v-for="user in fetchUserData.users" :key="user" class=" flex justify-between items-center text-semibold mx-1 sm:mx-3">
                     <div class=" flex space-x-2">
                         <img :src="require('./../assets/' + user.avatar)" alt="" class=" w-5 h-5 rounded-full">
                         <router-link :to="'/user/' +user.id+ '?currentUserId=' +fetchUserData.currentUser.id" 

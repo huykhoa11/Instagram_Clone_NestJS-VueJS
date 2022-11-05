@@ -1,30 +1,30 @@
 <template>
   <section>
     <div class=" relative w-screen h-screen bg-gray-200 ">
-      <div class=" absolute left-0 right-0 top-10 mx-auto max-w-[500px] min-w-[350px]  h-[500px] rounded-md bg-white overflow-hidden">
-        <header class=" w-full h-1/6 pl-10 flex items-center bg-gradient-to-r from-blue-600 to-sky-400 text-white font-bold text-4xl">Sign In</header>
+      <div class=" absolute left-0 right-0 top-5 sm:top-10 mx-auto w-5/6 sm:w-[500px] rounded-md bg-white overflow-hidden">
+        <header class=" w-full h-20 pl-10 flex items-center bg-gradient-to-r from-blue-600 to-sky-400 text-white font-bold text-4xl">Sign In</header>
         
-        <div class=" p-10">
-          <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
+        <div class=" p-5 sm:p-10">
+          <label for="" class=" text-md sm:text-lg block">Username<span class="text-red-500">*</span></label>
           <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                 v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
-          <p class=" h-4 text-red-500">{{ usernameError }}</p>
+          <p class=" text-sm sm:text-md sm:h-4 text-red-500">{{ usernameError }}</p>
           <br>
-          <label for="" class=" text-lg block">Password<span class="text-red-500">*</span></label>
+          <label for="" class=" text-md sm:text-lg block">Password<span class="text-red-500">*</span></label>
           <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                 v-model="password" @blur="validateOnBlur()" @focus="inputFocus('passwordInput')" @input="inputChange">
-          <p class=" h-4 text-red-500">{{ passwordError }}</p>
+          <p class=" text-sm sm:text-md sm:h-4 text-red-500">{{ passwordError }}</p>
           <br>
-          <input type="checkbox" class=" mt-2 mr-2" id="rememberMe" v-model="isRememberMeCheck">
+          <input type="checkbox" class=" mt-2 mr-2 text-sm sm:text-md" id="rememberMe" v-model="isRememberMeCheck">
           <label for="rememberMe">Remember me</label>
           <div>
-            <router-link to="/auth/signup" class=" text-sm text-sky-500 hover:underline hover:decoration-solid">
+            <router-link to="/auth/signup" class=" text-xs sm:text-sm text-sky-500 hover:underline hover:decoration-solid">
               Don't have account? Sign up here 
             </router-link>
           </div>
 
-          <button @mousedown="signIn()" class=" flex justify-center items-center mt-7 py-1 px-3 bg-black rounded-md 
-                                      text-xl text-white hover:bg-gray-500 " ref="signInRef">Login</button>
+          <button @mousedown="signIn()" class=" mt-3 sm:mt-7 flex justify-center items-center py-1 px-3 bg-black rounded-md 
+                                      text-md sm:text-xl text-white hover:bg-gray-500 " ref="signInRef">Login</button>
 
         </div>
         
@@ -138,14 +138,14 @@ const signIn = async () => {
 };
 
 onMounted( async() => {
-  alert
   if(localStorage.getItem('username')) {
     if (confirm('User is already signed in. Do you want to sign out first?')) {
       // sign out
       localStorage.removeItem('username');
     } else {
       // redirect to homepage
-      window.location.replace("http://localhost:8080/homepage");
+      router.push('/homepage');
+      // window.location.replace("http://localhost:8080/homepage");
     }
   }
 })

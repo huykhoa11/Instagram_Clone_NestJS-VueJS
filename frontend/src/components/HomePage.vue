@@ -8,11 +8,11 @@
             </svg>
         </div>
     </div>
-    <section v-else class=" bg-gray-50 pt-16">
+    <section v-else class="relative w-full flex flex-col items-center bg-gray-50 pt-16">
 
-        <div class="w-screen flex justify-center mb-3 mx-3">
-            <div class=" border-double border-4 border-gray-200 p-3 w-[900px] ">
-                <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50 w-full" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
+        <div class=" w-full flex justify-center mb-3 ">
+            <div class="  border-double border-4 border-gray-200 p-3 w-5/6 lg:w-[900px] ">
+                <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
                 <div>
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
                 </div>
@@ -20,7 +20,7 @@
 
                 <!-- drag & drop images -->
                 <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop"
-                    class=" relative w-full h-28 mt-10 pt-2 border-t-2 hover:cursor-pointer hover:bg-gray-100 hover:border-emerald-500">
+                    class=" relative h-28 mt-10 pt-2 border-t-2 hover:cursor-pointer hover:bg-gray-100 hover:border-emerald-500">
                     <p class="drop-zone__prompt text-gray-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                         Drop file here or click to upload
                     </p>
@@ -46,8 +46,8 @@
             </div>
         </div>
 
-        <div class=" relative mx-auto max-w-[900px] min-w-[350px] flex justify-center space-x-5 my-3">
-            <div class="max-w-[450px]">
+        <div class=" relative w-5/6 flex justify-center my-3 md:space-x-5 max-w-[900px]">
+            <div class="md:w-[400px] lg:w-[450px]">
                 <ul class=" space-y-10">
                     <li v-for="task in tasks" :key="task" class=" border border-gray-400 rounded-md bg-white drop-shadow-md">
                         <div class="">
@@ -157,7 +157,7 @@
                 </footer>
             </div>
 
-            <SuggestFriends :fetchUserData="{currentUser: currentUser, users: users}" />
+            <SuggestFriends :fetchUserData="{currentUser: currentUser, users: users}" class=" hidden md:inline-block"/>
         </div>
 
     </section>

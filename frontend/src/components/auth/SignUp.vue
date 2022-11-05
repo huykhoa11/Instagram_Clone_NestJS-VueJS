@@ -1,36 +1,37 @@
 <template>
   <section>
-    <div class=" relative w-screen h-screen bg-gray-200 ">
-      <div class=" absolute left-0 right-0 top-10 mx-auto max-w-[500px] min-w-[350px] rounded-lg bg-white overflow-hidden">
+    <div class=" relative w-full h-screen bg-gray-200 ">
+      <div class=" absolute left-0 right-0 top-5 sm:top-10 mx-auto w-5/6 sm:w-[500px] rounded-lg bg-white overflow-hidden">
         <header class=" w-full h-20 pl-10 flex items-center bg-gradient-to-r from-fuchsia-600 to-pink-400 font-bold text-white text-4xl">Sign Up</header>
         
-        <div class=" p-10">
-          <label for="" class=" text-lg block">Username<span class="text-red-500">*</span></label>
-          <input id="usernameInput" type="text" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
+        <div class=" p-5 sm:p-10">
+          <label for="" class=" text-md sm:text-lg block">Username<span class="text-red-500">*</span></label>
+          <input id="usernameInput" type="text" spaceholfer=""
+                            class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                             v-model="username" @blur="validateOnBlur()" @focus="inputFocus('usernameInput')" @input="inputChange">
           <p class=" text-xs text-gray-400">(*) Username can't contain white space</p>
-          <p class=" h-4 text-red-500">{{ usernameError }}</p>
+          <p class=" text-sm sm:text-md sm:h-4 text-red-500">{{ usernameError }}</p>
           <br>
 
-          <label for="" class=" text-lg block">Password<span class="text-red-500">*</span></label>
+          <label for="" class=" text-md sm:text-lg block">Password<span class="text-red-500">*</span></label>
           <input id="passwordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                             v-model="password" @blur="validateOnBlur()" @focus="inputFocus('passwordInput')" @input="inputChange">
-          <p class=" h-4 text-red-500">{{ passwordError }}</p>
+          <p class=" text-sm sm:text-md sm:h-4 text-red-500">{{ passwordError }}</p>
           <br>
 
-          <label for="" class=" text-lg block">Confirm Password<span class="text-red-500">*</span></label>
+          <label for="" class=" text-md sm:text-lg block">Confirm Password<span class="text-red-500">*</span></label>
           <input id="confirmPasswordInput" type="password" class="border border-gray-200 h-10 w-full pl-2 rounded-md drop-shadow-sm outline outline-none" 
                                 v-model="confirmPassword" @blur="validateOnBlur()" @focus="inputFocus('confirmPasswordInput')" @input="inputChange">
-          <p class=" h-4 text-red-500">{{ confirmPasswordError }}</p>
+          <p class=" text-sm sm:text-md sm:h-4 text-red-500">{{ confirmPasswordError }}</p>
           <br>
           <div>
-            <router-link to="/auth/signin" class=" text-sm text-sky-500 hover:underline hover:decoration-solid">
+            <router-link to="/auth/signin" class=" text-xs sm:text-sm text-sky-500 hover:underline hover:decoration-solid">
               Already have an account? Sign in 
             </router-link>
           </div>
 
-          <button @click="signUp()" class=" mt-7 py-1 px-3 bg-black rounded-md 
-                                      text-xl text-white hover:bg-gray-500" ref="signUpRef">User register</button>
+          <button @click="signUp()" class=" mt-3 sm:mt-7 py-1 px-3 bg-black rounded-md 
+                                      text-md sm:text-xl text-white hover:bg-gray-500" ref="signUpRef">User register</button>
         </div>
 
       </div>

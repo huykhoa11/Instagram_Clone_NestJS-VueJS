@@ -1,51 +1,56 @@
 <template>
-    <div v-if="user && relation !== null && followers !== null && following !== null" class="w-screen relative flex-row justify-center pt-16">
-        <div class=" w-3/5 absolute left-0 right-0 mx-auto">
-            <div class="flex justify-center items-center space-x-20">
+    <div v-if="user && relation !== null && followers !== null && following !== null" class="w-screen bg-gray-50 relative flex flex-col items-center pt-16">
+        <div class=" w-3/5">
+            <!-- introduce -->
+            <div class="flex justify-center items-center space-x-5 sm:space-x-14 md:space-x-20">
                 <!-- avatar -->
-                <img :src="require('./../assets/' + user.avatar)" alt="" class=" h-36 w-36 border border-gray-100 rounded-full">
+                <img :src="require('./../assets/' + user.avatar)" alt="" 
+                class=" min-w-[64px] h-[64px] sm:min-w-[80px] sm:h-[80px] md:min-w-[112px] md:h-[112px] 
+                lg:h-36 lg:w-36 border border-gray-100 rounded-full">
 
                 <div class="">
                     <div class=" flex items-end h-10 space-x-5">
-                        <h3 class=" text-4xl h-full font-thin">{{ user.username }}</h3>
+                        <h3 class="h-full text-3xl font-semibold md:text-4xl md:font-thin">{{ user.username }}</h3>
                         <router-link v-if="user.id === currentUserId" to="/edit-current-user"
-                                    class=" text-sm px-2 py-1 font-semibold border border-gray-300 rounded-sm hover:text-gray-300 hover:bg-black duration-100">
+                                    class=" text-xs sm:text-sm px-2 py-1 font-semibold border border-gray-300 rounded-sm hover:text-gray-300 hover:bg-black duration-100">
                             Edit user
                         </router-link>
                         <div v-else>
                             <button v-if="relation" id="followBtn"
-                                    class="text-sm text-gray-700 px-2 py-1 font-semibold rounded-sm border border-gray-300" 
+                                    class="text-xs sm:text-sm text-gray-700 px-2 py-1 font-semibold rounded-sm border border-gray-300" 
                                     @click="followEvent(currentUserId, user.id)">
                                 Following
                             </button>
                             <button v-else id="followBtn"
-                                    class="text-sm text-white px-2 py-1 font-semibold rounded-sm bg-blue-400"
+                                    class="text-xs sm:text-sm text-white px-2 py-1 font-semibold rounded-sm bg-blue-400"
                                     @click="followEvent(currentUserId, user.id)">
                                 Follow
                             </button>
                         </div>
                     </div>
 
-                    <div class=" flex space-x-10 mt-7">
-                        <p> <span class=" font-semibold">{{ computed(() => user.tasks.length) }}</span> posts </p>
-                        <p> <span class=" font-semibold">{{followers}}</span> followers</p>
-                        <p> <span class=" font-semibold">{{following}}</span> following </p>
+                    <div class=" flex space-x-5 mt-3 sm:space-x-10 sm:mt-7">
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{ computed(() => user.tasks.length) }}</span> posts </p>
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{followers}}</span> followers</p>
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{following}}</span> following </p>
                     </div>
 
-                    <div class=" mt-7">
-                        <p class=" font-semibold">{{ user.name }}</p>
+                    <div class=" mt-3 sm:mt-7">
+                        <p class=" text-sm sm:text-md font-semibold">{{ user.name }}</p>
                         <p>{{ user.bio }}</p>
                     </div>
                 </div>
             </div>
 
-
+            <!-- tasks -->
             <div class=" mt-7 pt-7 border-t-2 border-gray-200 grid grid-cols-3 gap-4">
-                <div v-for="task in user.tasks" :key="task" class=" h-60 hover:cursor-pointer group" @click="open[`${task.id}`] = true">
+                <div v-for="task in user.tasks" :key="task" class=" h-36 sm:h-48 md:h-60 hover:cursor-pointer group" @click="open[`${task.id}`] = true">
                     <img :src="require('./../assets/' + task.images[0].name)" class=" w-full h-full" alt="" >
                     <div class=" relative hidden -top-full w-full h-full justify-center items-center
                          group-hover:bg-black group-hover:bg-opacity-40 group-hover:flex">
-                        <div class=" flex space-x-10 text-white">
+                        <div class=" text-white flex flex-col text-sm space-y-2
+                            md:flex-row md:space-y-0 md:space-x-7 md:text-md 
+                            lg:space-x-10 ">
                             <p><i class="fa-solid fa-heart mr-2"></i>{{ computed(() => task.likes.length) }}</p>
                             <p><i class="fa-solid fa-comment mr-2"></i>{{ computed(() => task.comments.length) }}</p>
                         </div>
@@ -54,7 +59,7 @@
                     <Teleport to="body">
                         <div v-if="open[`${task.id}`]" class=" fixed top-0 left-0 h-screen w-screen">
                             <div class=" fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 z-40" @click="open[`${task.id}`] = false">
-                                <i class="fa-solid fa-x fixed right-5 top-5 text-lg text-white hover:cursor-pointer" @click="open[`${task.id}`] = false"></i>
+                                <i class="fa-solid fa-x fixed right-5 z-[100] top-20 text-lg text-white hover:cursor-pointer" @click="open[`${task.id}`] = false"></i>
                             </div>
 
                                 <Task :passData="{task: task, open: open[`${task.id}`]}" 

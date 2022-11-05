@@ -1,9 +1,9 @@
 <template>
-    <nav class="">
+    <nav class=" w-full">
       <div v-if="currentUser" class=" fixed z-[100] w-full drop-shadow-md h-12 bg-white flex justify-around items-center">
-        <div class="flex items-center space-x-5">
-          <router-link to="/homepage" class=" text-pink-300 hover:text-white">
-            <img src="./../assets/instagram.png" alt="" class=" w-8 h-8">
+        <div class="flex items-center space-x-2 sm:space-x-5 ">
+          <router-link to="/homepage" class=" text-pink-300 hover:text-white ">
+            <img src="./../assets/instagram.png" alt="" class=" w-6 h-6 sm:w-8 sm:h-8 sm:rounded-md">
           </router-link>
           <div class=" flex items-center">
             <input type="text" name="q" placeholder="Search User" v-model="inputSearchUser"
@@ -12,15 +12,20 @@
           </div>
         </div>
         <div class=" flex items-center space-x-4">
-          <i class="fa-solid fa-house text-lg"></i>
-          <i class="fa-regular fa-heart text-lg"></i>
+          <i class="fa-solid fa-house text-lg hidden sm:inline-block"></i>
+          <i class="fa-solid fa-heart text-lg hidden sm:inline-block"></i>
           <div class=" group relative">
             <img :src="require('./../assets/' + currentUser.avatar)" alt="" class=" w-6 h-6 rounded-full">
             <div class=" hidden hover:flex group-hover:flex flex-col w-36 bg-white drop-shadow z-[200] absolute -right-2 top-8
                         before:absolute before:w-full before:h-5 before:-top-4">
               <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
+                <router-link to="/homepage">
+                  <i class="fa-solid fa-house mr-3"></i>Home page
+                </router-link>
+              </div>
+              <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
                 <router-link :to="'/user/' +currentUser.id+ '?currentUserId=' +currentUser.id">
-                  <i class="fa-regular fa-user mr-3"></i>My Page
+                  <i class="fa-solid fa-user mr-3"></i>My Page
                 </router-link>
               </div>
               <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
@@ -76,7 +81,7 @@ const searchUserEvent = async () => {
   searchBtnElement.innerHTML = spin('gray');
   try {
     const searchUserId = await searchUserbyUsername(inputSearchUser.value);
-    window.location.replace(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
+    router.push(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
   } catch (error) {
     console.log(error);
     searchBtnElement.innerHTML = tmp;

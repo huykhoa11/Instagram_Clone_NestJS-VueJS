@@ -26,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             jwtFromRequest:ExtractJwt.fromExtractors([(request:Request) => {
                 let data = request?.cookies["auth-cookie-dmm"];
                 if(!data){
+                    console.log('something wrong with cookies, check again in ..strategy.ts')
                     return null;
                 }
                 // console.log({data});
@@ -42,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         @Res({ passthrough: true })res: Response,
         name: string) {
         const {username, iat, exp} = payload;
-        console.log(username);
+        console.log(`${username} - ${iat} - ${exp}`);
         const user = await this.usersRepository.findOne({where: {username: username}});
         // console.log(user);
 

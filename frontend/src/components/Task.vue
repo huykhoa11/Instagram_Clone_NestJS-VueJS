@@ -1,5 +1,8 @@
 <template>
-    <div class="fixed z-50 left-0 right-0 top-0 bottom-0 m-auto w-2/3 h-5/6 bg-white border border-gray-400 flex">
+    <div class="fixed z-50 left-0 right-0 top-0 bottom-0 m-auto bg-white border border-gray-400
+                flex flex-col w-5/6 min-w-[320px] h-5/6
+                md:flex-row md:w-2/3 md:h-5/6 
+                ">
         <!-- splide images -->
         <!-- <Splide :options="{ rewind: true }" aria-label="Vue Splide Example" class=" w-fulll h-full">
                 <SplideSlide v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" w-full h-full border-2 border-red-500">
@@ -7,8 +10,8 @@
                 </SplideSlide>
         </Splide> -->
 
-         <div class=" relative w-3/5 h-full">
-            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full">
+         <div class=" relative w-full h-3/5 md:w-3/5 md:h-full ">
+            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full border border-red-500">
                 <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
             </div>
 
@@ -33,12 +36,12 @@
         </div> 
 
 
-        <div class=" w-2/5 relative">
+        <div class=" w-full h-2/5 md:w-2/5 md:h-full relative">
             <!-- {{ passData.task }} -->
             <!-- Header -->
-            <div class=" flex justify-between items-center h-16 border-b-2 border-gray-100">
+            <div class=" flex justify-between items-center h-8 md:h-16 border-b-2 border-gray-100">
                 <div class=" flex items-center space-x-3 ml-3">
-                    <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
+                    <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-5 h-5 md:w-8 md:h-8 rounded-full border border-gray-50">
                     <p class=" font-semibold">
                         <router-link :to="'/user/' +passData.task.user.id+ '?currentUserId=' +currentUserId" 
                                     class=" hover:underline hover:decoration-solid">
@@ -48,8 +51,8 @@
                 </div>
 
                 <div v-if="userId === currentUserId" class=" flex items-center space-x-2 mr-2" id="EditOrDeleteFeature">
-                    <div class=" hover:text-blue-500 hover:cursor-pointer" @click="isEdit = true" v-if="isEdit === false"><i class="fa-solid fa-pen-to-square"></i></div>
-                    <div class=" hover:text-red-500 hover:cursor-pointer" @click="removeTask(passData.task.id)"><i class="fa-solid fa-trash"></i></div>
+                    <div class=" hover:text-blue-500 hover:cursor-pointer text-sm md:text-md" @click="isEdit = true" v-if="isEdit === false"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class=" hover:text-red-500 hover:cursor-pointer text-sm md:text-md" @click="removeTask(passData.task.id)"><i class="fa-solid fa-trash"></i></div>
                 </div>
             </div>
 
@@ -67,7 +70,7 @@
                     </p>
                 </div>
 
-                <div class="flex h-20 relative" v-else>
+                <div v-else class="flex h-20 relative">
                     <textarea type="text" v-model="inputEditContent" 
                             class=" flex-1 pl-1 border border-gray-500 outline-none border-none" maxlength="140"></textarea>
                     <div id="EditFeature" class=" block">
@@ -78,9 +81,11 @@
                 </div>
 
                 <!-- Task comments -->
-                <ul v-if="isEdit === false" class=" overflow-auto mt-2 h-28">
+                <ul v-if="isEdit === false" class=" mt-2 hidden 
+                                            sm:inline-block sm:h-14 sm:border sm:border-red-400 
+                                            md:h-28">
                     <li v-for="comment in passData.task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
-                        <div class="text-sm flex items-center space-x-2">
+                        <div class="flex items-center space-x-2">
                             <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">
                             <div>
                                 <router-link :to="'/user/' +comment.user.id+ '?currentUserId=' +currentUser.id" 
@@ -112,7 +117,7 @@
                 <p class=" text-xs text-gray-400">{{ passData.task.updatedAt.split('T')[0] }}</p>
             </div>
 
-            <!-- Comment section -->
+            <!-- Comment input -->
             <div class=" w-full flex absolute bottom-0 border-t-2 border-gray-200">
                 <input type="text" :id="'inputComment' + passData.task.id"  placeholder="leave a comment" maxlength="50"
                         class=" h-9 outline-none flex-1 pl-3">
