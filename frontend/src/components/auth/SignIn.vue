@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class=" relative w-screen h-screen bg-gray-200 ">
-      <div class=" absolute left-0 right-0 top-5 sm:top-10 mx-auto w-5/6 sm:w-[500px] rounded-md bg-white overflow-hidden">
+      <div class=" absolute left-0 right-0 top-20 sm:top-16 mx-auto w-5/6 sm:w-[500px] rounded-md bg-white overflow-hidden">
         <header class=" w-full h-20 pl-10 flex items-center bg-gradient-to-r from-blue-600 to-sky-400 text-white font-bold text-4xl">Sign In</header>
         
         <div class=" p-5 sm:p-10">

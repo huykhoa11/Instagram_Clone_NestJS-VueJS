@@ -6,7 +6,7 @@
             <img src="./../assets/instagram.png" alt="" class=" w-6 h-6 sm:w-8 sm:h-8 sm:rounded-md">
           </router-link>
           <div class=" flex items-center">
-            <input type="text" name="q" placeholder="Search User" v-model="inputSearchUser"
+            <input type="text" name="q" placeholder="Search User" v-model="inputSearchUser" @keyup.enter="searchUserEvent"
                   class=" bg-gray-100 border border-gray-200 outline outline-none rounded-md pl-2">
             <button id="searchBtn" class=" -translate-x-6" @click="searchUserEvent"><i class="fa-solid fa-magnifying-glass"></i></button>
           </div>
@@ -76,12 +76,17 @@ const currentUser = ref(null);
 const inputSearchUser = ref('');
 
 const searchUserEvent = async () => {
+  console.log('inside search event');
   const searchBtnElement = document.getElementById('searchBtn');
   const tmp = searchBtnElement.innerHTML; 
   searchBtnElement.innerHTML = spin('gray');
   try {
+    console.log(inputSearchUser.value);
     const searchUserId = await searchUserbyUsername(inputSearchUser.value);
-    router.push(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
+    console.log(searchUserId);
+    window.location.replace(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
+    inputSearchUser.value = '';
+    searchBtnElement.innerHTML = tmp;
   } catch (error) {
     console.log(error);
     searchBtnElement.innerHTML = tmp;
@@ -98,7 +103,7 @@ const signOut = async () => {
   localStorage.removeItem('username');
   // router.push('/auth/signin')
   username.value = '';
-  window.location.replace("http://localhost:8080/auth/signin");
+  router.push("/auth/signin");
 
 }
 

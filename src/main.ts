@@ -39,10 +39,9 @@ bootstrap();
     404 Page ------ (Done)
     lazy posts loading ------ (Done)
     Normal user search ------ (Done)
-    vueX state manegement
+    Responsive ------ (Done)
     Meilia Search or Elastic search
     show followers, following user when click on tag at UserPage.vue
-    Responsive
     'See all suggest friends' button feature
     forget password
  */
