@@ -1,6 +1,6 @@
 <template>
     <div v-if="user && relation !== null && followers !== null && following !== null" class="w-screen bg-gray-50 relative flex flex-col items-center pt-16">
-        <div class=" w-3/5">
+        <div class=" w-4/5 lg:w-3/5">
             <!-- introduce -->
             <div class="flex justify-center items-center space-x-5 sm:space-x-14 md:space-x-20">
                 <!-- avatar -->

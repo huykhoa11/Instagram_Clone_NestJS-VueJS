@@ -1,6 +1,6 @@
 <template>
     <div class="fixed z-50 left-0 right-0 top-0 bottom-0 m-auto bg-white border border-gray-400
-                flex flex-col w-5/6 min-w-[320px] h-5/6
+                flex flex-col w-5/6 min-w-[320px] h-3/4 sm:h-5/6
                 md:flex-row md:w-2/3 md:h-5/6 
                 ">
         <!-- splide images -->
@@ -12,7 +12,7 @@
 
         <!-- left -->
         <div class=" relative w-full h-3/5 md:w-3/5 md:h-full ">
-            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full border border-red-500">
+            <div v-for="image in Object.assign({}, passData.task.images)" :key="image.id" class=" image w-full h-full">
                 <img :src="require(`./../assets/${image.name}`)" alt="Sample 1" class=" w-full h-full">
             </div>
 
@@ -59,9 +59,9 @@
             </div>
 
             <!-- Main content -->
-            <div class=" mt-2 pl-3 h-3/5 md:h-4/5 border-b-2 border-gray-100">
+            <div class=" mt-2 pl-3 h-3/5 md:h-4/5 flex flex-col border-b-2 border-gray-100">
                 <!-- Task content -->
-                <div v-if="isEdit === false" class=" flex items-center space-x-3">
+                <div v-if="isEdit === false" class=" flex items-center flex-none h-10 space-x-3">
                     <img :src="require('./../assets/' + passData.task.user.avatar)" alt="" class=" w-8 h-8 rounded-full border border-gray-50">
                     <p class="">
                         <router-link :to="'/user/' +passData.task.user.id+ '?currentUserId=' +currentUserId" 
@@ -72,20 +72,19 @@
                     </p>
                 </div>
 
-                <div v-else class="flex h-20 relative text-sm md:text-md">
+                <div v-else class="h-36 flex flex-col relative text-sm md:text-md">
                     <textarea type="text" v-model="inputEditContent" 
-                            class=" flex-1 pl-1 border border-gray-500 outline-none border-none" maxlength="140"></textarea>
+                            class=" h-28 w-full pl-1 outline-none border-none" maxlength="140"></textarea>
                     <div id="EditFeature" class=" block">
-                        <p class="absolute bottom-1 right-36 min-w-[50px] text-sm text-gray-200"> {{ inputEditContent.length }} /140</p>
-                        <button @click="editTask(passData.task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
-                        <button @click="isEdit = false" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
+                        <p class="absolute bottom-1 right-36 min-w-[50px] text-sm text-gray-300"> {{ inputEditContent.length }} /140</p>
+                        <button @click="editTask(passData.task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md bg-green-500 text-white px-2">Save</button>
+                        <button @click="isEdit = false" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md bg-gray-500 text-white px-2">Cancel</button>
                     </div>
                 </div>
 
                 <!-- Task comments -->
-                <ul v-if="isEdit === false" class=" mt-2 hidden bg-yellow-500
-                                            sm:inline-block sm:border sm:border-red-400 
-                                            md:h-28">
+                <ul v-if="isEdit === false" class=" mt-2 text-sm flex-1 overflow-x-auto
+                                            sm:text-md md:h-28">
                     <li v-for="comment in passData.task.comments" :key="comment" class="flex justify-between items-center px-1 pt-1 group hover:bg-gray-50">
                         <div class="flex items-center space-x-2">
                             <img :src="require('./../assets/' + comment.user.avatar)" alt="" class=" w-5 h-5 rounded-full">

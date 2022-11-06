@@ -1,8 +1,8 @@
 <template>
     <section>
-        <div v-if="currentUser" class=" space-y-4 py-5">
-            <div class=" flex items-center space-x-5 ml-16">
-                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-14 w-14 rounded-full">
+        <div v-if="currentUser" class=" py-5">
+            <div class=" flex items-center space-x-5 ml-3 md:ml-16">
+                <img :src="require('./../../assets/' + currentUser.avatar)" alt="" class=" h-10 w-10 md:h-14 md:w-14 rounded-full">
                 <div class=" flex flex-col">
                     <router-link :to="'/user/' +currentUser.id+ '?currentUserId=' +currentUser.id" 
                                 class=" text-lg font-semibold hover:underline hover:decoration-solid">
@@ -16,19 +16,19 @@
                 </div>
             </div>
             
-            <div class=" flex items-center h-9">
-                <div class=" min-w-32 text-right pr-4">Name</div>
-                <input type="text" v-model="nameInput" class=" h-full pl-2 border-2 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50">
+            <div class=" flex flex-col ml-3 h-12 md:flex-row md:items-center md:space-x-3 mt-4">
+                <div class=" text-sm font-semibold md:text-md md:w-10">Name</div>
+                <input type="text" v-model="nameInput" class=" h-full pl-2 py-1 border-2 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50">
             </div>
 
-            <div class=" flex items-center h-9">
-                <div class=" min-w-32 text-right pr-4">Bio</div>
-                <input type="text" v-model="bioInput" class=" h-full pl-2 border-2 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50">
+            <div class=" flex flex-col ml-3 h-12 md:flex-row md:items-center md:space-x-3 mt-8">
+                <div class=" text-sm font-semibold md:text-md md:w-10">Bio</div>
+                <textarea type="text" v-model="bioInput" class=" h-10 md:h-12 pl-2 py-1 border-2 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50"></textarea>
             </div>
 
-            <div class=" flex items-center h-9">
-                <div class=" min-w-32 text-right pr-4">Email</div>
-                <input type="text" v-model="emailInput" class=" h-full pl-2 border-2 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50">
+            <div class=" flex flex-col ml-3 h-12 md:flex-row md:items-center md:space-x-3 mt-4">
+                <div class=" text-sm font-semibold md:text-md md:w-10">Email</div>
+                <input type="text" v-model="emailInput" class=" h-full pl-2 border-2 py-1 border-gray-200 flex-1 outline-none rounded-sm shadow-sm shadow-gray-500/50">
             </div>
 
             <!-- <div class=" flex items-center h-9">
@@ -41,8 +41,7 @@
                 <div class=" w-32">Password Confirmation</div>
                 <input type="text" class=" h-full pl-2 border-2 border-gray-200 flex-1 outline-none shadow-sm shadow-gray-500/50">
             </div> -->
-
-            <button class=" ml-32 mt-10 px-2 py-1 text-white hover:bg-blue-400 rounded-sm
+            <button class=" ml-3 mt-10 md:ml-16 px-2 py-1 text-white hover:bg-blue-400 rounded-sm
                             bg-blue-500 shadow-lg shadow-blue-500/50" @click="update">
                             Update
             </button>

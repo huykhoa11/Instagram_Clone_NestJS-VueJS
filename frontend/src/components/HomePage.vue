@@ -12,7 +12,7 @@
 
         <div class=" w-full flex justify-center mb-3 ">
             <div class="  border-double border-4 border-gray-200 p-3 w-5/6 lg:w-[900px] ">
-                <textarea v-model="inputTask" class=" outline-none mb-2 block bg-gray-50" placeholder="Hello, what r u thinking ?" maxlength="140"></textarea>
+                <textarea v-model="inputTask" class=" w-full outline-none mb-2 block bg-gray-50" placeholder="Hello, what are you thinking ?" maxlength="140"></textarea>
                 <div>
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
                 </div>
@@ -97,12 +97,12 @@
                             </Splide>
 
                             <!-- task content -->
-                            <div class="flex h-20 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
+                            <div class="flex h-28 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
                                 <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
-                                        class=" flex-1 pl-1 border border-gray-500" maxlength="140"></textarea>
+                                        class=" w-full h-24 pl-1 text-sm" maxlength="140"></textarea>
                                 <!-- <div class="" v-if="isEditting === false"> -->
-                                    <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md hover:bg-green-500 text-green-500 hover:text-white px-2">Save</button>
-                                    <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md hover:bg-slate-200 text-gray-500 px-2">Cancel</button>
+                                <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md bg-green-500 text-white px-2">Save</button>
+                                <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md bg-gray-500 text-white px-2">Cancel</button>
                                 <!-- </div> -->
                                 <!-- <div class="" v-else>Loading...</div> -->
                             </div>

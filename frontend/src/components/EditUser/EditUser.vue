@@ -1,18 +1,18 @@
 <template>
     <section class=" relative">
         <!-- <div v-if="currentUser"> -->
-            <div class=" absolute left-0 right-0 mx-auto mt-32 w-1/2
+            <div class=" absolute left-0 right-0 mx-auto mt-32 sm:w-5/6 md:w-3/4 xl:w-1/2
                         border-double border-4 border-gray-500 bg-white drop-shadow-md
                         flex">
                         
                 <!-- Menu -->
-                <div class=" border-r border-gray-300 min-w-40 flex flex-col text-left">
+                <div class=" border-r border-gray-300 text-sm sm:min-w-16 lg:text-md lg:min-w-40 flex flex-col text-left">
                     <button @click="changeTab('EditBasicInfo')"
-                            class="btnList font-bold border-l-2 border-black px-3 py-3">
+                            class="btnList font-bold border-l-2 border-black py-1 lg:px-3 lg:py-3">
                         Edit infomations
                     </button>
                     <button @click="changeTab('EditPassword')"
-                            class="btnList hover:bg-gray-100 hover:border-l-2 hover:border-gray-300 px-3 py-3">
+                            class="btnList hover:bg-gray-100 hover:border-l-2 hover:border-gray-300 py-1 lg:px-3 lg:py-3">
                         Change password
                     </button>
                     <input type="radio" ref="inputEditBasicInfoRef" 
@@ -22,7 +22,7 @@
                 </div>
 
                 <!-- Main -->
-                <div class=" w-full pr-5">
+                <div class=" w-full pr-3 md:pr-14">
                     <KeepAlive>
                         <component :is="currentTab" :key="currentTab"></component>
                     </KeepAlive>
@@ -35,6 +35,8 @@
 
 <script setup>
 import { onMounted, ref, shallowRef } from "vue";
+import { useRouter } from "vue-router"
+
 import EditBasicInfo from './EditBasicInfo.vue'
 import EditPassword from './EditPassword.vue'
 
@@ -43,6 +45,8 @@ const inputEditBasicInfoRef = ref(null);
 const inputEditPasswordRef = ref(null);
 
 const currentUser = ref(null);
+const router = useRouter();
+
 
 const changeTab = (tab) => {
     const buttonsList = document.querySelectorAll('.btnList');
@@ -60,6 +64,9 @@ const changeTab = (tab) => {
 }
 
 onMounted( async() => {
+    if(!localStorage.getItem('username')) {
+        router.push('/auth/signin');
+    }
 })
 
 </script>
