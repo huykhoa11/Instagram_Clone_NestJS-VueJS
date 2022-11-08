@@ -99,7 +99,7 @@
                             <!-- task content -->
                             <div class="flex h-28 relative" v-show="isEdit.find(ele => ele.taskId === task.id).status === true">
                                 <textarea type="text" :id="'editInput' + task.id" :value="task.content" 
-                                        class=" w-full h-24 pl-1 text-sm" maxlength="140"></textarea>
+                                        class=" w-full h-24 pl-1 text-sm outline-none" maxlength="140"></textarea>
                                 <!-- <div class="" v-if="isEditting === false"> -->
                                 <button @click="editTask(task.id)" class=" absolute bottom-1 right-20 min-w-[50px] rounded-md bg-green-500 text-white px-2">Save</button>
                                 <button @click="changeIsEditStatus(task.id, 'cancel')" class=" absolute bottom-1 right-4 min-w-[50px] rounded-md bg-gray-500 text-white px-2">Cancel</button>
@@ -542,25 +542,38 @@ const likeClick = async(task) => {
 onMounted( async() => {
 
     try {
-        // const fetchUser = await axios.get('http://localhost:3000/tasks/users', {withCredentials: true});
-        // const fetchUser = await axios.get('http://localhost:3000/users', {withCredentials: true});
-        const fetchUser = await axios.get('http://localhost:3000/users/currentuser-and-otherusers', {withCredentials: true});
-        const {user, otherUsers} = fetchUser.data;
-        console.log(fetchUser.data);
-        currentUser.value = user;  
-        users.value = otherUsers;
+        // const fetchUser = await axios.get('http://localhost:3000/users/currentuser-and-otherusers', {withCredentials: true});
+        // const {user, otherUsers} = fetchUser.data;
+        // console.log(fetchUser.data);
+        // currentUser.value = user;  
+        // users.value = otherUsers;
 
-        // const response = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-        const response = await getTasks(loadedPost.value);
-        console.log(response);
-        tasks.value = response;
-        // tasks.value.reverse();
+        // const response = await getTasks(loadedPost.value);
+        // console.log(response);
+        // tasks.value = response;
 
-        if(tasks.value.length !== 0) {
-            tasks.value.forEach(async(ele) => {
-                isEdit.value.push({taskId: ele.id, status: false});
-            })
-        }
+//////////////////////////////////////////////////
+        (() => {
+            axios.all([
+                axios.get('http://localhost:3000/users/currentuser-and-otherusers', {withCredentials: true}),
+                axios.get(`http://localhost:3000/tasks?loadedPost=${loadedPost.value}`, {withCredentials: true}),
+            ])
+            .then(axios.spread((obj1, obj2) => {
+                // Both requests are now complete
+                console.log(obj1.data);
+                console.log(obj2.data);
+                const {user, otherUsers} = obj1.data;
+                currentUser.value = user;  
+                users.value = otherUsers;
+                tasks.value = obj2.data;
+                tasks.value.forEach(async(ele) => {
+                    isEdit.value.push({taskId: ele.id, status: false});
+                })
+                console.log(isEdit.value);
+            }));
+        })();
+/////////////////////////////////////////////////////////////
+        
     } catch (error) {
         console.log(error);
         router.push('/auth/signin');
