@@ -40,8 +40,13 @@ bootstrap();
     lazy posts loading ------ (Done)
     Normal user search ------ (Done)
     Responsive ------ (Done)
-    Meilia Search or Elastic search
     show followers, following user when click on tag at UserPage.vue
+    SocketIO realtime chat
+    i18n
+    Rep comment
+    Redis
+    Darkmode
+    Meilia Search or Elastic search
     'See all suggest friends' button feature
     forget password
  */

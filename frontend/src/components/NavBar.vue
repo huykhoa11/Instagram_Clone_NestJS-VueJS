@@ -6,36 +6,45 @@
             <img src="./../assets/instagram.png" alt="" class=" w-6 h-6 sm:w-8 sm:h-8 sm:rounded-md">
           </router-link>
           <div class=" flex items-center">
-            <input type="text" name="q" placeholder="Search User" v-model="inputSearchUser" @keyup.enter="searchUserEvent"
+            <input type="text" name="q" :placeholder="$t('Search User')" v-model="inputSearchUser" @keyup.enter="searchUserEvent"
                   class=" bg-gray-100 border border-gray-200 outline outline-none rounded-md pl-2">
             <button id="searchBtn" class=" -translate-x-6" @click="searchUserEvent"><i class="fa-solid fa-magnifying-glass"></i></button>
           </div>
         </div>
+        <!-- <img class=" w-5 h-5 rounded-full" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png" alt=""> -->
         <div class=" flex items-center space-x-4">
           <i class="fa-solid fa-house text-lg hidden sm:inline-block"></i>
           <i class="fa-solid fa-heart text-lg hidden sm:inline-block"></i>
+          <select v-model="$i18n.locale" class="w-28 h-8">
+            <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">
+              <div class=" flex items-center space-x-2"> 
+                {{getLocale(locale)}} 
+                <img :src="getLocaleImg(locale)" alt="locale" class=" w-5 h-5">
+              </div>
+            </option>
+          </select>
           <div class=" group relative">
             <img :src="require('./../assets/' + currentUser.avatar)" alt="" class=" w-6 h-6 rounded-full">
             <div class=" hidden hover:flex group-hover:flex flex-col w-36 bg-white drop-shadow z-[200] absolute -right-2 top-8
                         before:absolute before:w-full before:h-5 before:-top-4">
               <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
                 <router-link to="/homepage">
-                  <i class="fa-solid fa-house mr-3"></i>Home page
+                  <i class="fa-solid fa-house mr-3"></i>{{ $t("Navbar/Home page") }}
                 </router-link>
               </div>
               <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
                 <router-link :to="'/user/' +currentUser.id+ '?currentUserId=' +currentUser.id">
-                  <i class="fa-solid fa-user mr-3"></i>My Page
+                  <i class="fa-solid fa-user mr-3"></i>{{ $t("Navbar/My page") }}
                 </router-link>
               </div>
               <div class=" flex p-2 hover:bg-gray-100 hover:cursor-pointer">
                 <router-link to="/edit-current-user">
-                  <i class="fa-solid fa-gear mr-3"></i>Edit user
+                  <i class="fa-solid fa-gear mr-3"></i>{{ $t("Navbar/Edit user") }}
                 </router-link>
               </div><hr>
               <div id="signOutBtn" @click="signOut()" 
                       class=" text-pink-500 px-2 py-1 hover:text-gray-50 hover:bg-pink-300 cursor-pointer">
-                Sign Out
+                {{ $t("Navbar/Log out") }}
               </div>
             </div>
           </div>
@@ -65,6 +74,7 @@ import { useRouter } from "vue-router"
 import { computed, onMounted, ref } from 'vue';
 import { searchUserbyUsername, spin } from './../composables/Fetch.js';
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
+import { i18n } from './../langs/languages';
 import axios from 'axios';
 
 const router = useRouter();
@@ -74,6 +84,20 @@ const username = ref(null);
 const currentUser = ref(null);
 
 const inputSearchUser = ref('');
+
+const getLocale = (locale) => {
+  if(locale === 'en') {return 'English'} //https://icons8.com/icon/ShNNs7i8tXQF/great-britain
+  else if(locale === 'ja') {return 'Japanese'}
+}
+
+const getLocaleImg = (locale) => {
+  if(locale === 'en') {
+    return 'https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png'
+  }
+  else if(locale === 'ja') {
+    return 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_Japan_%281870%E2%80%931999%29.svg/220px-Flag_of_Japan_%281870%E2%80%931999%29.svg.png'
+  }
+}
 
 const searchUserEvent = async () => {
   console.log('inside search event');
@@ -117,6 +141,7 @@ onMounted( async () => {
     if(localStorage.getItem('username')) {
       localStorage.removeItem('username');
     }
+    router.push('/auth/signin');
   }
 
   
