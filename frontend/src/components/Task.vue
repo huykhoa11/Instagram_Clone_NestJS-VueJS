@@ -110,7 +110,7 @@
                         :class="[passData.task.likes.find(ele=>ele.user.id===currentUserId) === undefined ?  'text-gray-400' : 'text-pink-400 bg-pink-100'  ]" 
                             @click="likeClick(passData.task)" 
                             class=" px-2 text-sm  hover:bg-slate-200 hover:cursor-pointer">
-                            <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
+                            <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>{{ $t('Button/Like')}}
                     </button>
                     <span class="absolute left-16 -top-1 flex justify-center items-center text-white bg-pink-500
                                         h-4 w-4 text-[13px] rounded-full ">{{ passData.task.likes.length }}</span>
@@ -120,10 +120,10 @@
 
             <!-- Comment input -->
             <div class=" w-full flex absolute bottom-0 border-t-2 border-gray-200">
-                <input type="text" :id="'inputComment' + passData.task.id"  placeholder="leave a comment" maxlength="50"
+                <input type="text" :id="'inputComment' + passData.task.id"  :placeholder="$t('Leave comment')" maxlength="50"
                         class=" h-9 outline-none flex-1 pl-3">
                 <button @click="addComment(passData.task)" :id="'buttonComment' + passData.task.id"
-                        class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
+                        class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">{{ $t('Button/Send') }}</button>
             </div>
         </div>
 

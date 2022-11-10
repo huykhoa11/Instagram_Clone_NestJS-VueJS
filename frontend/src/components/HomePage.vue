@@ -12,7 +12,7 @@
 
         <div class=" w-full flex justify-center mb-3 ">
             <div class="  border-double border-4 border-gray-200 p-3 w-5/6 lg:w-[900px] ">
-                <textarea v-model="inputTask" class=" w-full outline-none mb-2 block bg-gray-50" placeholder="Hello, what are you thinking ?" maxlength="140"></textarea>
+                <textarea v-model="inputTask" class=" w-full outline-none mb-2 block bg-gray-50" :placeholder="$t('Status post')" maxlength="140"></textarea>
                 <div>
                     <p class=" text-sm p-1 text-gray-400 float-right">{{inputTask.length}}/140</p>
                 </div>
@@ -22,7 +22,7 @@
                 <div id="dropzone" ref="dropZoneElement" @drop.prevent="dropZoneElementDrop"
                     class=" relative h-28 mt-10 pt-2 border-t-2 hover:cursor-pointer hover:bg-gray-100 hover:border-emerald-500">
                     <p class="drop-zone__prompt text-gray-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                        Drop file here or click to upload
+                        {{ $t("Drag drop status") }}
                     </p>
                     <input type="file" name="myFile" class=" hidden" id="dropzone-input" @change="dropzoneInputChange" multiple>
                     <div class=" flex space-x-2">
@@ -41,7 +41,7 @@
                 <button @click="createTask()" ref="createTaskBtnRef" 
                         class=" text-sm py-1 px-2 float-right rounded-md border
                              hover:text-blue-400 hover:bg-white text-white bg-blue-400 hover:border-blue-400 duration-100">
-                        Post
+                        {{ $t("Post") }}
                 </button>
             </div>
         </div>
@@ -133,15 +133,15 @@
                             <button :class="[task.likes.find(ele=>ele.user.id===currentUser.id) === undefined ?  'text-gray-400' : 'text-pink-400 bg-pink-100'  ]" 
                                     @click="likeClick(task)" 
                                     class=" px-2 text-sm block border border-gray-200 hover:bg-slate-200 hover:cursor-pointer">
-                                    <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like
+                                    <i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>{{$t('Button/Like')}}
                             </button>
                             <span class=" flex justify-center items-center text-white bg-pink-500
                                         h-4 w-4 text-[13px] rounded-full absolute left-14 -top-1">{{ task.likes.length }}</span>
                         </div>
                         <div class=" flex">
-                            <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" placeholder="leave a comment" maxlength="50">
+                            <input type="text" :id="'inputComment' + task.id" class=" flex-1 pl-1 border border-gray-200" :placeholder="$t('Leave comment')" maxlength="50">
                             <button @click="addComment(task)" :id="'buttonComment' + task.id" 
-                                    class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">Send</button>
+                                    class=" px-2 border border-gray-200 bg-pink-500 hover:bg-pink-400 text-gray-100">{{$t('Button/Send')}}</button>
                         </div>
                     </li>
                 </ul>

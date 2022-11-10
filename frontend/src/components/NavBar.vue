@@ -11,15 +11,15 @@
             <button id="searchBtn" class=" -translate-x-6" @click="searchUserEvent"><i class="fa-solid fa-magnifying-glass"></i></button>
           </div>
         </div>
-        <!-- <img class=" w-5 h-5 rounded-full" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png" alt=""> -->
+        <img class=" w-8 h-5 " src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png" alt="">
         <div class=" flex items-center space-x-4">
           <i class="fa-solid fa-house text-lg hidden sm:inline-block"></i>
           <i class="fa-solid fa-heart text-lg hidden sm:inline-block"></i>
-          <select v-model="$i18n.locale" class="w-28 h-8">
+          <select v-model="$i18n.locale" class="w-28">
             <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">
               <div class=" flex items-center space-x-2"> 
                 {{getLocale(locale)}} 
-                <img :src="getLocaleImg(locale)" alt="locale" class=" w-5 h-5">
+                <!-- <img :src="getLocaleImg(locale)" alt="locale" class=" w-5 h-5"> -->
               </div>
             </option>
           </select>
@@ -86,8 +86,8 @@ const currentUser = ref(null);
 const inputSearchUser = ref('');
 
 const getLocale = (locale) => {
-  if(locale === 'en') {return 'English'} //https://icons8.com/icon/ShNNs7i8tXQF/great-britain
-  else if(locale === 'ja') {return 'Japanese'}
+  if(locale === 'en') {return 'English (EN)'} //https://icons8.com/icon/ShNNs7i8tXQF/great-britain
+  else if(locale === 'ja') {return '日本語 (JA)'}
 }
 
 const getLocaleImg = (locale) => {

@@ -28,6 +28,19 @@ Frontend: VueJS 3 and TailwindCSS<br>
 Backend: NestJS <br>
 Database: MySQL ver 8.0.30 <br>
 
+
+Feature:
+- i18n with English and Japanese
+- Authentication with JWT, remember me feature
+- Create, Show, Update and Delete posts.
+- Drag and drop images to create posts
+- Lazy loading
+- Comment and like posts
+- Follow users feature, only show following users's posts
+- Search other users
+- Edit profile infomation, change current password
+- Reponsive
+
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation

@@ -13,26 +13,26 @@
                         <h3 class="h-full text-3xl font-semibold md:text-4xl md:font-thin">{{ user.username }}</h3>
                         <router-link v-if="user.id === currentUserId" to="/edit-current-user"
                                     class=" text-xs sm:text-sm px-2 py-1 font-semibold border border-gray-300 rounded-sm hover:text-gray-300 hover:bg-black duration-100">
-                            Edit user
+                            {{ $t("Button/Edit user") }}
                         </router-link>
                         <div v-else>
                             <button v-if="relation" id="followBtn"
                                     class="text-xs sm:text-sm text-gray-700 px-2 py-1 font-semibold rounded-sm border border-gray-300" 
                                     @click="followEvent(currentUserId, user.id)">
-                                Following
+                                {{ $t("Button/Following") }}
                             </button>
                             <button v-else id="followBtn"
                                     class="text-xs sm:text-sm text-white px-2 py-1 font-semibold rounded-sm bg-blue-400"
                                     @click="followEvent(currentUserId, user.id)">
-                                Follow
+                                {{ $t("Button/Follow") }}
                             </button>
                         </div>
                     </div>
 
                     <div class=" flex space-x-5 mt-3 sm:space-x-10 sm:mt-7">
-                        <p> <span class=" text-sm sm:text-md font-semibold">{{ computed(() => user.tasks.length) }}</span> posts </p>
-                        <p> <span class=" text-sm sm:text-md font-semibold">{{followers}}</span> followers</p>
-                        <p> <span class=" text-sm sm:text-md font-semibold">{{following}}</span> following </p>
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{ computed(() => user.tasks.length) }}</span> {{ $t("UserPage/Posts") }} </p>
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{followers}}</span> {{ $t("UserPage/Followes") }}</p>
+                        <p> <span class=" text-sm sm:text-md font-semibold">{{following}}</span> {{ $t("UserPage/Following") }} </p>
                     </div>
 
                     <div class=" mt-3 sm:mt-7">
