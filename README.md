@@ -29,9 +29,10 @@ Backend: NestJS <br>
 Database: MySQL ver 8.0.30 <br>
 
 
-Feature:
+## Feature:
 - i18n with English and Japanese
 - Authentication with JWT, remember me feature
+- Validate Sign in/Sign up form
 - Create, Show, Update and Delete posts.
 - Drag and drop images to create posts
 - Lazy loading
@@ -41,49 +42,13 @@ Feature:
 - Edit profile infomation, change current password
 - Reponsive
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Preview
 
-```bash
-$ npm install
-```
+Demo video: https://youtu.be/cITqlreBgVM
 
-## Running the app
+<img src="https://user-images.githubusercontent.com/69473375/220248891-bae21a73-00b3-480f-b4eb-f7e2894fbfb8.png" width="700" height="500">
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
