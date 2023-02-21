@@ -40,9 +40,9 @@ bootstrap();
     lazy posts loading ------ (Done)
     Normal user search ------ (Done)
     Responsive ------ (Done)
+    i18n ------ (Done)
     show followers, following user when click on tag at UserPage.vue
     SocketIO realtime chat
-    i18n
     Rep comment
     Redis
     Darkmode

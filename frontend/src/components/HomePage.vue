@@ -171,7 +171,7 @@ import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
 import { displayToast, dangerColor, successColor } from '../composables/DisplayToast.js';
-import { getTasks, deleteTask, saveEditTask, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
+import { getTasks, deleteTask, saveEditTask, createComment, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -401,15 +401,15 @@ const createTask = async() => {
             inputTask.value = '';
             location.reload();
 
-            const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
-            tasks.value = res.data;
-            tasks.value.reverse();
+            // const res = await axios.get('http://localhost:3000/tasks', {withCredentials: true});
+            // tasks.value = res.data;
+            // tasks.value.reverse();
 
-            console.log(tasks.value);
+            // console.log(tasks.value);
             
-            isEdit.value.push({taskId: response.data.id, status: false});
-            createTaskBtnRef.value.disabled = false;
-            createTaskBtnRef.value.innerText = 'Create Task';
+            // isEdit.value.push({taskId: response.data.id, status: false});
+            // createTaskBtnRef.value.disabled = false;
+            // createTaskBtnRef.value.innerText = 'Create Task';
         } catch (error) {
             console.error(error);
             displayToast("Something went wrong! Please try again", dangerColor);
@@ -480,7 +480,7 @@ const addComment = async(task) => {
         console.log(inputCommentElement.value);
 
         const data = {content: inputCommentElement.value};
-        const response = await createComment(task.id, data); 
+        const response = await createComment(task.id, data);
         
         buttonCommentElement.disabled = true;
         buttonCommentElement.classList.toggle('hover:bg-slate-100');

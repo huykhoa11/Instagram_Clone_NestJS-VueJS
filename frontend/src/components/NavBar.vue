@@ -11,7 +11,7 @@
             <button id="searchBtn" class=" -translate-x-6" @click="searchUserEvent"><i class="fa-solid fa-magnifying-glass"></i></button>
           </div>
         </div>
-        <img class=" w-8 h-5 " src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png" alt="">
+        <!-- <img class=" w-8 h-5 " src="https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/640px-Flag_of_the_United_Kingdom.svg.png" alt=""> -->
         <div class=" flex items-center space-x-4">
           <i class="fa-solid fa-house text-lg hidden sm:inline-block"></i>
           <i class="fa-solid fa-heart text-lg hidden sm:inline-block"></i>
