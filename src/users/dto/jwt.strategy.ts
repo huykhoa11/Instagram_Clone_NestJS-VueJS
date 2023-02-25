@@ -22,7 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
             ignoreExpiration: false,
             passReqToCallback:true,
-            secretOrKey:configService.get('JWT_SECRET'),
+            // secretOrKey:configService.get('JWT_SECRET'),
+            secretOrKey: process.env.JWT_SECRET,
             jwtFromRequest:ExtractJwt.fromExtractors([(request:Request) => {
                 let data = request?.cookies["auth-cookie-dmm"];
                 if(!data){
