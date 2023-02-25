@@ -12,7 +12,7 @@ import { JwtService } from "@nestjs/jwt";
 import { stringify } from "querystring";
 import { User } from "./user.entity";
 import { AuthService } from "../auth.service";
-import { JwtPayload } from "./JwtPayLoad";
+import { JwtPayload } from "./JwtPayload";
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refreshTokenStrategy') {
