@@ -8,7 +8,8 @@ async function bootstrap() {
 
   app.enableCors({
     allowedHeaders: ['content-type'],
-    origin: 'http://localhost:8080',
+    // origin: 'http://localhost:8080',
+    origin: 'https://dolphin-app-k5adj.ondigitalocean.app/',
     credentials: true,
   });
   app.use(cookieParser());
