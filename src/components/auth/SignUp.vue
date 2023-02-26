@@ -137,7 +137,8 @@ const signUp = async () => {
     try {
       signUpRef.value.disabled = true;
       signUpRef.value.classList.toggle('hover:bg-gray-500');
-      signUpRef.value.innerText = spin('pink');
+      // signUpRef.value.innerText = spin('pink');
+      signUpRef.value.innerText = 'User Registing...';
       const response = await register(data);
       
       router.push('/auth/signin')

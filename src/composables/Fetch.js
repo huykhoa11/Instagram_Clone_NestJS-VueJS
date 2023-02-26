@@ -151,6 +151,8 @@ export const login = async(isRememberMe, data) => {
 }
 
 export const register = async(data) => {
+    console.log(frontendURL);
+    console.log(`${backendURL}/auth/signup`);
     const response = await axios.post(`${backendURL}/auth/signup`, data, {
         headers: {
           Accept: "application/json",
