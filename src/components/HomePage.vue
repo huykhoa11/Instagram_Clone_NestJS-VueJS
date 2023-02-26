@@ -171,7 +171,7 @@ import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
 import { displayToast, dangerColor, successColor } from '../composables/DisplayToast.js';
-import { getTasks, deleteTask, saveEditTask, createComment, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
+import { backendURL, getTasks, deleteTask, saveEditTask, createComment, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -331,7 +331,7 @@ const dropZoneElementDrop = (e) => {
 const onSubmit = async() => {
     try {
         console.log('onSubmit button click, processing....');
-        const response = await axios.post('http://localhost:3000/tasks/upload', uploadFile.value, {
+        const response = await axios.post(`${backendURL}/tasks/upload`, uploadFile.value, {
             headers: {
                 // Accept: "application/json",
                 "Content-Type": "multipart/form-data",
@@ -387,7 +387,7 @@ const createTask = async() => {
             })
             uploadFile.value.append('content', inputTask.value)
             const response = await axios
-            .post('http://localhost:3000/tasks/upload', uploadFile.value, {
+            .post(`${backendURL}/tasks/upload`, uploadFile.value, {
                 headers: {
                     Accept: "application/json",
                     // "Content-Type": "application/json;charset=UTF-8",
@@ -509,7 +509,7 @@ const likeClick = async(task) => {
     if(isLiked === false) {
 
         const data = {status: true};
-        const response = await axios.post(`http://localhost:3000/tasks/${task.id}/likes`, data, {
+        const response = await axios.post(`${backendURL}/tasks/${task.id}/likes`, data, {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json;charset=UTF-8",
@@ -523,7 +523,7 @@ const likeClick = async(task) => {
     }
     else {
 
-        await axios.delete(`http://localhost:3000/tasks/${task.id}/likes`, {
+        await axios.delete(`${backendURL}/tasks/${task.id}/likes`, {
             headers: {
                 Accept: "application/json",
             "Content-Type": "application/json;charset=UTF-8",
@@ -555,8 +555,8 @@ onMounted( async() => {
 //////////////////////////////////////////////////
         (() => {
             axios.all([
-                axios.get('http://localhost:3000/users/currentuser-and-otherusers', {withCredentials: true}),
-                axios.get(`http://localhost:3000/tasks?loadedPost=${loadedPost.value}`, {withCredentials: true}),
+                axios.get(`${backendURL}/users/currentuser-and-otherusers`, {withCredentials: true}),
+                axios.get(`${backendURL}/tasks?loadedPost=${loadedPost.value}`, {withCredentials: true}),
             ])
             .then(axios.spread((obj1, obj2) => {
                 // Both requests are now complete

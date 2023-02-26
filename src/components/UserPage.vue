@@ -93,7 +93,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
-import { follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
+import { backendURL, follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
 import Task from './Task.vue'
 
 const router = useRouter();
@@ -150,7 +150,7 @@ onMounted( async() => {
     currentUserId.value = parseInt(router.currentRoute.value.query.currentUserId);
 
     try {
-        let response = await axios.get('http://localhost:3000/users/' + userId, {withCredentials: true});
+        let response = await axios.get(`${backendURL}/users/` + userId, {withCredentials: true});
         user.value = response.data;
         user.value.tasks.forEach(element => {
             open.value[`${element.id}`] = false;
@@ -162,7 +162,7 @@ onMounted( async() => {
         relation.value = await getRelation(currentUserId.value, userId);
         console.log(relation.value);
 
-        response = await axios.get('http://localhost:3000/follows/user/' + userId, {withCredentials: true});
+        response = await axios.get(`${backendURL}/follows/user/` + userId, {withCredentials: true});
         const {numFollowers, numFollowing} = response.data;
         followers.value = numFollowers;
         following.value = numFollowing;

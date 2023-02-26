@@ -33,6 +33,7 @@
 import { onMounted, ref } from 'vue';
 import axios from "axios";
 import { displayToast, dangerColor, successColor } from './../../composables/DisplayToast.js';
+import { backendURL } from './../../composables/Fetch.js';
 
 const currentUser = ref(null);
 
@@ -45,7 +46,7 @@ const update = async () => {
         const data = {password: newPassword.value};
         try {
             const response = await axios
-                .patch(`http://localhost:3000/users/edit-password/${currentUser.value.id}`, data, {
+                .patch(`${backendURL}/users/edit-password/${currentUser.value.id}`, data, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json;charset=UTF-8",
@@ -71,7 +72,7 @@ const update = async () => {
 
 onMounted( async() => {
     try {
-        const response = await axios.get('http://localhost:3000/users/currentuser', {withCredentials: true});
+        const response = await axios.get(`${backendURL}/users/currentuser`, {withCredentials: true});
         console.log(response.data);
         currentUser.value = response.data;
         console.log(currentUser.value);

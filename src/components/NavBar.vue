@@ -72,7 +72,7 @@
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router"
 import { computed, onMounted, ref } from 'vue';
-import { searchUserbyUsername, spin } from './../composables/Fetch.js';
+import { frontendURL, backendURL, searchUserbyUsername, spin } from './../composables/Fetch.js';
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import { i18n } from './../langs/languages';
 import axios from 'axios';
@@ -108,7 +108,7 @@ const searchUserEvent = async () => {
     console.log(inputSearchUser.value);
     const searchUserId = await searchUserbyUsername(inputSearchUser.value);
     console.log(searchUserId);
-    window.location.replace(`http://localhost:8080/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
+    window.location.replace(`${frontendURL}/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
     inputSearchUser.value = '';
     searchBtnElement.innerHTML = tmp;
   } catch (error) {
@@ -123,7 +123,7 @@ const signOut = async () => {
   signOutBtnElement.disabled = true;
   signOutBtnElement.className = 'text-pink-500';
   signOutBtnElement.innerText =  'Signing out...'
-  await axios.delete('http://localhost:3000/auth/signout', {withCredentials: true});
+  await axios.delete(`${backendURL}/auth/signout`, {withCredentials: true});
   localStorage.removeItem('username');
   // router.push('/auth/signin')
   username.value = '';
@@ -133,7 +133,7 @@ const signOut = async () => {
 
 onMounted( async () => {
   try {
-    const response = await axios.get('http://localhost:3000/users/currentuser', {withCredentials: true});
+    const response = await axios.get(`${backendURL}/users/currentuser`, {withCredentials: true});
     currentUser.value = response.data;
     username.value = localStorage.getItem('username');
     console.log(username.value);

@@ -44,6 +44,8 @@ const router = useRouter();
 const signInRef = ref(null);
 const signUpRef = ref(null);
 
+const backendURL = process.env.BACKEND_URL;
+
 const signUp = async () => {
   const data = {
     username: username,
@@ -51,7 +53,7 @@ const signUp = async () => {
   };
 
   axios
-  .post('http://localhost:3000/auth/signup', data, {
+  .post(`${backendURL}/auth/signup`, data, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json;charset=UTF-8",
@@ -77,7 +79,7 @@ const signIn = async () => {
     signInRef.value.disabled = true;
     signInRef.value.classList.toggle('hover:bg-slate-200');
     signInRef.value.innerText = 'loading...';
-    const response = await axios.post('http://localhost:3000/auth/signin', data, {
+    const response = await axios.post(`${backendURL}/auth/signin`, data, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json;charset=UTF-8",
