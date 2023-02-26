@@ -52,10 +52,10 @@ import { Follow } from './follows/entities/follows.entity';
       // }),
       TypeOrmModule.forRoot({
         type: 'mysql',
-        host: 'db-mysql-sgp1-83521-do-user-12980401-0.b.db.ondigitalocean.com',
+        host: 'db-mysql-blr1-53704-do-user-12980401-0.b.db.ondigitalocean.com',
         port: 25060,
         username: 'doadmin',
-        password: 'AVNS_03AezIuHJyXZS1pIi2X',
+        password: 'AVNS_3TXoT0Eq3pVhMMiYCqW',
         database: 'defaultdb',
         entities: [User, Task, Comment, Like, Image, Follow],
         synchronize: true,
