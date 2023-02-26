@@ -93,8 +93,10 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from "vue-router"
 import axios from "axios";
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
-import { backendURL, follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
+import { follow, deleteFollow, getRelation, spin } from './../composables/Fetch.js';
 import Task from './Task.vue'
+
+const backendURL = process.env.VUE_APP_BACKEND_URL;
 
 const router = useRouter();
 const user = ref(null);
@@ -119,7 +121,7 @@ const removeRelation = async(relation, followBtnElement) => {
     console.log(relation);
     followBtnElement.innerHTML = spin('gray');
     try {
-        const response = await deleteFollow(relation.id);
+        const response = await deleteFollow(relation.id, backendURL);
         followBtnElement.innerHTML = 'Follow';
         followBtnElement.classList.remove('text-gray-700', 'border', 'border-gray-300');
         followBtnElement.classList.add('text-white', 'bg-blue-400');
@@ -134,7 +136,7 @@ const addRelation = async (followerId, followingId, followBtnElement) => {
     followBtnElement.innerHTML = spin('gray');
     try {
         const data = {followerId: followerId, followingId: followingId};
-        const response = await follow(data);
+        const response = await follow(data, backendURL);
         followBtnElement.innerHTML = 'Following';
         followBtnElement.classList.remove('text-white', 'bg-blue-400');
         followBtnElement.classList.add('text-gray-700', 'border', 'border-gray-300');
@@ -159,7 +161,7 @@ onMounted( async() => {
         console.log(typeof currentUserId.value);
         console.log('user.id', user.value.id, ' currentUserId', currentUserId.value);
 
-        relation.value = await getRelation(currentUserId.value, userId);
+        relation.value = await getRelation(currentUserId.value, userId, backendURL);
         console.log(relation.value);
 
         response = await axios.get(`${backendURL}/follows/user/` + userId, {withCredentials: true});

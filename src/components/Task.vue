@@ -137,6 +137,8 @@ import axios from "axios";
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import { addLike, deleteLike, spin, createComment, deleteComment, saveEditTask, deleteTask, timeAgoComment } from './../composables/Fetch.js';
 
+const backendURL = process.env.VUE_APP_BACKEND_URL;
+
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
@@ -167,7 +169,7 @@ const likeClick = async(task) => {
         btnLikeElement.innerHTML = spin();
         btnLikeElement.classList.remove('hover:bg-slate-200', 'hover:cursor-pointer');
         
-        const newLike = await addLike(task.id);
+        const newLike = await addLike(task.id, backendURL);
 
         btnLikeElement.disabled = false;
         btnLikeElement.innerHTML = `<i class="fa-sharp fa-solid fa-thumbs-up mr-2"></i>Like`;
@@ -180,7 +182,7 @@ const likeClick = async(task) => {
     }
     else {
 
-        deleteLike(task.id);
+        deleteLike(task.id, backendURL);
         const likeNeedRemove = props.passData.task.likes.find(ele => ele.user.id === currentUserId.value);
         const indexOfLikeNeedRemove = task.likes.indexOf(likeNeedRemove);
         props.passData.task.likes.splice(indexOfLikeNeedRemove, 1);
@@ -200,7 +202,7 @@ const addComment = async(task) => {
         buttonCommentElement.classList.toggle('hover:bg-pink-400');
         buttonCommentElement.innerHTML = spin();
 
-        const newCmt = await createComment(task.id, data); 
+        const newCmt = await createComment(task.id, data, backendURL); 
     
         inputCommentElement.value = '';
         buttonCommentElement.disabled = false;
@@ -214,7 +216,7 @@ const addComment = async(task) => {
 
 const removeComment = async(commentId) => {
     props.passData.task.comments = props.passData.task.comments.filter(item => item.id !== commentId);
-    await deleteComment(commentId);
+    await deleteComment(commentId, backendURL);
 }
 
 const editTask = async(taskId) => {
@@ -224,7 +226,7 @@ const editTask = async(taskId) => {
         EditFeatureElement.innerHTML = spin();
 
         const data = {content: inputEditContent.value};
-        const newUpdateTask = await saveEditTask(taskId, data);
+        const newUpdateTask = await saveEditTask(taskId, data, backendURL);
         
         console.log(newUpdateTask);
         EditFeatureElement.innerHTML = tmp;
@@ -243,7 +245,7 @@ const removeTask = async(taskId) => {
     const tmp = EditOrDeleteFeatureElement.innerHTML;
     EditOrDeleteFeatureElement.innerHTML = spin();
 
-    await deleteTask(taskId);
+    await deleteTask(taskId, backendURL);
     console.log('delete done')
 
     EditOrDeleteFeatureElement.innerHTML = tmp;

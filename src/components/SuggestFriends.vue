@@ -39,6 +39,8 @@ import axios from "axios";
 import { displayToast, dangerColor, successColor } from '../composables/DisplayToast'
 import { deleteFollow, getAllRelations, follow, spin } from '../composables/Fetch';
 
+const backendURL = process.env.VUE_APP_BACKEND_URL;
+
 const emit = defineEmits(['sendToDashboard'])
 
 const currentUserChild = ref({});
@@ -64,7 +66,7 @@ const removeRelation = async(relation, followBtnElement) => {
     console.log('in removeRelation');
     followBtnElement.innerHTML = spin('gray');
     try {
-        const response = await deleteFollow(relation.id);
+        const response = await deleteFollow(relation.id, backendURL);
         const indexOfElementNeedRemove = relations.value.indexOf(relation);
         console.log(indexOfElementNeedRemove);
         relations.value.splice(indexOfElementNeedRemove, 1);
@@ -82,7 +84,7 @@ const addRelation = async (followerId, followingId, followBtnElement) => {
     followBtnElement.innerHTML = spin('gray');
     try {
         const data = {followerId: followerId, followingId: followingId};
-        const response = await follow(data);
+        const response = await follow(data, backendURL);
         relations.value.push(response);
         followBtnElement.innerHTML = 'Following';
         followBtnElement.classList.remove('text-blue-400');
@@ -100,7 +102,7 @@ const getRelationStatus = (followerId, followingId) => {
 }
 
 onMounted( async() => {
-    relations.value = await getAllRelations();
+    relations.value = await getAllRelations(backendURL);
     console.log(relations.value);
 })
 

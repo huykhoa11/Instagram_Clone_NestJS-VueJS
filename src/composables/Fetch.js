@@ -1,9 +1,6 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import axios from "axios";
 
-export const frontendURL = process.env.FRONTEND_URL; 
-export const backendURL = process.env.BACKEND_URL;
-
 export const spin = (color) => {
     return `<svg class="mr-2 inline h-5 w-5 text-gray-200 animate-spin dark:text-gray-600 fill-${color}-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
@@ -11,7 +8,7 @@ export const spin = (color) => {
     </svg>`
 }
 
-export const getCmtsFromOneTask = async(taskId) => {
+export const getCmtsFromOneTask = async(taskId, backendURL) => {
     const response = await axios.get(
         `${backendURL}/tasks/${taskId}/comments`, 
         {withCredentials: true}
@@ -20,13 +17,13 @@ export const getCmtsFromOneTask = async(taskId) => {
     return result;
 }
 
-export const getTasks = async(loadedPost) => {
+export const getTasks = async(loadedPost, backendURL) => {
     const response = await axios.get(`${backendURL}/tasks?loadedPost=${loadedPost}`, {withCredentials: true});
     return response.data;
 };
 
 
-export const createTask = async(data) => {
+export const createTask = async(data, backendURL) => {
     await axios.post(`${backendURL}/tasks`, data, {
         headers: {
         Accept: "application/json",
@@ -38,13 +35,13 @@ export const createTask = async(data) => {
 
 
 // Search User
-export const searchUserbyUsername = async (username) => {
+export const searchUserbyUsername = async (username, backendURL) => {
     const response = await axios.get(`${backendURL}/users/search/${username}`, {withCredentials: true});
     return response.data;
 }
 
 // Like
-export const addLike = async (taskId) => {
+export const addLike = async (taskId, backendURL) => {
     console.log('inside addLike Fetch.js');
     const data = {status: true};
     const response = await axios.post(`${backendURL}/tasks/${taskId}/likes`, data, {
@@ -57,7 +54,7 @@ export const addLike = async (taskId) => {
     return response.data;
 }
 
-export const deleteLike = async(taskId) => {
+export const deleteLike = async(taskId, backendURL) => {
     await axios.delete(`${backendURL}/tasks/${taskId}/likes`, {
         headers: {
             Accept: "application/json",
@@ -70,7 +67,7 @@ export const deleteLike = async(taskId) => {
 }
 
 // Comment
-export const createComment = async(taskId, data) => {
+export const createComment = async(taskId, data, backendURL) => {
     const response = await axios.post(`${backendURL}/tasks/${taskId}/comments`, data, {
         headers: {
         Accept: "application/json",
@@ -82,7 +79,7 @@ export const createComment = async(taskId, data) => {
     return response.data;
 }
 
-export const deleteComment = async(commentId) => {
+export const deleteComment = async(commentId, backendURL) => {
     await axios.delete(`${backendURL}/tasks/comments/${commentId}`, {withCredentials: true});
 }
 
@@ -98,18 +95,18 @@ export const timeAgoComment = (comment) => {
 } 
 
 // Task
-export const saveEditTask = async(taskId, data) => {
+export const saveEditTask = async(taskId, data, backendURL) => {
     console.log('inside saveEditTask Fetch');
     const response = await axios.patch(`${backendURL}/tasks/${taskId}`, data ,{withCredentials: true});
     return response.data; 
 }
 
-export const deleteTask = async(taskId) => {
+export const deleteTask = async(taskId, backendURL) => {
     await axios.delete(`${backendURL}/tasks/${taskId}`, {withCredentials: true});
 }
 
 // Follow
-export const follow = async(data) => {
+export const follow = async(data, backendURL) => {
     console.log('insdide follow Fetch');
     const response = await axios.post(`${backendURL}/follows`, data, {
         headers: {
@@ -121,24 +118,24 @@ export const follow = async(data) => {
     return response.data;
 }
 
-export const deleteFollow = async(relationId) => {
+export const deleteFollow = async(relationId, backendURL) => {
     console.log('inside delelteFollow Fetch');
     await axios.delete(`${backendURL}/follows/${relationId}`, {withCredentials: true});
 }
 
-export const getAllRelations = async() => {
+export const getAllRelations = async(backendURL) => {
     const response = await axios.get(`${backendURL}/follows`, {withCredentials: true});
     return response.data;
 }
 
-export const getRelation = async(followerId, followingId) => {
+export const getRelation = async(followerId, followingId, backendURL) => {
     const response = await axios.get(`${backendURL}/follows/follower/${followerId}?following=${followingId}`, {withCredentials: true});
     return response.data;
 }
 
 
 // Authentication
-export const login = async(isRememberMe, data) => {
+export const login = async(isRememberMe, data, backendURL) => {
     const response = await axios.post(`${backendURL}/auth/signin?rememberMe=${isRememberMe}`, data, {
         headers: {
             Accept: "application/json",
@@ -150,9 +147,8 @@ export const login = async(isRememberMe, data) => {
     return response.data;
 }
 
-export const register = async(data) => {
-    console.log(frontendURL);
-    console.log(`${backendURL}/auth/signup`);
+export const register = async(data, backendURL) => {
+    console.log(backendURL);
     const response = await axios.post(`${backendURL}/auth/signup`, data, {
         headers: {
           Accept: "application/json",

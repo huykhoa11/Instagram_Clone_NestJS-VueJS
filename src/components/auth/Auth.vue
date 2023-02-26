@@ -44,7 +44,7 @@ const router = useRouter();
 const signInRef = ref(null);
 const signUpRef = ref(null);
 
-const backendURL = process.env.BACKEND_URL;
+const backendURL = process.env.VUE_APP_BACKEND_URL;
 
 const signUp = async () => {
   const data = {

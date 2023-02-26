@@ -48,6 +48,8 @@ import {useRouter} from "vue-router"
 import {useStore} from "vuex"
 import { register, spin } from '/src/composables/Fetch.js';
 
+const backendURL = process.env.VUE_APP_BACKEND_URL;
+
 const store = useStore();
 
 const username = ref('');
@@ -139,7 +141,7 @@ const signUp = async () => {
       signUpRef.value.classList.toggle('hover:bg-gray-500');
       // signUpRef.value.innerText = spin('pink');
       signUpRef.value.innerText = 'User Registing...';
-      const response = await register(data);
+      const response = await register(data, backendURL);
       
       router.push('/auth/signin')
     } catch (error) {

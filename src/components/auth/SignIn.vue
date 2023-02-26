@@ -41,7 +41,10 @@ import axios from 'axios';
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
 import { displayToast, dangerColor, successColor } from '/src/composables/DisplayToast';
-import { frontendURL, backendURL, login, spin } from '/src/composables/Fetch.js';
+import { login, spin } from '/src/composables/Fetch.js';
+
+const backendURL = process.env.VUE_APP_BACKEND_URL;
+const frontendURL = process.env.VUE_APP_FRONTEND_URL;
 
 const store = useStore();
 const router = useRouter();
@@ -121,7 +124,7 @@ const signIn = async () => {
       console.log('remember me ', isRememberMeCheck.value);
       signInRef.value.disabled = true;
       signInRef.value.innerHTML = spin('pink');
-      const response = await login(isRememberMeCheck.value, data);
+      const response = await login(isRememberMeCheck.value, data, backendURL);
 
       localStorage.setItem('username' ,username.value);
       window.location.replace(`${frontendURL}/homepage`);

@@ -72,10 +72,14 @@
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router"
 import { computed, onMounted, ref } from 'vue';
-import { frontendURL, backendURL, searchUserbyUsername, spin } from './../composables/Fetch.js';
+import { searchUserbyUsername, spin } from './../composables/Fetch.js';
 import { displayToast, dangerColor, successColor } from './../composables/DisplayToast.js';
 import { i18n } from './../langs/languages';
 import axios from 'axios';
+
+const frontendURL = process.env.VUE_APP_FRONTEND_URL;
+const backendURL = process.env.VUE_APP_BACKEND_URL;
+
 
 const router = useRouter();
 const store = useStore();
@@ -106,7 +110,7 @@ const searchUserEvent = async () => {
   searchBtnElement.innerHTML = spin('gray');
   try {
     console.log(inputSearchUser.value);
-    const searchUserId = await searchUserbyUsername(inputSearchUser.value);
+    const searchUserId = await searchUserbyUsername(inputSearchUser.value, backendURL);
     console.log(searchUserId);
     window.location.replace(`${frontendURL}/user/${searchUserId}?currentUserId=${currentUser.value.id}`);
     inputSearchUser.value = '';

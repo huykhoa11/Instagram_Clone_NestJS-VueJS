@@ -171,7 +171,9 @@ import axios from "axios";
 import { useStore } from 'vuex';
 import {useRouter} from "vue-router"
 import { displayToast, dangerColor, successColor } from '../composables/DisplayToast.js';
-import { backendURL, getTasks, deleteTask, saveEditTask, createComment, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
+import { getTasks, deleteTask, saveEditTask, createComment, deleteComment, timeAgoComment, spin } from '../composables/Fetch.js';
+
+const backendURL = process.env.VUE_APP_BACKEND_URL;
 
 // import splide
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
@@ -213,7 +215,7 @@ const scollTrigger = () => {
             if(entry.intersectionRatio > 0 && currentPage.value < (currentPage.value * maxPerPage.value)) {
                 showLoader.value = true;
                 loadedPost.value += 2;
-                const response = await getTasks(loadedPost.value);
+                const response = await getTasks(loadedPost.value, backendURL);
                 response.forEach(res => {
                     tasks.value.push(res);
                     isEdit.value.push({taskId: res.id, status: false});
@@ -419,7 +421,7 @@ const createTask = async() => {
 
 const deleteTaskEvent = async (taskId) => {
     console.log(taskId);
-    await deleteTask(taskId);
+    await deleteTask(taskId, backendURL);
     tasks.value = tasks.value.filter(item => item.id !== taskId);
     console.log(tasks.value);
 }
@@ -430,7 +432,7 @@ const editTask = async(taskId) => {
         const editInputElement = document.getElementById(`editInput${taskId}`);
 
         const data = {content: editInputElement.value}
-        const newUpdateTask = await saveEditTask(taskId, data);
+        const newUpdateTask = await saveEditTask(taskId, data, saveEditTask);
 
         const task = tasks.value.find(element => element.id === taskId);
         task.content = editInputElement.value;
@@ -480,7 +482,7 @@ const addComment = async(task) => {
         console.log(inputCommentElement.value);
 
         const data = {content: inputCommentElement.value};
-        const response = await createComment(task.id, data);
+        const response = await createComment(task.id, data, backendURL);
         
         buttonCommentElement.disabled = true;
         buttonCommentElement.classList.toggle('hover:bg-slate-100');
@@ -498,7 +500,7 @@ const addComment = async(task) => {
 
 const deleteCommentEvent = async(commentId, task) => {
     task.comments = task.comments.filter(item => item.id !== commentId);
-    await deleteComment(commentId);
+    await deleteComment(commentId, backendURL);
 }
 
 // Likes
