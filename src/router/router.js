@@ -45,7 +45,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.VUE_APP_FRONTEND_URL),
+  history: createWebHistory(),
   routes
 })
 
