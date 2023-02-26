@@ -53,7 +53,7 @@ import { Follow } from './follows/entities/follows.entity';
       TypeOrmModule.forRoot({
         type: 'mysql',
         host: 'db-mysql-sgp1-83521-do-user-12980401-0.b.db.ondigitalocean.com',
-        // port: 25060,
+        port: 25060,
         username: 'doadmin',
         password: 'AVNS_03AezIuHJyXZS1pIi2X',
         database: 'defaultdb',
