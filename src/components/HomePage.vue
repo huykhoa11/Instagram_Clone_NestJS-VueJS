@@ -557,8 +557,8 @@ onMounted( async() => {
 //////////////////////////////////////////////////
         (() => {
             axios.all([
-                axios.get(`${backendURL}/users/currentuser-and-otherusers`, {withCredentials: true}),
-                axios.get(`${backendURL}/tasks?loadedPost=${loadedPost.value}`, {withCredentials: true}),
+                axios.get(`${backendURL}/users/currentuser-and-otherusers`,{}, {withCredentials: true, credentials: 'include'}),
+                axios.get(`${backendURL}/tasks?loadedPost=${loadedPost.value}`,{}, {withCredentials: true, credentials: 'include'}),
             ])
             .then(axios.spread((obj1, obj2) => {
                 // Both requests are now complete
