@@ -40,14 +40,14 @@ export class AuthController {
     if(isRememberMeQuery === true) {
       const {accessToken, refreshToken} = await this.authService.signIn(authCredentialsDto, 86400);
       const secretData = {accessToken, refreshToken};
-      res.cookie('auth-cookie-dmm', secretData, {httpOnly: true});
+      res.cookie('auth-cookie-dmm', secretData, {httpOnly: true, secure: true});
 
       return {accessToken, refreshToken};
     }
     else {
       const {accessToken, refreshToken} = await this.authService.signIn(authCredentialsDto, 3600);
       const secretData = {accessToken, refreshToken};
-      res.cookie('auth-cookie-dmm', secretData, {httpOnly: true});
+      res.cookie('auth-cookie-dmm', secretData, {httpOnly: true, secure: true});
 
       return {username, accessToken, refreshToken};
     }
