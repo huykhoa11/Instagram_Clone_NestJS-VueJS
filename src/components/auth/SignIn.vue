@@ -125,7 +125,8 @@ const signIn = async () => {
       signInRef.value.disabled = true;
       signInRef.value.innerHTML = spin('pink');
       const response = await login(isRememberMeCheck.value, data, backendURL);
-
+      console.log("test 3 in Signin.vue");
+      console.log(response);
       localStorage.setItem('username' ,username.value);
       // window.location.replace(`${frontendURL}/homepage`);
       router.push('/homepage');

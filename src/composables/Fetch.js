@@ -136,14 +136,15 @@ export const getRelation = async(followerId, followingId, backendURL) => {
 
 // Authentication
 export const login = async(isRememberMe, data, backendURL) => {
+    console.log("test 1 in login Fetch.js");
     const response = await axios.post(`${backendURL}/auth/signin?rememberMe=${isRememberMe}`, data, {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json;charset=UTF-8",
         },
         withCredentials: true,
-        credentials: 'include'
     });
+    console.log("test 2 in login Fetch.js");
 
     return response.data;
 }
