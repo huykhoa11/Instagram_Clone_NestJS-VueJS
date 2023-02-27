@@ -127,8 +127,8 @@ const signIn = async () => {
       const response = await login(isRememberMeCheck.value, data, backendURL);
 
       localStorage.setItem('username' ,username.value);
-      window.location.replace(`${frontendURL}/homepage`);
-      // router.push('/homepage');
+      // window.location.replace(`${frontendURL}/homepage`);
+      router.push('/homepage');
     } catch (error) {
       console.log(error);
       signInRef.value.disabled = false;
