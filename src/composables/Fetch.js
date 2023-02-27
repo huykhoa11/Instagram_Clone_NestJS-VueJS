@@ -142,6 +142,7 @@ export const login = async(isRememberMe, data, backendURL) => {
             "Content-Type": "application/json;charset=UTF-8",
         },
         withCredentials: true,
+        credentials: 'include'
     });
 
     return response.data;
